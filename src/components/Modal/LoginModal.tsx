@@ -7,9 +7,11 @@ import { setModal } from "store/modal.slice"
 import { waitForEmail } from "store/auth.slice"
 import Input from "components/UI/Input"
 import Spinner from "components/UI/Spinner"
+import { useRouter } from "next/router"
 
 export default function LoginModal() {
   const dispatch = useTDispatch()
+  const router = useRouter()
   const [username, setUsername] = useState(localStorage.getItem("username"))
   // const [username, setUsername] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
@@ -27,7 +29,7 @@ export default function LoginModal() {
   const onSubmit = async (data: FieldValues) => {
     const { email, firstName, lastName } = data
     const actionCodeSettings: ActionCodeSettings = {
-      url: `http://localhost:3000/authenticate${
+      url: `${window?.location.origin}/authenticate${
         firstName ? `?firstName=${firstName}&lastName=${lastName}` : ""
       }`,
       handleCodeInApp: true,
