@@ -1,0 +1,448 @@
+import { adminDB } from "firebaseconfig/admin"
+import { GetServerSideProps, NextPage } from "next"
+import { DBQuiz } from "types/quiz"
+import { Fragment, useEffect, useState } from "react"
+import { useTDispatch, useTSelector } from "hooks/redux"
+import { useRouter } from "next/router"
+import { setAlert } from "store/modal.slice"
+import WithHeader from "components/Layout/WithHeader"
+import { Tab } from "@headlessui/react"
+import Link from "next/link"
+import Spinner from "components/UI/Spinner"
+import Pagination from "components/UI/Pagination"
+import usePagination from "hooks/usePagination"
+import { httpsCallable } from "firebase/functions"
+import { db, functions } from "firebaseconfig"
+import { pickSortingOption, setDiscussion } from "store/discussion.slice"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import Latex from "react-latex"
+import useMessage from "hooks/useMessage"
+import { faPaperPlane } from "@fortawesome/free-solid-svg-icons/faPaperPlane"
+import { faArrowUpWideShort } from "@fortawesome/free-solid-svg-icons/faArrowUpWideShort"
+import { faArrowDownWideShort } from "@fortawesome/free-solid-svg-icons/faArrowDownWideShort"
+import { faCheck } from "@fortawesome/free-solid-svg-icons/faCheck"
+import { faBookmark as fasBookmark } from "@fortawesome/free-solid-svg-icons/faBookmark"
+import { faBookmark as farBookmark } from "@fortawesome/free-regular-svg-icons/faBookmark"
+import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons/faEllipsisVertical"
+import { faFlag } from "@fortawesome/free-solid-svg-icons/faFlag"
+import WIP from "components/UI/WIP"
+import ProposedChange from "components/Modules/ProposedChange"
+import Message from "components/UI/Message"
+import { protect, sortMessages } from "utils/functions"
+import DropdownPopup from "components/UI/DropdownPopup"
+import Popup from "components/UI/Popup"
+import { arrayUnion, doc, updateDoc } from "firebase/firestore"
+import { setAuth } from "store/auth.slice"
+import { LightQuiz } from "types/user"
+import Head from "next/head"
+
+const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
+  const [quiz, setQuiz] = useState(quizProp)
+  const dispatch = useTDispatch()
+  const router = useRouter()
+  const [message, setMessage] = useState("")
+  const { sendMsg: send, loading, voteMsg } = useMessage()
+  const { user } = useTSelector((state) => state.auth)
+  const { changes: newChanges } = useTSelector((state) => state.quiz)
+  const { discussion, discussionQuizId, currentSort } = useTSelector(
+    (state) => state.discussion
+  )
+  const { paginationProps: pProps, handlePagination } = usePagination({
+    defaultCurrentPage: 1,
+    defaultPageSize: 1,
+    total: quiz?.questions.length ?? 1,
+  })
+
+  useEffect(() => {
+    if (!quiz) {
+      dispatch(setAlert({ message: "Ce quiz n'existe pas.", error: true }))
+      router.replace("/")
+    }
+  }, [quiz, router]) // eslint-disable-line
+
+  useEffect(() => {
+    if (discussion && discussionQuizId == quizId) return
+    else dispatch(setDiscussion(null))
+    if (!user) return
+    ;(async () => {
+      const getDiscussion = httpsCallable(functions, "getDiscussion")
+      const newDiscussion = (await getDiscussion({ quizId })).data
+      if (!newDiscussion) return
+      dispatch(
+        setDiscussion({
+          discussion: Object.values(newDiscussion),
+          quizId: quizId as string,
+        })
+      )
+    })()
+  }, [discussion, discussionQuizId, user])
+
+  const sendMsg = protect(async () => {
+    const msg = message
+    setMessage("")
+    await send(msg, pProps.currentPage - 1)
+  })
+
+  const saveQuiz = protect(async () => {
+    if (!user || !user.data || !quiz) return
+    const dataRef = doc(db, "users", user.uid, "private", "data")
+    const lightQuiz: LightQuiz = { ...quiz, id: quizId }
+    await updateDoc(dataRef, {
+      savedQuizzes: arrayUnion(lightQuiz),
+    })
+    dispatch(
+      setAuth({
+        ...user,
+        data: {
+          ...user.data,
+          savedQuizzes: [...user.data.savedQuizzes, lightQuiz],
+        },
+      })
+    )
+    dispatch(
+      setAlert({
+        message:
+          "Quiz enregistré ! Vous pouvez à présent y accéder depuis votre profil",
+      })
+    )
+  })
+
+  const unsaveQuiz = protect(async () => {
+    if (!user || !user.data) return
+    const dataRef = doc(db, "users", user.uid, "private", "data")
+    const newArr = user.data.savedQuizzes.filter((q) => q.id != quizId)
+    await updateDoc(dataRef, {
+      savedQuizzes: newArr,
+    })
+    dispatch(setAuth({ ...user, data: { ...user.data, savedQuizzes: newArr } }))
+    dispatch(
+      setAlert({
+        message: "Quiz retiré de la liste des quiz enregistés",
+      })
+    )
+  })
+
+  const sortOptions = {
+    recent: (
+      <>
+        <FontAwesomeIcon icon={faArrowUpWideShort} /> Récent
+      </>
+    ),
+    old: (
+      <>
+        <FontAwesomeIcon icon={faArrowDownWideShort} /> Ancien
+      </>
+    ),
+    relevant: (
+      <>
+        <FontAwesomeIcon icon={faCheck} /> Pertinent
+      </>
+    ),
+  }
+
+  const tabs = ["Général", "Discussion", "Mes stats"]
+
+  return quiz ? (
+    <WithHeader className="bg-main text-white">
+      <Head>
+        <title>Quiz: {quizProp?.name!}</title>
+      </Head>
+      <div className="min-h-fit-screen flex flex-col">
+        <div className="pb-9 md:pb-12 pt-8 sm:pt-3 px-8 md:px-12 grid grid-cols-3 gap-10 items-center bg-main rounded-b-3xl text-white">
+          <div className="col-span-3 md:col-span-2">
+            <h1 className="text-3xl sm:text-4xl font-bold">
+              Quiz: {quiz.name}
+            </h1>
+            <div className="flex flex-wrap items-center gap-2 mt-2">
+              {quiz.categories.map((category) => (
+                <span
+                  key={category}
+                  className="py-1 px-3 rounded-full bg-white text-main text-sm min-w-max"
+                >
+                  {category}
+                </span>
+              ))}
+              <div className="text-lg">
+                {user?.data &&
+                user.data.savedQuizzes.some((q) => q.id == quizId) ? (
+                  <Popup position="down" popup="Quiz enregistré">
+                    <button aria-label="Retirer" onClick={unsaveQuiz}>
+                      <FontAwesomeIcon icon={fasBookmark} />
+                    </button>
+                  </Popup>
+                ) : (
+                  <Popup position="down" popup="Enregistrer le quiz">
+                    <button aria-label="Enregistrer" onClick={saveQuiz}>
+                      <FontAwesomeIcon icon={farBookmark} />
+                    </button>
+                  </Popup>
+                )}
+              </div>
+              <DropdownPopup
+                label={<FontAwesomeIcon icon={faEllipsisVertical} />}
+                items={[
+                  <Link
+                    href={`/quiz/${router.query.id as string}/try`}
+                    key="Tentative"
+                  >
+                    <a className="text-black">Tentative</a>
+                  </Link>,
+                  user?.data && (
+                    <button
+                      className="text-black"
+                      onClick={
+                        user.data.savedQuizzes.some((q) => q.id == quizId)
+                          ? unsaveQuiz
+                          : saveQuiz
+                      }
+                      key="Enregistrer"
+                    >
+                      {user.data.savedQuizzes.some((q) => q.id == quizId)
+                        ? "Enregistré"
+                        : "Enregistrer"}
+                    </button>
+                  ),
+                  <button
+                    className="text-black"
+                    key="Signalerlequiz"
+                    onClick={() =>
+                      dispatch(
+                        setAlert({
+                          message: "Votre signalement a été pris en compte",
+                        })
+                      )
+                    }
+                  >
+                    <FontAwesomeIcon icon={faFlag} /> Signaler
+                  </button>,
+                ]}
+              />
+            </div>
+          </div>
+          <Link href={`/quiz/${router.query.id as string}/try`}>
+            <a className="button bg-white text-main col-span-3 md:col-span-1">
+              Tentative
+            </a>
+          </Link>
+        </div>
+        <Tab.Group defaultIndex={tab || 0} as={Fragment}>
+          <Tab.List className="flex justify-center sm:justify-start px-8 sm:px-12 pt-2">
+            {tabs.map((tab) => (
+              <Tab
+                key={tab}
+                className="py-1 px-2 font-semibold rounded text-main 
+                ui-selected:bg-main ui-selected:text-white"
+              >
+                {tab}
+              </Tab>
+            ))}
+          </Tab.List>
+          <Tab.Panels className="px-4 md:px-8 flex-grow mt-2">
+            <Tab.Panel className="grid grid-cols-3 grid-rows-2 gap-4 sm:gap-8 min-h-full">
+              <div className="p-4 col-span-3 sm:col-span-2">
+                <p className="text-xl">
+                  <span className="font-bold">{quiz.questions.length}</span>{" "}
+                  questions |{" "}
+                  {quiz.singleAnswer ? "réponse unique" : "réponses multiples"}
+                  {quiz.negativePoints && " | points négatifs"}
+                </p>
+                <p>{quiz.desc}</p>
+              </div>
+              <div className="bg-main/10 col-span-3 sm:col-span-1 rounded p-4">
+                <h2 className="font-semibold">Score moyen</h2>
+                <p>7/10</p>
+              </div>
+              <div className="bg-main/10 rounded p-4 col-span-3 sm:col-span-2">
+                <h2 className="font-semibold">Mes stats</h2>
+                <div className="flex justify-center">
+                  <div className="w-32">
+                    <WIP />
+                  </div>
+                </div>
+              </div>
+              <div className="bg-main/10 rounded p-4 overflow-y-auto col-span-3 sm:col-span-1">
+                <h2 className="font-semibold">Mises à jour</h2>
+                {quiz.questions.some((q, idx) => quiz.changes[idx]) ? (
+                  <div className="flex flex-col gap-2">
+                    {quiz.questions.map((q, idx) => {
+                      const change = quiz.changes[idx]
+                      if (!change) return null
+                      return (
+                        <p key={`dashboardChange${idx}`}>Question #{idx + 1}</p>
+                      )
+                    })}
+                  </div>
+                ) : (
+                  <p>Il n{"'"}y a pas de proposition de mise à jour du quiz</p>
+                )}
+              </div>
+            </Tab.Panel>
+            <Tab.Panel className="-pt-4 pb-4">
+              {!discussion ? (
+                <div className="flex justify-center">
+                  <Spinner />
+                </div>
+              ) : (
+                <div className="flex flex-col-reverse md:flex-row justify-center gap-4">
+                  <div className="w-clamp mx-auto flex-shrink flex flex-col gap-4">
+                    <div className="flex gap-2 justify-center items-center">
+                      <p className="font-bold">Question</p>
+                      <Pagination
+                        {...pProps}
+                        onChange={handlePagination}
+                        showJumper
+                      />
+                    </div>
+                    <p className="text-center text-xl">
+                      <Latex>
+                        {quiz.questions[pProps.currentPage - 1].prompt}
+                      </Latex>
+                    </p>
+                    <div className="flex flex-col justify-between items-center gap-4">
+                      <span className="flex flex-col w-full md:w-auto md:flex-row md:justify-center gap-4">
+                        {quiz.questions[pProps.currentPage - 1].answers.map(
+                          (ans) => (
+                            <button
+                              key={ans.text}
+                              type="button"
+                              className={`relative button min-w-36 md:max-w-1/4 justify-center bg-transparent
+                              ${
+                                ans.correct
+                                  ? "border-2 border-green-main text-green-main"
+                                  : "border border-blue-main text-blue-main"
+                              } cursor-default text-sm`}
+                            >
+                              <Latex>{ans.text}</Latex>
+                            </button>
+                          )
+                        )}
+                      </span>
+                    </div>
+                    <div className="flex flex-col gap-4">
+                      <div className="relative">
+                        <textarea
+                          className="input bg-main/10 border-none resize-none pr-8 placeholder:text-black/50"
+                          placeholder={
+                            discussion[pProps.currentPage - 1].length == 0
+                              ? "Posez une question ou donnez une explication"
+                              : "Contribuez à la discussion"
+                          }
+                          value={message}
+                          onChange={(e) => setMessage(e.target.value)}
+                          rows={4}
+                        />
+                        <button
+                          className="absolute right-3 top-1"
+                          disabled={!Boolean(user)}
+                          onClick={sendMsg}
+                        >
+                          <FontAwesomeIcon icon={faPaperPlane} />
+                        </button>
+                      </div>
+                      <div className="flex justify-end -mt-1">
+                        <span className="flex gap-2 items-center">
+                          Tri :
+                          <DropdownPopup
+                            label={sortOptions[currentSort]}
+                            className="bg-main/10 py-2 px-4 rounded"
+                            position="up"
+                            items={(
+                              Object.keys(sortOptions) as Array<
+                                keyof typeof sortOptions
+                              >
+                            ).map((option) => (
+                              <button
+                                key={`sort-${option}`}
+                                onClick={() =>
+                                  dispatch(pickSortingOption(option))
+                                }
+                              >
+                                {sortOptions[option]}
+                              </button>
+                            ))}
+                          />
+                        </span>
+                      </div>
+                      {sortMessages(
+                        discussion[pProps.currentPage - 1],
+                        currentSort
+                      ).map((m) => (
+                        <Message
+                          key={`m${m.index}`}
+                          message={m}
+                          index={m.index}
+                          qIndex={pProps.currentPage - 1}
+                          voteMsg={voteMsg}
+                          loading={loading}
+                        />
+                      ))}
+                      {discussion[pProps.currentPage - 1].length == 0 && (
+                        <p className="text-center">
+                          {
+                            "Il n'y pas encore de messages au sujet de cette question"
+                          }
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="relative flex flex-col items-stretch md:w-72 pt-8">
+                    <div className="md:sticky md:top-4 bg-main/10 p-4 min-h-48 rounded">
+                      <ProposedChange
+                        quiz={quiz}
+                        qIndex={pProps.currentPage - 1}
+                      />
+                    </div>
+                    <div className="flex-grow" />
+                  </div>
+                </div>
+              )}
+            </Tab.Panel>
+            <Tab.Panel className="flex flex-col justify-center items-center h-64">
+              <div className="w-48">
+                <WIP />
+              </div>
+              <p className="font-bold">En cours de construction</p>
+            </Tab.Panel>
+          </Tab.Panels>
+        </Tab.Group>
+      </div>
+    </WithHeader>
+  ) : null
+}
+
+export default AboutQuiz
+
+export const getServerSideProps: GetServerSideProps<Props> = async (
+  context
+) => {
+  const quizId = context.params?.id as string
+  const tab = context.query.tab as number | undefined
+
+  const quizRef = adminDB.doc(`quizzes/${quizId}`)
+  const quizDoc = await quizRef.get()
+
+  if (!quizDoc.exists)
+    return {
+      props: {
+        quizProp: null,
+        quizId,
+        tab: null,
+      },
+    }
+
+  const quizProp = quizDoc.data() as DBQuiz
+
+  return {
+    props: {
+      quizProp,
+      quizId,
+      tab: tab ?? null,
+    },
+  }
+}
+
+type Props = {
+  quizProp: DBQuiz | null
+  quizId: string
+  tab: number | null
+}
