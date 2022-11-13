@@ -5,10 +5,9 @@ import Latex from "react-latex"
 import { createRoot } from "react-dom/client"
 import Head from "next/head"
 
-const root = createRoot(document.querySelector(".latexRoot")!)
-
 const renderLatex = () => {
-  root.render(
+  if (window === undefined) return
+  createRoot(document.querySelector(".latexRoot")!).render(
     <Latex throwOnError={false} errorColor={"white"} displayMode={true}>
       {window
         .getComputedStyle(
