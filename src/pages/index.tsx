@@ -16,7 +16,10 @@ const Home: NextPage = () => {
     <WithHeader className="bg-transparent text-main">
       <Head>
         <title>Bachotage</title>
-        <desc>{"Bachotage t'aide dans tes révisions"}</desc>
+        <meta
+          name="description"
+          content="Bachotage t'aide dans tes révisions"
+        />
       </Head>
       <div className="relative flex flex-col justify-center items-center w-full h-fit-screen">
         <h1 className="text-6xl font-bold text-center mt-4">Booste ta note,</h1>
