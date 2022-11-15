@@ -38,8 +38,11 @@ export default function Hits() {
                     ))}
                   </div>
                   <Latex>
-                    {`${quiz.desc.substring(0, 140)}
-                    ${quiz.desc.length > 140 ? "..." : ""}`}
+                    {/* Don't mind Prettier's odd formatting, doing 
+                    anything here would add an unwanted space */}
+                    {`${quiz.desc.substring(0, 140)}${
+                      quiz.desc.length > 140 ? "..." : ""
+                    }`}
                   </Latex>
                 </div>
               </a>

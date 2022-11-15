@@ -47,8 +47,11 @@ export default function QuizCard({ quiz, href, options, quizId }: Props) {
             <h3 className="text-xl font-semibold">{quiz.name}</h3>
             <p className="text-sm italic">{quiz.questions.length} questions</p>
             <Latex>
-              {`${quiz.desc.substring(0, 140)}
-              ${quiz.desc.length > 140 ? "..." : ""}`}
+              {/* Don't mind Prettier's odd formatting, doing 
+              anything here would add an unwanted space */}
+              {`${quiz.desc.substring(0, 140)}${
+                quiz.desc.length > 140 ? "..." : ""
+              }`}
             </Latex>
           </div>
         </a>
