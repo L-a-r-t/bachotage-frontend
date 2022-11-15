@@ -144,7 +144,7 @@ const CreateQuiz: NextPage<Props> = ({ quiz, quizId }) => {
         />
         <div className="grid gap-4 md:gap-8 grid-cols-3 flex-grow">
           <div className="col-span-3 sm:col-span-1 flex flex-col">
-            <h2 className="text-lg mb-2">Overview</h2>
+            <h2 className="text-lg mb-2">Informations</h2>
             <fieldset className="w-full bg-main/10 rounded p-4 flex flex-col gap-2 flex-grow shadow-sm">
               <Input
                 name="singleAnswer"
@@ -232,7 +232,11 @@ const CreateQuiz: NextPage<Props> = ({ quiz, quizId }) => {
                 >
                   <div className="flex flex-col">
                     <p className="font-bold">
-                      Question #{index + 1} ({q.answers.length} answers)
+                      Question #{index + 1} ({q.answers.length} réponses,{" "}
+                      {q.answers.some((a) => a.correct)
+                        ? "corrigées"
+                        : "non corrigées"}
+                      )
                     </p>
                     <Latex>{q.prompt}</Latex>
                   </div>
@@ -253,7 +257,7 @@ const CreateQuiz: NextPage<Props> = ({ quiz, quizId }) => {
                 type="button"
                 onClick={() => dispatch(setModal({ modal: "addQuestion" }))}
               >
-                Add a question
+                Ajouter une question
               </button>
             </fieldset>
           </div>
@@ -261,14 +265,14 @@ const CreateQuiz: NextPage<Props> = ({ quiz, quizId }) => {
         <div className="flex justify-between">
           <div className="flex gap-4">
             <button className="button" type="submit" form="quiz">
-              Save{loading && <Spinner small white />}
+              Sauvegarder{loading && <Spinner small white />}
             </button>
             <button
               className="button bg-main/20 text-main"
               type="submit"
               onClick={publish}
             >
-              Publish
+              Publier
             </button>
           </div>
           <Popup
