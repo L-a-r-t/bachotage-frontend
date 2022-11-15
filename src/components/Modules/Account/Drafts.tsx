@@ -24,7 +24,7 @@ export default function Drafts() {
           <QuizCard
             quizId={quiz.id}
             options={["try", "edit", "delete"]}
-            quiz={quiz.data()}
+            quiz={quiz}
             href={`/quiz/create/${quiz.id}`}
             key={quiz.id}
           />

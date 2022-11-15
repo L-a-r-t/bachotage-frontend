@@ -26,7 +26,7 @@ export default function Published() {
           <QuizCard
             options={["try"]}
             quizId={quiz.id}
-            quiz={quiz.data()}
+            quiz={quiz}
             href={`/quiz/${quiz.id}`}
             key={quiz.id}
           />
