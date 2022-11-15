@@ -60,7 +60,7 @@ export default function SearchWidget({
 
   return (
     <div className="flex flex-col">
-      <div className="sticky top-8 inset-x-0 flex flex-col justify-between md:max-w-xs p-4 bg-main text-white rounded-xl">
+      <div className="sticky top-8 inset-x-0 flex flex-col justify-between md:min-w-max md:max-w-xs p-4 bg-main text-white rounded-xl">
         <form
           onSubmit={handleSubmit(handleSearch)}
           className="flex flex-col gap-2"

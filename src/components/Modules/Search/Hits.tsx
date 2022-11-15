@@ -1,4 +1,3 @@
-import WIP from "components/UI/WIP"
 import { useHits } from "react-instantsearch-hooks-web"
 import { useEffect } from "react"
 import Link from "next/link"
@@ -6,8 +5,8 @@ import Link from "next/link"
 export default function Hits() {
   const { hits } = useHits<{
     name: string
-    desc?: string
-    categories?: string[]
+    desc: string
+    categories: string[]
   }>()
 
   useEffect(() => {
@@ -26,19 +25,21 @@ export default function Hits() {
             <Link href={`/quiz/${quiz.objectID}`} passHref>
               <a className="w-full h-full">
                 <div className="p-4">
-                  <h3 className="text-xl font-semibold mb-2">{quiz.name}</h3>
-                  {quiz.categories && (
-                    <div className="flex gap-2 flex-wrap">
-                      {quiz.categories.map((category) => (
-                        <span
-                          key={quiz.objectID + category}
-                          className="py-1 px-3 rounded-full bg-main text-white text-sm min-w-max"
-                        >
-                          {category}
-                        </span>
-                      ))}
-                    </div>
-                  )}
+                  <h3 className="text-xl font-semibold">{quiz.name}</h3>
+                  <div className="flex gap-2 flex-wrap my-2">
+                    {quiz.categories.map((category) => (
+                      <span
+                        key={quiz.objectID + category}
+                        className="py-1 px-3 rounded-full bg-main/50 text-white text-sm min-w-max"
+                      >
+                        {category}
+                      </span>
+                    ))}
+                  </div>
+                  <p>
+                    {quiz.desc.substring(0, 140)}
+                    {quiz.desc.length > 140 && "..."}
+                  </p>
                 </div>
               </a>
             </Link>

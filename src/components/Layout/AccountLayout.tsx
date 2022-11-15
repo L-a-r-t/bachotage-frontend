@@ -41,7 +41,7 @@ export default function AccountLayout({ children, active }: Props) {
   return (
     <WithHeader>
       <div className="w-clamp-xl mx-auto flex flex-col md:flex-row h-fit-screen gap-4 py-4 md:gap-8">
-        <div className="flex flex-col gap-4 w-full sm:w-64 p-4 bg-main/10 rounded">
+        <div className="flex flex-col gap-4 w-full md:min-w-[16rem] md:w-64 p-4 bg-main/10 rounded">
           {user ? (
             <div className="flex flex-col items-center gap-4">
               <p className="text-xl">{user?.username}</p>
