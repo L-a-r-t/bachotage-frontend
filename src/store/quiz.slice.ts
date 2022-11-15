@@ -47,6 +47,7 @@ export const quizSlice = createSlice({
       }
       state.qIndex = -1
       state.dbIndex = -1
+      state.answers = []
     },
     answer: (
       state,

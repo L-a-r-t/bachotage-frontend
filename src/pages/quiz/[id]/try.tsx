@@ -20,15 +20,9 @@ import Latex from "react-latex"
 import Popup from "components/UI/Popup"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faWarning } from "@fortawesome/free-solid-svg-icons/faWarning"
-import {
-  arrayUnion,
-  doc,
-  serverTimestamp,
-  setDoc,
-  updateDoc,
-} from "firebase/firestore"
+import { arrayUnion, doc, setDoc } from "firebase/firestore"
 import { db } from "firebaseconfig/index"
-import { Attempt, AttemptQuestion } from "types/user"
+import { AttemptQuestion } from "types/user"
 import WithSlideInHeader from "components/Layout/WithSlideInHeader"
 import Spinner from "components/UI/Spinner"
 import Link from "next/link"
@@ -133,6 +127,7 @@ const TryQuiz: NextPage<Props> = ({ quizProp }) => {
       score,
       time,
       questions: answersFeedback,
+      uid: user?.uid ?? "",
     }
     const attemptId = `${attempt.quizId}-${attempt.date._seconds}`
     const tempRef = doc(db, "quizzes", attempt.quizId, "data", "temp")
@@ -290,13 +285,13 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
   const quizRef = adminDB.doc(`quizzes/${quizId}`)
   const quizDoc = await quizRef.get()
 
-  const quizProp = quizDoc.data() as DBQuiz | undefined
-  if (!quizProp)
+  if (!quizDoc.exists)
     return {
       props: {
         quizProp: null,
       },
     }
+  const quizProp = JSON.parse(JSON.stringify(quizDoc.data() as DBQuiz))
 
   return {
     props: {

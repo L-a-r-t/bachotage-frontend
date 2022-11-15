@@ -103,12 +103,12 @@ export default function ProposedChange({ quiz, qIndex }: Props) {
                 <button
                   key={dbAns.text}
                   type="button"
-                  className={`relative button min-w-28 sm:max-w-1/2 justify-center 
+                  className={`relative button min-w-28 justify-center 
       border-2 font-semibold text-sm border-yellow-500 cursor-default
     ${
       ans.correct
         ? "bg-yellow-500 text-white"
-        : "bg-transparent text-yellow-500"
+        : "bg-transparent text-yellow-600"
     } cursor-pointer`}
                 >
                   <Latex>{dbAns.text}</Latex>

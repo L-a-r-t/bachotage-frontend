@@ -42,9 +42,9 @@ export default function Header({ sticky, className }: HeaderProps) {
           <a className="text-xl">Bachotage</a>
         </Link>
         <div className="flex items-center gap-4">
-          {/* <Link href="/quiz/browse" passHref>
+          <Link href="/quiz/browse" passHref>
             <a>Chercher un quiz</a>
-          </Link> */}
+          </Link>
           {user && (
             <>
               <Link href="/quiz/create" passHref>

@@ -4,6 +4,8 @@ import { default as modalReducer } from "./modal.slice"
 import { default as quizReducer } from "./quiz.slice"
 import { default as createQuestionReducer } from "./createQuestion.slice"
 import { default as discussionReducer } from "./discussion.slice"
+import { historyApi } from "./historyApi"
+import { quizApi } from "./quizApi"
 
 const store = configureStore({
   reducer: {
@@ -12,7 +14,11 @@ const store = configureStore({
     quiz: quizReducer,
     createQuestion: createQuestionReducer,
     discussion: discussionReducer,
+    [historyApi.reducerPath]: historyApi.reducer,
+    [quizApi.reducerPath]: quizApi.reducer,
   },
+  middleware: (gDM) =>
+    gDM().concat(historyApi.middleware).concat(quizApi.middleware),
 })
 
 export default store

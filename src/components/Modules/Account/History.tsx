@@ -28,6 +28,9 @@ export default function UserHistory() {
 
   return (
     <>
+      {data && data.length == 0 && (
+        <p className="text-center">{"Vous n'avez encore passé aucun quiz"}</p>
+      )}
       {data &&
         data.map((attempt) => {
           const minutes = Math.floor(attempt.time / 60)
@@ -81,18 +84,20 @@ export default function UserHistory() {
             </div>
           )
         })}
-      {loading ? (
-        <div className="flex justify-center">
-          <Spinner small />
-        </div>
-      ) : (
-        <button
-          onClick={next}
-          className="bg-transparent text-main font-semibold"
-        >
-          Plus
-        </button>
-      )}
+      {data &&
+        data.length > 0 &&
+        (loading ? (
+          <div className="flex justify-center">
+            <Spinner small />
+          </div>
+        ) : (
+          <button
+            onClick={next}
+            className="bg-transparent text-main font-semibold"
+          >
+            Plus
+          </button>
+        ))}
     </>
   )
 }

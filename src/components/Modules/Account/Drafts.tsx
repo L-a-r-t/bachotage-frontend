@@ -1,25 +1,16 @@
 import QuizCard from "components/UI/QuizCard"
 import Spinner from "components/UI/Spinner"
-import { collection, query, where } from "firebase/firestore"
-import { db } from "firebaseconfig"
-import { useGetDocs, useProtect } from "hooks"
+import { useProtect } from "hooks"
 import { useTSelector } from "hooks/redux"
 import Link from "next/link"
-import { DBQuiz } from "types/quiz"
+import { useGetDraftsQuery } from "store/quizApi"
 
 export default function Drafts() {
   useProtect()
   const { user } = useTSelector((state) => state.auth)
-  const { docs, loading } = useGetDocs<DBQuiz>(
-    query(
-      collection(db, "quizzes"),
-      where("published", "==", false),
-      where("authorId", "==", user?.uid ?? "")
-    ),
-    [user]
-  )
+  const { data: docs, isLoading } = useGetDraftsQuery({ uid: user?.uid ?? "" })
 
-  if (loading)
+  if (isLoading)
     return (
       <div className="flex justify-center">
         <Spinner />

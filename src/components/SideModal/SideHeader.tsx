@@ -35,12 +35,12 @@ export default function SideHeader() {
       </Link>
       <div className="flex flex-col items-start gap-4">
         <div className="w-full border-b border-main -my-1" />
-        {/* <Link href="/quiz/browse" passHref>
+        <Link href="/quiz/browse" passHref>
           <a onClick={() => dispatch(setSideModal({ modal: null }))}>
             Chercher un quiz
           </a>
         </Link>
-        <div className="w-full border-b border-main -my-1" /> */}
+        <div className="w-full border-b border-main -my-1" />
         {user && (
           <>
             <Link href="/quiz/create" passHref>
@@ -69,7 +69,7 @@ export default function SideHeader() {
                   {links.map((link) => (
                     <>
                       <Menu.Item key={link.href}>
-                        <div>
+                        <div key={`${link.href}gettinanerrorsomewherehere`}>
                           <Link href={link.href} passHref>
                             <a
                               className="text-main pl-8"

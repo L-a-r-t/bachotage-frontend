@@ -31,7 +31,7 @@ const CreateQuiz: NextPage<Props> = ({ quiz, quizId }) => {
   const { questions } = useTSelector((state) => state.createQuestion)
   const { user } = useTSelector((state) => state.auth)
   const [loading, setLoading] = useState(false)
-  const [selected, setSelected] = useState([] as string[])
+  const [selected, setSelected] = useState(quiz?.categories ?? ([] as string[]))
   const [categories, setCategories] = useState([] as Category[])
   const {
     register,
@@ -91,7 +91,7 @@ const CreateQuiz: NextPage<Props> = ({ quiz, quizId }) => {
     dispatch(
       setModal({
         modal: "publishQuiz",
-        props: { questions: questions.length },
+        props: { questions: questions.length, categories: categories },
       })
     )
   }
@@ -123,7 +123,7 @@ const CreateQuiz: NextPage<Props> = ({ quiz, quizId }) => {
       categories: selected,
     })
     setLoading(false)
-    // dispatch(setAlert({ message: "Saved succesfully!" }))
+    dispatch(setAlert({ message: "Quiz sauvegardé!", dontOverride: true }))
   }
 
   return !quiz || redirect ? null : (
@@ -252,7 +252,7 @@ const CreateQuiz: NextPage<Props> = ({ quiz, quizId }) => {
               Save{loading && <Spinner small white />}
             </button>
             <button
-              className="button bg-main/20 text-slate-800"
+              className="button bg-main/20 text-main"
               type="submit"
               onClick={publish}
             >

@@ -49,8 +49,13 @@ export const modalSlice = createSlice({
     },
     setAlert: (
       state,
-      action: PayloadAction<{ message: string; error?: boolean } | null>
+      action: PayloadAction<{
+        message: string
+        error?: boolean
+        dontOverride?: boolean
+      } | null>
     ) => {
+      if (action.payload?.dontOverride && state.alert) return
       state.alert = action.payload
     },
   },

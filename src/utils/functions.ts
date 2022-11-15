@@ -88,3 +88,8 @@ export function formatDate(seconds: number) {
 export function toSlug(value: string) {
   return value.toLowerCase().replace(/\s+/g, "")
 }
+
+export function formatTime(seconds: number) {
+  const minutes = Math.floor(seconds / 60)
+  return minutes > 0 ? `${minutes}m${seconds - minutes * 60}s` : `${seconds}s`
+}

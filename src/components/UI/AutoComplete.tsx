@@ -44,6 +44,18 @@ export default function AutoComplete({
           afterLeave={() => setQuery("")}
         >
           <Combobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+            {query === "" && (
+              <Combobox.Option
+                className={({ active }) =>
+                  `relative cursor-default select-none py-2 ${
+                    active ? "bg-main/10 text-black" : "text-black"
+                  } text-center`
+                }
+                value={""}
+              >
+                Réinitialiser
+              </Combobox.Option>
+            )}
             {filteredPeople.length === 0 && query !== "" ? (
               <div className="relative cursor-default select-none py-2 px-4 text-gray-700">
                 Pas de résultat.
@@ -79,6 +91,11 @@ export default function AutoComplete({
                           />
                         </span>
                       ) : null}
+                      {_value.quizzes ? (
+                        <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-black/50">
+                          {_value.quizzes}
+                        </span>
+                      ) : null}
                     </>
                   )}
                 </Combobox.Option>
@@ -92,7 +109,7 @@ export default function AutoComplete({
 }
 
 type Props = {
-  permittedValues: { name: string }[]
+  permittedValues: { name: string; quizzes?: number }[]
   value: string
   setValue: Dispatch<SetStateAction<string>>
 }

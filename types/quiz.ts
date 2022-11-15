@@ -1,3 +1,5 @@
+import { Timestamp } from "."
+
 export type DBQuiz = {
   authorId: string
   name: string
@@ -49,6 +51,7 @@ export type Change = {
   author: string
   argument: string
   authorId: string
+  date: Timestamp
   votes: { [userId: string]: 1 | 0 | -1 }
   prompt: string | null
   answers: {

@@ -257,15 +257,17 @@ const QuizResults: NextPage<Props> = ({ attempt: _attempt, quiz: _quiz }) => {
                     const answer = quiz.questions[qIndex].answers[ans.index]
                     const proposedAnswer =
                       quiz.changes[qIndex]?.answers[ans.index].correct
-                    const answerButton = (
+                    const AnswerButton = ({ popup }: { popup?: boolean }) => (
                       <button
                         key={`${answer.text}button`}
                         type="button"
-                        className={`relative button min-w-36 sm:max-w-1/4 justify-center border
-                      ${getStyle(
-                        ans,
-                        Boolean(proposedAnswer)
-                      )} cursor-help h-full`}
+                        className={`relative button min-w-36 ${
+                          !popup && "sm:max-w-1/4"
+                        } 
+                        justify-center border ${getStyle(
+                          ans,
+                          Boolean(proposedAnswer)
+                        )} cursor-help h-full`}
                         onClick={showDiscussion}
                       >
                         <span
@@ -277,7 +279,8 @@ const QuizResults: NextPage<Props> = ({ attempt: _attempt, quiz: _quiz }) => {
                         <Latex>{answer.text}</Latex>
                       </button>
                     )
-                    if (!quiz.changes[qIndex]) return answerButton
+                    if (!quiz.changes[qIndex])
+                      return <AnswerButton key={`${idx}button`} />
                     if (ans.correct && !proposedAnswer)
                       return (
                         <Popup
@@ -285,7 +288,7 @@ const QuizResults: NextPage<Props> = ({ attempt: _attempt, quiz: _quiz }) => {
                           position="up"
                           popup="Cette réponse est peut-être fausse"
                         >
-                          {answerButton}
+                          <AnswerButton popup />
                         </Popup>
                       )
                     if (proposedAnswer && !ans.correct)
@@ -295,10 +298,10 @@ const QuizResults: NextPage<Props> = ({ attempt: _attempt, quiz: _quiz }) => {
                           position="up"
                           popup="Cette réponse est peut-être vraie"
                         >
-                          {answerButton}
+                          <AnswerButton popup />
                         </Popup>
                       )
-                    return answerButton
+                    return <AnswerButton key={`${idx}button`} />
                   })}
                 </span>
                 <Pagination onChange={handlePagination} {...paginationProps} />
@@ -337,7 +340,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
   const quizRef = adminDB.doc(`quizzes/${id}`)
   const res = await Promise.all([attemptRef.get(), quizRef.get()])
   const attempt = res[0].data() as Attempt
-  const quiz = res[1].data() as DBQuiz
+  const quiz = JSON.parse(JSON.stringify(res[1].data() as DBQuiz))
 
   return {
     props: {

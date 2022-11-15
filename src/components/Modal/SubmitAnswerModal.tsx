@@ -5,7 +5,7 @@ import { FieldValues, useForm } from "react-hook-form"
 import { setAlert, setModal } from "store/modal.slice"
 import Input from "components/UI/Input"
 import { Transition } from "@headlessui/react"
-import { doc, updateDoc } from "firebase/firestore"
+import { doc, serverTimestamp, updateDoc } from "firebase/firestore"
 import { db } from "firebaseconfig"
 import { useRouter } from "next/router"
 import { AppQuiz, Change, DBQuiz } from "types/quiz"
@@ -82,7 +82,7 @@ export default function SubmitAnswerModal({
       } as Change
       setLoading(true)
       await updateDoc(quizRef, {
-        [`changes.${dbIndex}`]: change,
+        [`changes.${dbIndex}`]: { ...change, date: serverTimestamp() },
       })
       dispatch(addChange({ change, index: dbIndex }))
       dispatch(

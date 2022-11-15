@@ -1,7 +1,7 @@
 import { adminDB } from "firebaseconfig/admin"
 import { GetServerSideProps, NextPage } from "next"
 import { DBQuiz } from "types/quiz"
-import { Fragment, useEffect, useState } from "react"
+import { Fragment, useEffect, useState, useRef } from "react"
 import { useTDispatch, useTSelector } from "hooks/redux"
 import { useRouter } from "next/router"
 import { setAlert } from "store/modal.slice"
@@ -28,22 +28,53 @@ import { faFlag } from "@fortawesome/free-solid-svg-icons/faFlag"
 import WIP from "components/UI/WIP"
 import ProposedChange from "components/Modules/ProposedChange"
 import Message from "components/UI/Message"
-import { protect, sortMessages } from "utils/functions"
+import { formatDate, formatTime, protect, sortMessages } from "utils/functions"
 import DropdownPopup from "components/UI/DropdownPopup"
 import Popup from "components/UI/Popup"
 import { arrayUnion, doc, updateDoc } from "firebase/firestore"
 import { setAuth } from "store/auth.slice"
-import { LightQuiz } from "types/user"
+import { Attempt, LightQuiz } from "types/user"
 import Head from "next/head"
+import { useGetQuizHistoryQuery } from "store/historyApi"
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js"
+import { Bar, Line, getElementAtEvent } from "react-chartjs-2"
+import dayjs from "dayjs"
+import AnimatedCount from "components/UI/AnimatedCount"
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+)
 
 const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
   const [quiz, setQuiz] = useState(quizProp)
   const dispatch = useTDispatch()
   const router = useRouter()
+  const chartRef = useRef<any>()
+  const timesRef = useRef<any>()
   const [message, setMessage] = useState("")
   const { sendMsg: send, loading, voteMsg } = useMessage()
   const { user } = useTSelector((state) => state.auth)
-  const { changes: newChanges } = useTSelector((state) => state.quiz)
+  const { data: userHistory, isLoading } = useGetQuizHistoryQuery({
+    quizId,
+    uid: user?.uid ?? "",
+  })
   const { discussion, discussionQuizId, currentSort } = useTSelector(
     (state) => state.discussion
   )
@@ -121,6 +152,15 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
       })
     )
   })
+
+  const onHistoryClick = (e: any) => {
+    const data = (getElementAtEvent(chartRef.current, e)[0].element as any)
+      .$context.raw as HistoryChartData
+    router.push({
+      pathname: `/quiz/${router.query.id as string}/results`,
+      query: { u: data.uid, t: data.t },
+    })
+  }
 
   const sortOptions = {
     recent: (
@@ -248,12 +288,39 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
                 </p>
                 <p>{quiz.desc}</p>
               </div>
-              <div className="bg-main/10 col-span-3 sm:col-span-1 rounded p-4">
-                <h2 className="font-semibold">Score moyen</h2>
-                <p>7/10</p>
+              <div className="bg-main/10 col-span-3 sm:col-span-1 rounded p-4 flex flex-col">
+                <h2 className="font-semibold">Mon score moyen</h2>
+                <div className="flex-grow flex items-center justify-center">
+                  {userHistory &&
+                    (userHistory.attempts.length > 0 ? (
+                      <p className="text-4xl font-bold">
+                        <AnimatedCount
+                          target={
+                            Math.round(
+                              (10 *
+                                userHistory.attempts.reduce(
+                                  (acc, attempt) =>
+                                    (acc +=
+                                      Math.round(
+                                        (attempt.score * 100) /
+                                          attempt.questions.length
+                                      ) / 10),
+                                  0
+                                )) /
+                                userHistory.attempts.length
+                            ) / 10
+                          }
+                          duration={1000}
+                        />
+                        /10
+                      </p>
+                    ) : (
+                      <p>{"Vous n'avez encore jamais passé ce quiz"}</p>
+                    ))}
+                </div>
               </div>
               <div className="bg-main/10 rounded p-4 col-span-3 sm:col-span-2">
-                <h2 className="font-semibold">Mes stats</h2>
+                <h2 className="font-semibold">Je sais pas quoi mettre ici</h2>
                 <div className="flex justify-center">
                   <div className="w-32">
                     <WIP />
@@ -284,7 +351,7 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
                 </div>
               ) : (
                 <div className="flex flex-col-reverse md:flex-row justify-center gap-4">
-                  <div className="w-clamp mx-auto flex-shrink flex flex-col gap-4">
+                  <div className="w-clamp mx-auto md:mx-0 flex-shrink flex flex-col gap-4">
                     <div className="flex gap-2 justify-center items-center">
                       <p className="font-bold">Question</p>
                       <Pagination
@@ -319,6 +386,21 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
                       </span>
                     </div>
                     <div className="flex flex-col gap-4">
+                      {userHistory?.stats[pProps.currentPage - 1] ? (
+                        <span className="text-center">
+                          Vous passez en moyenne{" "}
+                          <span className="font-bold">
+                            {formatTime(
+                              userHistory.stats[pProps.currentPage - 1]
+                            )}{" "}
+                          </span>
+                          sur cette question
+                        </span>
+                      ) : (
+                        <span className="text-center">
+                          Vous n{"'"}avez pas encore passé cette question
+                        </span>
+                      )}
                       <div className="relative">
                         <textarea
                           className="input bg-main/10 border-none resize-none pr-8 placeholder:text-black/50"
@@ -397,11 +479,158 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
                 </div>
               )}
             </Tab.Panel>
-            <Tab.Panel className="flex flex-col justify-center items-center h-64">
-              <div className="w-48">
-                <WIP />
-              </div>
-              <p className="font-bold">En cours de construction</p>
+            <Tab.Panel className="-pt-4 pb-4">
+              {isLoading || !userHistory ? (
+                <div className="flex justify-center">
+                  <Spinner />
+                </div>
+              ) : (
+                <div className="responsiveLayout">
+                  <Line
+                    ref={chartRef}
+                    onClick={onHistoryClick}
+                    options={{
+                      responsive: true,
+                      scales: {
+                        xAxes: { display: true },
+                        y1: {
+                          type: "linear",
+                          position: "left",
+                          display: true,
+                          beginAtZero: true,
+                        },
+                        y2: {
+                          type: "linear",
+                          position: "right",
+                          display: true,
+                          grid: {
+                            drawOnChartArea: false,
+                          },
+                          beginAtZero: true,
+                        },
+                      },
+                      plugins: {
+                        tooltip: {
+                          callbacks: {
+                            title: (ctx) => {
+                              const raw = ctx[0].raw as HistoryChartData
+                              return `${raw.score}/${
+                                raw.questions
+                              } - ${formatTime(raw.time)}`
+                            },
+                            label: (ctx) => {
+                              const raw = ctx.raw as HistoryChartData
+                              return `Score: ${raw.score}/${raw.questions}`
+                            },
+                            afterBody: (ctx) => {
+                              const raw = ctx[0].raw as HistoryChartData
+                              return `Durée: ${formatTime(raw.time)}`
+                            },
+                          },
+                        },
+                      },
+                      parsing: {
+                        yAxisKey: "stat",
+                        xAxisKey: "t",
+                      },
+                    }}
+                    data={{
+                      labels: userHistory.attempts.map((a) =>
+                        formatDate(a.date._seconds)
+                      ),
+                      datasets: [
+                        {
+                          label: "Score (équivalent /10)",
+                          yAxisID: "y1",
+                          data: userHistory.attempts.map(
+                            (attempt) =>
+                              ({
+                                uid: attempt.uid,
+                                score: attempt.score,
+                                stat:
+                                  Math.round(
+                                    (attempt.score * 100) /
+                                      attempt.questions.length
+                                  ) / 10,
+                                time: attempt.time,
+                                questions: attempt.questions.length,
+                                date: dayjs(
+                                  attempt.date._seconds * 1000
+                                ).format("DD/MM - HH[h]mm"),
+                                quizId: attempt.quizId,
+                                t: attempt.date._seconds,
+                              } as HistoryChartData)
+                          ),
+                          borderColor: "rgb(17, 94, 87)",
+                          backgroundColor: "rgba(17, 94, 87, 0.5)",
+                        },
+                        {
+                          label: "Durée (secondes)",
+                          yAxisID: "y2",
+                          data: userHistory.attempts.map(
+                            (attempt) =>
+                              ({
+                                uid: attempt.uid,
+                                score: attempt.score,
+                                stat: attempt.time,
+                                time: attempt.time,
+                                questions: attempt.questions.length,
+                                date: dayjs(
+                                  attempt.date._seconds * 1000
+                                ).format("DD/MM - HH[h]mm"),
+                                quizId: attempt.quizId,
+                                t: attempt.date._seconds,
+                              } as HistoryChartData)
+                          ),
+                          borderColor: "rgb(147, 229, 223)",
+                          backgroundColor: "rgba(147, 229, 223, 0.5)",
+                        },
+                      ],
+                    }}
+                  />
+                  <Bar
+                    ref={timesRef}
+                    options={{
+                      responsive: true,
+                      scales: {
+                        xAxes: { display: true },
+                      },
+                      plugins: {
+                        tooltip: {
+                          callbacks: {
+                            title: (ctx) => {
+                              const raw = ctx[0].raw as TimeChartData
+                              return raw.question
+                            },
+                            label: (ctx) => {
+                              const raw = ctx.raw as TimeChartData
+                              return `Temps: ${formatTime(raw.time)}`
+                            },
+                          },
+                        },
+                      },
+                      parsing: {
+                        yAxisKey: "time",
+                        xAxisKey: "index",
+                      },
+                    }}
+                    data={{
+                      labels: userHistory.stats.map((a, index) => index),
+                      datasets: [
+                        {
+                          label: "Temps moyen par question (secondes)",
+                          data: userHistory.stats.map((stat, index) => ({
+                            index: index + 1,
+                            question: `Question #${index + 1}`,
+                            time: stat ?? 0,
+                          })),
+                          backgroundColor: "rgb(17, 94, 87)",
+                        },
+                      ],
+                    }}
+                  />
+                </div>
+              )}
             </Tab.Panel>
           </Tab.Panels>
         </Tab.Group>
@@ -409,6 +638,19 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
     </WithHeader>
   ) : null
 }
+
+type HistoryChartData = {
+  score: number
+  stat: number
+  time: number
+  questions: number
+  date: string
+  quizId: string
+  uid: string
+  t: number
+}
+
+type TimeChartData = { index: number; question: string; time: number }
 
 export default AboutQuiz
 
@@ -430,7 +672,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
       },
     }
 
-  const quizProp = quizDoc.data() as DBQuiz
+  const quizProp = JSON.parse(JSON.stringify(quizDoc.data() as DBQuiz))
 
   return {
     props: {

@@ -28,6 +28,7 @@ export type LightQuiz = {
 }
 
 export type Attempt = {
+  uid: string
   quizId: string
   quizName: string
   quizVersion: number
