@@ -1,6 +1,7 @@
 import { useHits } from "react-instantsearch-hooks-web"
 import { useEffect } from "react"
 import Link from "next/link"
+import Latex from "react-latex"
 
 export default function Hits() {
   const { hits } = useHits<{
@@ -36,10 +37,10 @@ export default function Hits() {
                       </span>
                     ))}
                   </div>
-                  <p>
-                    {quiz.desc.substring(0, 140)}
-                    {quiz.desc.length > 140 && "..."}
-                  </p>
+                  <Latex>
+                    {`${quiz.desc.substring(0, 140)}
+                    ${quiz.desc.length > 140 ? "..." : ""}`}
+                  </Latex>
                 </div>
               </a>
             </Link>

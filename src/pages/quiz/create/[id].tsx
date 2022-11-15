@@ -37,6 +37,7 @@ const CreateQuiz: NextPage<Props> = ({ quiz, quizId }) => {
     register,
     formState: { errors },
     handleSubmit,
+    watch,
   } = useForm({
     defaultValues: {
       name: quiz?.name,
@@ -193,12 +194,23 @@ const CreateQuiz: NextPage<Props> = ({ quiz, quizId }) => {
                   unselect={unselect}
                 />
               </div>
-              <Input name="desc" errors={errors} label="Description">
+              <Input
+                name="desc"
+                errors={errors}
+                label="Description"
+                className="group"
+              >
                 <textarea
-                  className="input border-none bg-main/10"
+                  className="input border-none bg-main/10 hidden group-hover:block focus-visible:block"
                   rows={4}
                   {...register("desc", { required: true })}
                 />
+                <div
+                  tabIndex={99}
+                  className="input border-none min-h-[3rem] bg-main/10 group-hover:hidden group-focus-within:hidden"
+                >
+                  <Latex>{watch().desc}</Latex>
+                </div>
               </Input>
             </fieldset>
           </div>

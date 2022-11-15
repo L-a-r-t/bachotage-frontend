@@ -286,7 +286,7 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
                   {quiz.singleAnswer ? "réponse unique" : "réponses multiples"}
                   {quiz.negativePoints && " | points négatifs"}
                 </p>
-                <p>{quiz.desc}</p>
+                <Latex>{quiz.desc}</Latex>
               </div>
               <div className="bg-main/10 col-span-3 sm:col-span-1 rounded p-4 flex flex-col">
                 <h2 className="font-semibold">Mon score moyen</h2>
