@@ -401,9 +401,20 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
                           Vous n{"'"}avez pas encore passé cette question
                         </span>
                       )}
-                      <div className="relative">
+                      <div className="relative group">
+                        <div
+                          className={`input border-none min-h-[6.5rem] bg-main/10 pr-8 group-hover:hidden group-focus-within:hidden ${
+                            message === "" && "text-black/50"
+                          }`}
+                        >
+                          <Latex>
+                            {message === ""
+                              ? "Contribuez à la discussion"
+                              : message}
+                          </Latex>
+                        </div>
                         <textarea
-                          className="input bg-main/10 border-none resize-none pr-8 placeholder:text-black/50"
+                          className="input bg-main/10 border-none resize-none pr-8 hidden group-hover:block focus-visible:block placeholder:text-black/50"
                           placeholder={
                             discussion[pProps.currentPage - 1].length == 0
                               ? "Posez une question ou donnez une explication"

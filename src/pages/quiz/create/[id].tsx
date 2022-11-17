@@ -205,10 +205,7 @@ const CreateQuiz: NextPage<Props> = ({ quiz, quizId }) => {
                   rows={4}
                   {...register("desc", { required: true })}
                 />
-                <div
-                  tabIndex={99}
-                  className="input border-none min-h-[3rem] bg-main/10 group-hover:hidden group-focus-within:hidden"
-                >
+                <div className="input border-none min-h-[3rem] bg-main/10 group-hover:hidden group-focus-within:hidden">
                   <Latex>{watch().desc}</Latex>
                 </div>
               </Input>
@@ -277,7 +274,7 @@ const CreateQuiz: NextPage<Props> = ({ quiz, quizId }) => {
           </div>
           <Popup
             position="left"
-            popup="Bachotage utilise KaTeX ! Découvrez tout ce que vous pouvez faire avec"
+            popup="Qoat utilise KaTeX ! Découvrez tout ce que vous pouvez faire avec"
           >
             <Link href="/katex" passHref>
               <a className="relative text-xl" target="_blank" rel="noreferrer">

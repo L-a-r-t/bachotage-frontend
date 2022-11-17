@@ -11,6 +11,7 @@ import { AppQuiz, Change, DBQuiz } from "types/quiz"
 import ProposedChange from "components/Modules/ProposedChange"
 import SentMessage from "components/UI/Message"
 import { protect } from "utils/functions"
+import Latex from "react-latex"
 
 export default function DiscussQuestion({ quiz: _quiz, qIndex }: Props) {
   const [change, setChange] = useState<Change | null>(null)
@@ -24,6 +25,7 @@ export default function DiscussQuestion({ quiz: _quiz, qIndex }: Props) {
     formState: { errors },
     handleSubmit,
     setValue,
+    watch,
   } = useForm()
 
   useEffect(() => {
@@ -87,9 +89,9 @@ export default function DiscussQuestion({ quiz: _quiz, qIndex }: Props) {
               onSubmit={handleSubmit(sendMsg)}
               className="mt-4"
             >
-              <Input name="msg" errors={errors} className="relative">
+              <Input name="msg" errors={errors} className="relative group">
                 <textarea
-                  className="input bg-main/10 border-none resize-none pr-8"
+                  className="input border-none bg-main/10 hidden group-hover:block focus-visible:block placeholder:text-black/50 pr-8"
                   placeholder={
                     discussion[qIndex].length == 0
                       ? "Posez une question ou donnez une explication"
@@ -98,6 +100,15 @@ export default function DiscussQuestion({ quiz: _quiz, qIndex }: Props) {
                   {...register("msg", { required: true })}
                   rows={3}
                 />
+                <div
+                  className={`input border-none pr-8 min-h-[5rem] bg-main/10 group-hover:hidden group-focus-within:hidden ${
+                    watch().msg === "" && "text-black/50"
+                  }`}
+                >
+                  <Latex>
+                    {watch().msg === "" ? "Ecrire un message..." : watch().msg}
+                  </Latex>
+                </div>
                 <button
                   className="absolute right-3 top-1"
                   type="submit"
