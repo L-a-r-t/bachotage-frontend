@@ -6,11 +6,17 @@ import { useTDispatch, useTSelector } from "hooks/redux"
 import type { NextPage } from "next"
 import Head from "next/head"
 import Link from "next/link"
+import { useEffect } from "react"
 import { setModal } from "store/modal.slice"
 
 const Home: NextPage = () => {
   const { user } = useTSelector((state) => state.auth)
   const dispatch = useTDispatch()
+
+  useEffect(() => {
+    if (process.env.NODE_ENV !== "production")
+      console.log("Non prod environment")
+  })
 
   return (
     <WithHeader className="bg-transparent text-main">
