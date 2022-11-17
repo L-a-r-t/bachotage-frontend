@@ -34,6 +34,6 @@ const app = initializeApp(firebaseConfig)
 // const analytics = getAnalytics(app)
 const db = getFirestore(app)
 const auth = getAuth(app)
-const functions = getFunctions(app)
+const functions = getFunctions(app, "europe-west1")
 
 export { auth, db, functions }
