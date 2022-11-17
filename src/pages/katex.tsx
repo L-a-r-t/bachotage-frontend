@@ -43,7 +43,7 @@ const KaTeX: NextPage = () => {
       </Head>
       <div className="h-screen md:h-fit-screen bg-main flex flex-col justify-center">
         <h1 className="text-center text-white text-3xl sm:text-4xl font-bold md:-mt-12">
-          Bachotage utilise le{" "}
+          Qoat utilise le{" "}
           <a href="https://katex.org" target="_blank" rel="noreferrer">
             <Latex>$$\KaTeX$$</Latex>
           </a>
