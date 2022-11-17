@@ -14,7 +14,7 @@ const Home: NextPage = () => {
   const dispatch = useTDispatch()
 
   useEffect(() => {
-    if (process.env.NODE_ENV !== "production")
+    if (process.env.APP_ENV !== "production")
       console.log("Non prod environment")
   })
 

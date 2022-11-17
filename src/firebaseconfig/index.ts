@@ -9,7 +9,7 @@ import { getFunctions } from "firebase/functions"
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 export const firebaseConfig =
-  process.env.NODE_ENV == "production"
+  process.env.APP_ENV == "production"
     ? {
         apiKey: "AIzaSyAEONmJg_Kq-qBI0Z4wr9zbKY0eV9SU_ZE",
         authDomain: "qoat-app.firebaseapp.com",
