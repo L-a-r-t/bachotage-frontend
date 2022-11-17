@@ -6,22 +6,25 @@ import { useTDispatch, useTSelector } from "hooks/redux"
 import type { NextPage } from "next"
 import Head from "next/head"
 import Link from "next/link"
+import { useEffect } from "react"
 import { setModal } from "store/modal.slice"
 
 const Home: NextPage = () => {
   const { user } = useTSelector((state) => state.auth)
   const dispatch = useTDispatch()
 
+  useEffect(() => {
+    if (process.env.APP_ENV !== "production")
+      console.log("Non prod environment")
+  })
+
   return (
     <WithHeader className="bg-transparent text-main">
       <Head>
-        <title>Bachotage</title>
-        <meta
-          name="description"
-          content="Bachotage t'aide dans tes révisions"
-        />
+        <title>Qoat</title>
+        <meta name="description" content="Qoat t'aide dans tes révisions" />
       </Head>
-      <div className="relative flex flex-col justify-center items-center w-full h-fit-screen">
+      <div className="relative flex flex-col justify-center items-center w-full h-screen md:h-fit-screen">
         <h1 className="text-6xl font-bold text-center mt-4">Booste ta note,</h1>
         <p>Vite fait bien fait!</p>
         <div className="button px-12 mt-16">
@@ -36,7 +39,7 @@ const Home: NextPage = () => {
           )}
         </div>
       </div>
-      <div className="absolute inset-0 -z-[5] w-full overflow-x-hidden overflow-y-hidden h-screen -mt-12">
+      <div className="absolute inset-0 -z-[5] w-full overflow-x-hidden overflow-y-hidden h-screen">
         <FontAwesomeIcon
           aria-hidden={true}
           icon={faCheck}

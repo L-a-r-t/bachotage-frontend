@@ -13,8 +13,10 @@ import SearchWidget from "components/Modules/Search/SearchWidget"
 import Hits from "components/Modules/Search/Hits"
 
 const searchClient = algoliasearch(
-  "X89JRCQYV8",
-  "90f76fc7d4cbe92b5d2fd2b1257da5e6"
+  process.env.APP_ENV == "production" ? "AB1F9YGSDE" : "X89JRCQYV8",
+  process.env.APP_ENV == "production"
+    ? "f5a646aaee44174d9b7c0b35f6888652"
+    : "90f76fc7d4cbe92b5d2fd2b1257da5e6"
 )
 
 const BrowseQuiz: NextPage = () => {

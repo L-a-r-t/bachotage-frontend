@@ -31,7 +31,7 @@ export default function SideHeader() {
   return (
     <div className="flex flex-col gap-12 p-8 h-full max-h-full text-main font-semibold text-xl">
       <Link href="/" passHref>
-        <a className="text-3xl text-center font-bold">Bachotage</a>
+        <a className="text-3xl text-center font-bold">Qoat</a>
       </Link>
       <div className="flex flex-col items-start gap-4">
         <div className="w-full border-b border-main -my-1" />
