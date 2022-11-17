@@ -3,18 +3,18 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons/faXmark"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import WithHeader from "components/Layout/WithHeader"
 import { useTDispatch, useTSelector } from "hooks/redux"
-import type { NextPage } from "next"
+import type { GetServerSideProps, NextPage } from "next"
 import Head from "next/head"
 import Link from "next/link"
 import { useEffect } from "react"
 import { setModal } from "store/modal.slice"
 
-const Home: NextPage = () => {
+const Home: NextPage<Props> = ({ env }) => {
   const { user } = useTSelector((state) => state.auth)
   const dispatch = useTDispatch()
 
   useEffect(() => {
-    console.log(process.env.VERCEL_ENV)
+    console.log(env)
   }, [])
 
   return (
@@ -101,3 +101,15 @@ const Home: NextPage = () => {
 }
 
 export default Home
+
+type Props = {
+  env: string
+}
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  return {
+    props: {
+      env: process.env.VERCEL_ENV as string,
+    },
+  }
+}

@@ -69,7 +69,3 @@ const BrowseQuiz: NextPage = () => {
 }
 
 export default BrowseQuiz
-
-type Props = {
-  results: LightQuiz[] | null
-}
