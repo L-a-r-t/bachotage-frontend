@@ -13,8 +13,8 @@ import SearchWidget from "components/Modules/Search/SearchWidget"
 import Hits from "components/Modules/Search/Hits"
 
 const searchClient = algoliasearch(
-  process.env.APP_ENV == "production" ? "AB1F9YGSDE" : "X89JRCQYV8",
-  process.env.APP_ENV == "production"
+  process.env.VERCEL_ENV == "production" ? "AB1F9YGSDE" : "X89JRCQYV8",
+  process.env.VERCEL_ENV == "production"
     ? "f5a646aaee44174d9b7c0b35f6888652"
     : "90f76fc7d4cbe92b5d2fd2b1257da5e6"
 )

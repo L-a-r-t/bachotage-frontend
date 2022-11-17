@@ -14,9 +14,8 @@ const Home: NextPage = () => {
   const dispatch = useTDispatch()
 
   useEffect(() => {
-    if (process.env.APP_ENV !== "production")
-      console.log("Non prod environment")
-  })
+    console.log(process.env.VERCEL_ENV)
+  }, [])
 
   return (
     <WithHeader className="bg-transparent text-main">
