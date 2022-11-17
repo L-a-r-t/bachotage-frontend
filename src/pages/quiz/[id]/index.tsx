@@ -186,6 +186,7 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
     <WithHeader className="bg-main text-white">
       <Head>
         <title>Quiz: {quizProp?.name!}</title>
+        <meta name="description" content={quizProp?.desc!} />
       </Head>
       <div className="min-h-fit-screen flex flex-col">
         <div className="pb-9 md:pb-12 pt-8 sm:pt-3 px-8 md:px-12 grid grid-cols-3 gap-10 items-center bg-main rounded-b-3xl text-white">
