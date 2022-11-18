@@ -20,8 +20,11 @@ const Home: NextPage<Props> = ({ env }) => {
   return (
     <WithHeader className="bg-transparent text-main">
       <Head>
-        <title>Qoat</title>
-        <meta name="description" content="Qoat t'aide dans tes révisions" />
+        <title>Qoat: Quizzes Of All Time</title>
+        <meta
+          name="description"
+          content="Les meilleurs quiz sont sur QOAT ! (Quizzes Of All Time 🐐)"
+        />
       </Head>
       <div className="relative flex flex-col justify-center items-center w-full h-screen md:h-fit-screen">
         <h1 className="text-6xl font-bold text-center mt-4">Booste ta note,</h1>

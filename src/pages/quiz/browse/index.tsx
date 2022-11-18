@@ -1,7 +1,5 @@
 import WithHeader from "components/Layout/WithHeader"
 import { NextPage } from "next"
-import { useRouter } from "next/router"
-import { LightQuiz } from "types/user"
 import { useEffect, useState } from "react"
 import { doc, getDoc } from "firebase/firestore"
 import { db } from "firebaseconfig/index"
@@ -25,6 +23,11 @@ const BrowseQuiz: NextPage = () => {
   const [categories, setCategories] = useState([] as Category[])
   const [selectedCategory, setSelectedCategory] = useState("")
 
+  const index =
+    process.env.NEXT_PUBLIC_VERCEL_ENV == "production"
+      ? "quizzes"
+      : "dev_QUIZZES"
+
   useEffect(() => {
     ;(async () => {
       const ref = doc(db, "global", "categories")
@@ -46,7 +49,7 @@ const BrowseQuiz: NextPage = () => {
       </Head>
       <InstantSearch
         searchClient={searchClient}
-        indexName="dev_QUIZZES"
+        indexName={index}
         initialUiState={{
           dev_QUIZZES: {
             toggle: {
