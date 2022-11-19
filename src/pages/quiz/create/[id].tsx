@@ -274,7 +274,7 @@ const CreateQuiz: NextPage<Props> = ({ quiz, quizId }) => {
           </div>
           <Popup
             position="left"
-            popup="Qoat utilise KaTeX ! Découvrez tout ce que vous pouvez faire avec"
+            popup="QOAT utilise KaTeX ! Découvrez tout ce que vous pouvez faire avec"
           >
             <Link href="/katex" passHref>
               <a className="relative text-xl" target="_blank" rel="noreferrer">

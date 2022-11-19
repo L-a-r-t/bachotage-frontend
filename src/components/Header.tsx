@@ -39,7 +39,7 @@ export default function Header({ sticky, className }: HeaderProps) {
           } ${className}`}
       >
         <Link href="/" passHref>
-          <a className="text-xl">Qoat</a>
+          <a className="text-xl">QOAT</a>
         </Link>
         <div className="flex items-center gap-4">
           <Link href="/quiz/browse" passHref>

@@ -2,25 +2,18 @@ import { faCheck } from "@fortawesome/free-solid-svg-icons/faCheck"
 import { faXmark } from "@fortawesome/free-solid-svg-icons/faXmark"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import WithHeader from "components/Layout/WithHeader"
-import { useTDispatch, useTSelector } from "hooks/redux"
+import { useTSelector } from "hooks/redux"
 import type { GetServerSideProps, NextPage } from "next"
 import Head from "next/head"
 import Link from "next/link"
-import { useEffect } from "react"
-import { setModal } from "store/modal.slice"
 
 const Home: NextPage<Props> = ({ env }) => {
   const { user } = useTSelector((state) => state.auth)
-  const dispatch = useTDispatch()
-
-  useEffect(() => {
-    console.log(env)
-  }, [])
 
   return (
     <WithHeader className="bg-transparent text-main">
       <Head>
-        <title>Qoat: Quizzes Of All Time</title>
+        <title>QOAT: Quizzes Of All Time</title>
         <meta
           name="description"
           content="Les meilleurs quiz sont sur QOAT ! (Quizzes Of All Time 🐐)"
@@ -35,9 +28,9 @@ const Home: NextPage<Props> = ({ env }) => {
               <a>{"C'est parti !"}</a>
             </Link>
           ) : (
-            <button onClick={() => dispatch(setModal({ modal: "login" }))}>
-              {"C'est parti !"}
-            </button>
+            <Link href="/quiz/browse">
+              <a>{"C'est parti !"}</a>
+            </Link>
           )}
         </div>
       </div>
