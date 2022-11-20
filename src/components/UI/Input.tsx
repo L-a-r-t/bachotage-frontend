@@ -10,17 +10,19 @@ export default function Input({
   check,
 }: InputProps) {
   return (
-    <div className={` ${className}`}>
+    <div className={`${check ? "" : ""} ${className}`}>
       <div
         className={
-          check ? "flex flex-row-reverse justify-end gap-3 items-center" : ""
+          check
+            ? "flex flex-row-reverse justify-end gap-3 items-center"
+            : "relative"
         }
       >
         {label && <label htmlFor={name}>{label}</label>}
         {children}
       </div>
       {errors[name] && (
-        <div className="text-red-400 font-semibold">
+        <div className="text-red-400 font-semibold max-w-full">
           {(errors[name]?.message as string) ?? "/!\\"}
         </div>
       )}

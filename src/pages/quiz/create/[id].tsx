@@ -228,13 +228,23 @@ const CreateQuiz: NextPage<Props> = ({ quiz, quizId }) => {
                   }
                 >
                   <div className="flex flex-col">
-                    <p className="font-bold">
-                      Question #{index + 1} ({q.answers.length} réponses,{" "}
-                      {q.answers.some((a) => a.correct)
-                        ? "corrigées"
-                        : "non corrigées"}
-                      )
-                    </p>
+                    <div className="flex gap-2">
+                      <p className="font-bold">
+                        Question #{index + 1} ({q.answers.length} réponses,{" "}
+                        {q.answers.some((a) => a.correct)
+                          ? "corrigées"
+                          : "non corrigées"}
+                        )
+                      </p>
+                      {q.tags?.map((tag) => (
+                        <span
+                          key={q.prompt + tag}
+                          className="py-0.5 px-2 text-sm bg-white/60 rounded-full"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
                     <Latex>{q.prompt}</Latex>
                   </div>
                   <button
