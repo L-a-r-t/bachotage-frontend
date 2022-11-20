@@ -1,6 +1,6 @@
 import Input from "components/UI/Input"
 import { ERR_REQUIRED } from "utils/consts"
-import { useTDispatch } from "hooks/redux"
+import { useTDispatch, useTSelector } from "hooks/redux"
 import { useState } from "react"
 import { FieldValues, useForm } from "react-hook-form"
 import Latex from "react-latex"
@@ -9,10 +9,15 @@ import { setAlert, setModal } from "store/modal.slice"
 import { DBQuestion } from "types/quiz"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons/faTrashCan"
+import { faCircleQuestion } from "@fortawesome/free-regular-svg-icons/faCircleQuestion"
+import Popup from "components/UI/Popup"
+import CategoryBox from "components/Modules/CategoryBox"
 
 export default function QuestionModal({ question, qIndex }: Props) {
   const dispatch = useTDispatch()
+  const { tags: quizTags } = useTSelector((state) => state.createQuestion)
   const [visualize, setVisualize] = useState(false)
+  const [tags, setTags] = useState(question?.tags ?? ([] as string[]))
   const {
     register,
     unregister,
@@ -31,9 +36,11 @@ export default function QuestionModal({ question, qIndex }: Props) {
   const onSubmit = (data: FieldValues) => {
     console.log(data)
     if (question && qIndex !== undefined) {
-      dispatch(editQuestion({ question: data as DBQuestion, qIndex }))
+      dispatch(
+        editQuestion({ question: { ...data, tags } as DBQuestion, qIndex })
+      )
     } else {
-      dispatch(addQuestion(data as DBQuestion))
+      dispatch(addQuestion({ ...data, tags } as DBQuestion))
     }
     dispatch(setAlert({ message: "Question enregistrée" }))
     dispatch(setModal({ modal: null }))
@@ -46,6 +53,15 @@ export default function QuestionModal({ question, qIndex }: Props) {
     }
     unregister(`answers.${answersCount - 1}`)
     setAnswersCount((curr) => curr - 1)
+  }
+
+  const select = (tag: string) => {
+    setTags((prev) => [...prev, tag])
+  }
+
+  const unselect = (tag: string) => {
+    const index = tags.indexOf(tag)
+    setTags((prev) => [...prev.slice(0, index), ...prev.slice(index + 1)])
   }
 
   return (
@@ -71,6 +87,20 @@ export default function QuestionModal({ question, qIndex }: Props) {
           />
         )}
       </Input>
+      <div>
+        <Popup
+          position="down"
+          popup="Ajoutez des tags pour spécifier le sujet traité par la question (ex: une question d'algrèbre dans un quiz de maths)"
+        >
+          Tags <FontAwesomeIcon icon={faCircleQuestion} />
+        </Popup>
+        <CategoryBox
+          categories={quizTags.map((tag) => ({ name: tag }))}
+          selected={tags}
+          select={select}
+          unselect={unselect}
+        />
+      </div>
       <div className="flex flex-col gap-2">
         <div className="flex justify-between">
           <h3>Réponses</h3>

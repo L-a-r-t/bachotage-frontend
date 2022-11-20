@@ -43,5 +43,6 @@ export type AttemptQuestion = {
   index: number
   time: number
   score: number
+  tags: string[]
   answers: { index: number; correct: boolean; selected: boolean }[]
 }

@@ -2,8 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faSort } from "@fortawesome/free-solid-svg-icons/faSort"
 import { Combobox, Transition } from "@headlessui/react"
 import { useState, Fragment } from "react"
-import { faCheck } from "@fortawesome/free-solid-svg-icons/faCheck"
-import { Category } from "types/index"
+import { toSlug } from "utils/functions"
 
 export default function CategoryBox({
   categories,
@@ -20,7 +19,7 @@ export default function CategoryBox({
           ...categories.filter(
             (category) =>
               !_selected.includes(category.name) &&
-              (category.slug
+              ((category?.slug ?? toSlug(category.name))
                 .replace(/\s+/g, "")
                 .includes(query.toLowerCase().replace(/\s+/g, "")) ||
                 category.name
@@ -99,7 +98,9 @@ export default function CategoryBox({
                 >
                   <div className="truncate flex justify-between">
                     <p>{category.name}</p>
-                    <p className="text-black/50">{category.quizzes}</p>
+                    {category.quizzes && (
+                      <p className="text-black/50">{category.quizzes}</p>
+                    )}
                   </div>
                 </Combobox.Option>
               ))
@@ -112,7 +113,7 @@ export default function CategoryBox({
 }
 
 type Props = {
-  categories: Category[]
+  categories: { name: string; slug?: string; quizzes?: number }[]
   selected: string[]
   select: (option: string) => void
   unselect: (option: string) => void

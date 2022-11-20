@@ -30,6 +30,7 @@ export type AppQuiz = {
 
 export type DBQuestion = {
   prompt: string
+  tags: string[]
   answers: {
     text: string
     correct: boolean
@@ -39,6 +40,7 @@ export type DBQuestion = {
 export type AppQuestion = {
   index: number
   prompt: string
+  tags: string[]
   answers: {
     index: number
     text: string

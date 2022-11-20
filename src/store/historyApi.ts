@@ -51,23 +51,40 @@ export const historyApi = createApi({
           const data = res.docs.map((doc) => doc.data() as Attempt)
           const questions = data.flatMap((q) => q.questions)
 
-          const cumulativeTime = questions.reduce((acc, q) => {
+          const cumulativeStats = questions.reduce((acc, q) => {
             const curr = [...acc][q.index]
             const a = [...acc]
             a[q.index] = {
               time: (curr?.time ?? 0) + q.time,
+              score: (curr?.score ?? 0) + q.score,
               occurences: (curr?.occurences ?? 0) + 1,
+              tags: q.tags,
             }
             return a
-          }, [] as ({ time: number; occurences: number } | undefined)[])
-          const average = cumulativeTime.map((q) =>
+          }, [] as ({ time: number; occurences: number; score: number; tags: string[] } | undefined)[])
+          const average = cumulativeStats.map((q) =>
             q?.time === undefined
               ? 0
               : Math.round((q.time / q.occurences) * 10) / 10
           )
+          const tagStats = cumulativeStats.reduce((acc, q, index) => {
+            const a = { ...acc }
+            q?.tags.forEach(
+              (tag) =>
+                (a[tag] = {
+                  tag,
+                  score:
+                    (a[tag].score ?? 0) +
+                    Math.round((q.score / q.occurences) * 10) / 10,
+                  questions: [...a[tag].questions, index],
+                })
+            )
+            return a
+          }, {} as { [tag: string]: { tag: string; score: number; questions: number[] } })
+          const tagArray = Object.values(tagStats)
           return {
             data: {
-              stats: [...average],
+              stats: { timeAverages: average, byTag: tagArray },
               attempts: [...data].sort(
                 (a, b) => a.date._seconds - b.date._seconds
               ),
@@ -89,4 +106,7 @@ type getQuizHistoryArgs = {
   quizId: string
 }
 
-type Stats = number[]
+type Stats = {
+  timeAverages: number[]
+  byTag: { tag: string; score: number; questions: number[] }[]
+}
