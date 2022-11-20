@@ -14,6 +14,7 @@ export type UserData = {
   firstName: string
   lastName: string
   contributions: number
+  onboarded: boolean
 }
 
 export type LightQuiz = {

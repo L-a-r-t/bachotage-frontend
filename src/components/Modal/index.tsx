@@ -7,6 +7,7 @@ import AddQuestionModal from "./AddQuestionModal"
 import PublishQuizModal from "./PublishQuizModal"
 import DeleteDraftModal from "./DeleteDraftModal"
 import SubmitAnswerModal from "./SubmitAnswerModal"
+import OnboardingModal from "./OnboardingModal"
 
 export default function Modal() {
   const { modal, props } = useTSelector((state) => state.modal)
@@ -30,6 +31,7 @@ export default function Modal() {
     publishQuiz: <PublishQuizModal {...prevProps} />,
     deleteDraft: <DeleteDraftModal {...prevProps} />,
     submitAnswer: <SubmitAnswerModal {...prevProps} />,
+    onboarding: <OnboardingModal />,
   }
 
   // return modal

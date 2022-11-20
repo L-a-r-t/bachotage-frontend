@@ -1,4 +1,5 @@
 import dayjs from "dayjs"
+import { FirebaseError } from "firebase/app"
 import store from "store/index"
 import { setAlert, setModal } from "store/modal.slice"
 import { Message, SortedMessage } from "types/discuss"
@@ -72,6 +73,20 @@ export function protect<T extends (...args: any) => void>(
     }
     func(...args)
   }) as T
+}
+
+export function isFirebaseError(err: unknown): err is FirebaseError {
+  function isObject(
+    given: unknown
+  ): given is Partial<Record<keyof FirebaseError, unknown>> {
+    return typeof given === "object" && given !== null
+  }
+
+  return (
+    isObject(err) &&
+    typeof err.name === "string" &&
+    typeof err.message === "string"
+  )
 }
 
 export function formatDate(seconds: number) {
