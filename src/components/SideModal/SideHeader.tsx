@@ -94,7 +94,7 @@ export default function SideHeader() {
                       className="text-red-main pl-8"
                       onClick={() => logout()}
                     >
-                      Logout
+                      Déconnexion
                     </button>
                   </Menu.Item>
                 </Menu.Items>

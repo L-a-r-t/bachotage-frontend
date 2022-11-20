@@ -64,7 +64,7 @@ export default function Header({ sticky, className }: HeaderProps) {
                     className="text-red-main"
                     onClick={() => logout()}
                   >
-                    Logout
+                    Déconnexion
                   </button>,
                 ]}
               />

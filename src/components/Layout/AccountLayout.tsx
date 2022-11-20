@@ -73,7 +73,7 @@ export default function AccountLayout({ children, active }: Props) {
               className="text-red-600 hover:text-red-800 font-semibold"
               onClick={logout}
             >
-              Logout
+              Déconnexion
             </button>
           </div>
         </div>
