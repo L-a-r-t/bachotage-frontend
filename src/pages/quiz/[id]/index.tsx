@@ -154,6 +154,7 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
   })
 
   const onHistoryClick = (e: any) => {
+    if (!getElementAtEvent(chartRef.current, e)[0]) return
     const data = (getElementAtEvent(chartRef.current, e)[0].element as any)
       .$context.raw as HistoryChartData
     router.push({
@@ -361,6 +362,18 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
                         showJumper
                       />
                     </div>
+                    <div className="flex flex-wrap gap-2">
+                      {quiz.questions[pProps.currentPage - 1].tags?.map(
+                        (tag) => (
+                          <span
+                            className="py-1 px-2 bg-main/50 text-white text-sm rounded-full"
+                            key={tag}
+                          >
+                            {tag}
+                          </span>
+                        )
+                      )}
+                    </div>
                     <p className="text-center text-xl">
                       <Latex>
                         {quiz.questions[pProps.currentPage - 1].prompt}
@@ -387,12 +400,16 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
                       </span>
                     </div>
                     <div className="flex flex-col gap-4">
-                      {userHistory?.stats[pProps.currentPage - 1] ? (
+                      {userHistory?.stats.timeAverages[
+                        pProps.currentPage - 1
+                      ] ? (
                         <span className="text-center">
                           Vous passez en moyenne{" "}
                           <span className="font-bold">
                             {formatTime(
-                              userHistory.stats[pProps.currentPage - 1]
+                              userHistory.stats.timeAverages[
+                                pProps.currentPage - 1
+                              ]
                             )}{" "}
                           </span>
                           sur cette question
@@ -496,9 +513,35 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
                 <div className="flex justify-center">
                   <Spinner />
                 </div>
-              ) : (
+              ) : userHistory.attempts.length > 0 ? (
                 <div className="responsiveLayout">
-                  <Line
+                  <Bar
+                    options={{
+                      responsive: true,
+                      indexAxis: "y",
+                      parsing: {
+                        xAxisKey: "stat",
+                        yAxisKey: "tag",
+                      },
+                    }}
+                    data={{
+                      labels: userHistory.stats.byTag.map((tag) => tag.tag),
+                      datasets: [
+                        {
+                          label: "Taux de réussite",
+                          data: userHistory.stats.byTag.map((tag) => ({
+                            tag: tag.tag,
+                            stat:
+                              Math.round(
+                                (tag.score * 100) / tag.questions.length
+                              ) / 100,
+                          })),
+                          backgroundColor: "rgb(17, 94, 87)",
+                        },
+                      ],
+                    }}
+                  />
+                  <Bar
                     ref={chartRef}
                     onClick={onHistoryClick}
                     options={{
@@ -573,12 +616,12 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
                                 t: attempt.date._seconds,
                               } as HistoryChartData)
                           ),
-                          borderColor: "rgb(17, 94, 87)",
-                          backgroundColor: "rgba(17, 94, 87, 0.5)",
+                          backgroundColor: "rgb(17, 94, 87)",
                         },
                         {
                           label: "Durée (secondes)",
                           yAxisID: "y2",
+                          hidden: true,
                           data: userHistory.attempts.map(
                             (attempt) =>
                               ({
@@ -594,8 +637,7 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
                                 t: attempt.date._seconds,
                               } as HistoryChartData)
                           ),
-                          borderColor: "rgb(147, 229, 223)",
-                          backgroundColor: "rgba(147, 229, 223, 0.5)",
+                          backgroundColor: "rgb(147, 229, 223)",
                         },
                       ],
                     }}
@@ -627,20 +669,31 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
                       },
                     }}
                     data={{
-                      labels: userHistory.stats.map((a, index) => index),
+                      labels: userHistory.stats.timeAverages.map(
+                        (a, index) => index
+                      ),
                       datasets: [
                         {
                           label: "Temps moyen par question (secondes)",
-                          data: userHistory.stats.map((stat, index) => ({
-                            index: index + 1,
-                            question: `Question #${index + 1}`,
-                            time: stat ?? 0,
-                          })),
+                          data: userHistory.stats.timeAverages.map(
+                            (stat, index) => ({
+                              index: index + 1,
+                              question: `Question #${index + 1}`,
+                              time: stat ?? 0,
+                            })
+                          ),
                           backgroundColor: "rgb(17, 94, 87)",
                         },
                       ],
                     }}
                   />
+                </div>
+              ) : (
+                <div className="flex flex-col items-center gap-2">
+                  <p>{"Vous n'avez encore jamais passé ce quiz"}</p>
+                  <Link href={`/quiz/${router.query.id as string}/try`}>
+                    <a className="button">Tentative</a>
+                  </Link>
                 </div>
               )}
             </Tab.Panel>

@@ -114,6 +114,7 @@ const TryQuiz: NextPage<Props> = ({ quizProp }) => {
         answers,
         time: q.time,
         index: dbIndex,
+        tags: quiz.questions[index].tags,
       })
       return acc
     }, [] as AttemptQuestion[])

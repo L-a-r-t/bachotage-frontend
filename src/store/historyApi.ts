@@ -58,7 +58,7 @@ export const historyApi = createApi({
               time: (curr?.time ?? 0) + q.time,
               score: (curr?.score ?? 0) + q.score,
               occurences: (curr?.occurences ?? 0) + 1,
-              tags: q.tags,
+              tags: a[q.index]?.tags ?? q.tags,
             }
             return a
           }, [] as ({ time: number; occurences: number; score: number; tags: string[] } | undefined)[])
@@ -69,14 +69,14 @@ export const historyApi = createApi({
           )
           const tagStats = cumulativeStats.reduce((acc, q, index) => {
             const a = { ...acc }
-            q?.tags.forEach(
+            q?.tags?.forEach(
               (tag) =>
                 (a[tag] = {
                   tag,
                   score:
-                    (a[tag].score ?? 0) +
+                    (a[tag]?.score ?? 0) +
                     Math.round((q.score / q.occurences) * 10) / 10,
-                  questions: [...a[tag].questions, index],
+                  questions: [...(a[tag]?.questions ?? []), index],
                 })
             )
             return a
