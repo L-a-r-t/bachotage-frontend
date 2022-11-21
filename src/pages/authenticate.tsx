@@ -3,11 +3,12 @@ import Spinner from "components/UI/Spinner"
 import { isSignInWithEmailLink, signInWithEmailLink } from "firebase/auth"
 import { httpsCallable } from "firebase/functions"
 import { auth, functions } from "firebaseconfig"
-import { useTSelector } from "hooks/redux"
+import { useTDispatch, useTSelector } from "hooks/redux"
 import { GetServerSideProps, NextPage } from "next"
 import Head from "next/head"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
+import { setAlert } from "store/modal.slice"
 import { OnSigninReq, OnSigninRes } from "types/functions"
 
 const Authenticate: NextPage = ({ query }: any) => {
@@ -15,6 +16,7 @@ const Authenticate: NextPage = ({ query }: any) => {
   const { user } = useTSelector((state) => state.auth)
 
   const router = useRouter()
+  const dispatch = useTDispatch()
 
   useEffect(() => {
     ;(async () => {
@@ -31,7 +33,6 @@ const Authenticate: NextPage = ({ query }: any) => {
             return
           }
           const res = await signInWithEmailLink(auth, email, location.href)
-          console.log(res)
           localStorage.removeItem("email")
 
           if (firstName) localStorage.setItem("username", firstName as string)
@@ -40,13 +41,12 @@ const Authenticate: NextPage = ({ query }: any) => {
             functions,
             "onSignin"
           )
-          const fRes = await onSignin({
+          await onSignin({
             uid: res.user.uid,
             email,
             firstName,
             lastName,
           })
-          console.log(fRes)
         } catch (err) {
           setError(err)
         }
@@ -57,13 +57,18 @@ const Authenticate: NextPage = ({ query }: any) => {
   }, [])
 
   useEffect(() => {
-    if (error) console.error(error)
+    if (error) {
+      console.error(error)
+      dispatch(
+        setAlert({ message: "Oups ! Il y a eu une erreur.", error: true })
+      )
+    }
   }, [error])
 
   return (
     <WithHeader>
       <Head>
-        <title>{user ? "Connecté ! " : "Connexion..."}</title>
+        <title>{user ? "Connecté !" : "Connexion..."}</title>
       </Head>
       <div className="responsiveLayout items-center">
         {!user && <Spinner />}

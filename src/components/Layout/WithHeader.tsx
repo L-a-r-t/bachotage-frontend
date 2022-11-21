@@ -1,4 +1,5 @@
 import Header from "components/Header"
+import Footer from "components/UI/Footer"
 import { PropsWithChildren } from "react"
 
 export default function WithHeader({
@@ -10,6 +11,7 @@ export default function WithHeader({
     <>
       <Header sticky={stickyHeader} className={className} />
       {children}
+      <Footer />
     </>
   )
 }

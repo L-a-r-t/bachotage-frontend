@@ -66,6 +66,10 @@
       focus-within:outline-main resize-y bg-main/10
     }
 
+    .link {
+      @apply underline text-gray-700 cursor-pointer
+    }
+
     .checkbox {
       @apply w-4 h-4 accent-main
     }

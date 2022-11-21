@@ -14,6 +14,7 @@ export type UserData = {
   firstName: string
   lastName: string
   contributions: number
+  onboarded: boolean
 }
 
 export type LightQuiz = {
@@ -42,5 +43,6 @@ export type AttemptQuestion = {
   index: number
   time: number
   score: number
+  tags: string[]
   answers: { index: number; correct: boolean; selected: boolean }[]
 }

@@ -27,4 +27,4 @@ export const ALPHABET = [
   "Z",
 ]
 
-export const ERR_REQUIRED = "This field is required."
+export const ERR_REQUIRED = "Ce champ est requis"

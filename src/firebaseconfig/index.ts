@@ -3,6 +3,7 @@ import { initializeApp } from "firebase/app"
 import { getAuth } from "firebase/auth"
 import { getFirestore } from "firebase/firestore"
 import { getFunctions } from "firebase/functions"
+import { Analytics, getAnalytics } from "firebase/analytics"
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -31,9 +32,10 @@ export const firebaseConfig =
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig)
-// const analytics = getAnalytics(app)
+let analytics: Analytics
+if (typeof window != "undefined") analytics = getAnalytics(app)
 const db = getFirestore(app)
 const auth = getAuth(app)
 const functions = getFunctions(app, "europe-west1")
 
-export { auth, db, functions }
+export { auth, db, functions, analytics }

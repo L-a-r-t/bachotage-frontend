@@ -9,6 +9,7 @@ export type Modal =
   | "login"
   | "publishQuiz"
   | "submitAnswer"
+  | "onboarding"
 
 export type SideModal = "discussQuestion" | "header"
 
