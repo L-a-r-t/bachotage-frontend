@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 
 /**
  * This hooks is used to know if an element is visible on screen
@@ -14,12 +14,14 @@ import { useEffect, useState } from "react"
  * (ie: '-200px' means 200px to be seen before considered visible)
  * @returns IntersectionObserverEntry
  */
-const useIntersection = (
-  element: Element,
-  threshold = 0,
-  rootMargin = "0px"
-) => {
+const useIntersection = (threshold = 0, rootMargin = "0px") => {
   const [entry, setState] = useState(false)
+  const [element, setElement] = useState<Element | null>(null)
+
+  const getRef = useCallback((node: Element | null) => {
+    if (node === null) return
+    setElement(node)
+  }, [])
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -29,14 +31,16 @@ const useIntersection = (
       { rootMargin, threshold }
     )
 
-    if (element) observer.observe(element)
+    if (element) {
+      observer.observe(element)
+    }
 
     return () => {
       if (element) observer.unobserve(element)
     }
   }, [element, rootMargin, threshold])
 
-  return entry
+  return [entry, getRef] as [boolean, (node: Element | null) => void]
 }
 
 export default useIntersection
