@@ -126,7 +126,7 @@ const Home: NextPage<Props> = ({ env }) => {
           className="top-[80%] left-[25%] absolute -z-10 animate-[rise-10_7s_linear_infinite] text-red-main text-5xl"
         />
       </div>
-      <div className="relative w-full h-[200vh] flex flex-col sm:grid sm:grid-cols-2 sm:grid-rows-3 gap-4">
+      <div className="relative w-full sm:h-[200vh] flex flex-col sm:grid sm:grid-cols-2 sm:grid-rows-3 gap-4">
         <div className="pl-8 pr-4 sm:pr-0 sm:pl-4">
           <p className="text-2xl font-bold">Passe un quiz corrigé</p>
           <p className="text-gray-800">
@@ -135,7 +135,7 @@ const Home: NextPage<Props> = ({ env }) => {
             cheval de bataille.
           </p>
         </div>
-        <div className="p-6 pr-0 overflow-x-hidden" ref={ref0}>
+        <div className="p-6 pr-0 overflow-hidden" ref={ref0}>
           <div
             className={`w-full h-full rounded-l-lg bg-slate-100 shadow-lg shadow-slate-300/50 transition duration-[400ms] 
             transform relative gap-4 ${
@@ -172,7 +172,7 @@ const Home: NextPage<Props> = ({ env }) => {
             question, décomposition des résultats par thématiques, la totale.
           </p>
         </div>
-        <div className="p-6 pr-0 overflow-x-hidden" ref={ref1}>
+        <div className="p-6 pr-0 overflow-hidden" ref={ref1}>
           <div
             className={`w-full h-full rounded-l-lg bg-slate-100 shadow-lg shadow-slate-300/50 transition duration-[400ms] 
             transform overflow-y-hidden gap-4 ${
@@ -221,7 +221,7 @@ const Home: NextPage<Props> = ({ env }) => {
             Ici, on croit en l{"'"}intelligence collective !
           </p>
         </div>
-        <div className="p-6 pr-0 overflow-x-hidden" ref={ref2}>
+        <div className="p-6 pr-0 overflow-hidden" ref={ref2}>
           <div
             className={`w-full h-full rounded-l-lg bg-slate-100 shadow-lg shadow-slate-300/50 transition duration-[400ms] 
             transform ${
