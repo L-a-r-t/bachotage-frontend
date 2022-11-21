@@ -51,7 +51,7 @@ const BrowseQuiz: NextPage = () => {
         searchClient={searchClient}
         indexName={index}
         initialUiState={{
-          dev_QUIZZES: {
+          [index]: {
             toggle: {
               published: true,
             },
