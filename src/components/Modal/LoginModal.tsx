@@ -177,8 +177,8 @@ export default function LoginModal() {
       {status == "pending" && (
         <h2>
           Nous avons envoyé un email à {localStorage.getItem("email")},
-          consultez votre boite mail (dossier spam mais j{"'"}arrangerai ça en
-          temps voulu) pour finir votre connexion!
+          consultez votre boite mail (pensez à vérifier le dossier spam si vous
+          ne le voyez pas) pour finir votre connexion!
         </h2>
       )}
     </div>
