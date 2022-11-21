@@ -2,16 +2,51 @@ import { faCheck } from "@fortawesome/free-solid-svg-icons/faCheck"
 import { faXmark } from "@fortawesome/free-solid-svg-icons/faXmark"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import WithHeader from "components/Layout/WithHeader"
+import AnimatedCount from "components/UI/AnimatedCount"
 import { useTSelector } from "hooks/redux"
+import useIntersection from "hooks/useIntersection"
 import type { GetServerSideProps, NextPage } from "next"
 import Head from "next/head"
 import Link from "next/link"
+import { useRef } from "react"
+import { ALPHABET } from "utils/consts"
 
 const Home: NextPage<Props> = ({ env }) => {
   const { user } = useTSelector((state) => state.auth)
+  const images = useRef<HTMLDivElement[]>([])
+  const image0showing = useIntersection(images.current[0], 0.7)
+  const image1showing = useIntersection(images.current[1], 0.7)
+  const image2showing = useIntersection(images.current[2], 0.7)
+
+  const fakeResults = [
+    ["f", "fx", "f", "t"],
+    ["f", "f", "tx", "f"],
+    ["f", "tx", "f", "f"],
+    ["f", "t", "fx", "f"],
+    ["f", "f", "tx", "f"],
+    ["tx", "f", "f", "f"],
+    ["t", "f", "f", "fx"],
+    ["f", "tx", "f", "f"],
+    ["tx", "f", "f", "f"],
+    ["f", "f", "f", "tx"],
+  ]
+  const getStyle = (a: string) => {
+    const color =
+      a == "f" ? "blue-main" : a.includes("t") ? "green-main" : "red-main"
+    return a.includes("x")
+      ? `bg-${color} text-white border-${color}`
+      : `bg-transparent text-${color} border-${color}`
+  }
 
   return (
-    <WithHeader className="bg-transparent text-main">
+    <WithHeader
+      className={`${
+        image0showing || image1showing || image2showing
+          ? "bg-white"
+          : "bg-transparent"
+      } text-main`}
+      stickyHeader
+    >
       <Head>
         <title>QOAT: Quizzes Of All Time</title>
         <meta
@@ -91,7 +126,140 @@ const Home: NextPage<Props> = ({ env }) => {
           className="top-[80%] left-[25%] absolute -z-10 animate-[rise-10_7s_linear_infinite] text-red-main text-5xl"
         />
       </div>
-      <div className="relative w-full h-fit-screen flex flex-col justify-center items-center"></div>
+      <div className="relative w-full h-[200vh] grid grid-cols-2 grid-rows-3 gap-4">
+        <div className="pl-8">
+          <p className="text-2xl font-bold">Passe un quiz corrigé</p>
+          <p className="text-gray-800">
+            Permettre d{"'"}apprendre efficacement grâce à un environnement
+            contrôlé et un {'"feedback"'} presque instantané, c{"'"}est notre
+            cheval de bataille.
+          </p>
+        </div>
+        <div
+          className="p-6 pr-0 overflow-x-hidden"
+          ref={(r) => (images.current[0] = r!)}
+        >
+          <div
+            className={`w-full h-full rounded-l-lg bg-slate-100 shadow-lg shadow-slate-300/50 transition duration-[400ms] 
+            transform relative ${
+              image0showing ? "translate-x-0" : "translate-x-3/4"
+            } flex flex-col justify-between items-center py-8`}
+          >
+            <div className="absolute top-8 right-8 text-sm">Question 3/10</div>
+            <p className="text-lg font-semibold">Quiz: Histoire française</p>
+            <p>En quelle année a débuté la Révolution Française ?</p>
+            <div className="flex flex-wrap gap-4">
+              {["1792", "1789", "1914", "1779"].map((date) => (
+                <div
+                  key={date}
+                  className={`py-4 px-6 text-center border border-blue-main ${
+                    date == "1789"
+                      ? "text-white bg-blue-main"
+                      : "text-blue-main"
+                  } rounded`}
+                >
+                  {date}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        <div className="pl-8">
+          <p className="text-2xl font-bold">Vois tes stats</p>
+          <p className="text-gray-800">
+            Historique des tentatives, temps moyen passé sur chaque question
+            question, décomposition des résultats par thématiques, la totale.
+          </p>
+        </div>
+        <div
+          className="p-6 pr-0 overflow-x-hidden"
+          ref={(r) => (images.current[1] = r!)}
+        >
+          <div
+            className={`w-full h-full rounded-l-lg bg-slate-100 shadow-lg shadow-slate-300/50 transition duration-[400ms] 
+            transform overflow-y-hidden ${
+              image1showing ? "translate-x-0" : "translate-x-3/4"
+            } flex flex-col justify-between items-center p-8`}
+          >
+            <p>Vous avez eu</p>
+            <p className="text-4xl font-bold">
+              {image1showing ? (
+                <AnimatedCount target={7} duration={2000} />
+              ) : (
+                "7"
+              )}
+              /10
+            </p>
+            <div>
+              <div className="flex flex-wrap justify-center gap-4 text-sm">
+                {fakeResults.map((q, index) => (
+                  <div key={`q${index}`} className="flex flex-col items-center">
+                    <p>Question {index + 1}</p>
+                    <div className="flex gap-2">
+                      {q.map((a, idx) => (
+                        <div
+                          key={`q${index}a${idx}`}
+                          className={`w-4 h-4 text-center leading-4 border rounded text-xs ${getStyle(
+                            a
+                          )}`}
+                        >
+                          {ALPHABET[idx]}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="pl-8">
+          <p className="text-2xl font-bold">
+            Tout le monde peut participer à la correction
+          </p>
+          <p className="text-gray-800">
+            A chaque quiz son forum de discussion. Posez des questions,
+            détaillez les réponses, faites des propositions de correction...
+            Ici, on croit en l{"'"}intelligence collective !
+          </p>
+        </div>
+        <div
+          className="p-6 pr-0 overflow-x-hidden"
+          ref={(r) => (images.current[2] = r!)}
+        >
+          <div
+            className={`w-full h-full rounded-l-lg bg-slate-100 shadow-lg shadow-slate-300/50 transition duration-[400ms] 
+            transform ${
+              image2showing ? "translate-x-0" : "translate-x-3/4"
+            } flex flex-col gap-4 p-8`}
+          >
+            <p className="text-lg font-bold text-center">Question 7</p>
+            <div className="p-4 bg-slate-200 rounded w-10/12">
+              <p>
+                {"Quelqu'un a trouvé pourquoi la réponse n'est pas Clovis ?"}
+              </p>
+              <p className="float-right italic">Martin</p>
+            </div>
+            <div className="flex">
+              <div className="w-2/12" />
+              <div className="p-4 bg-slate-200 rounded w-10/12">
+                <p>
+                  {
+                    "Même si Clovis est le premier roi des Francs, la dynastie des mérovingiens commence bien avec Childéric 1er qui est d'ailleurs le père de Clovis ;)"
+                  }
+                </p>
+                <p className="float-right italic">Jeanne</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* <div className="relative w-full h-screen flex flex-col">
+        <p className="text-2xl font-bold text-center">
+          {"Il n'y a pas le quiz qu'il te faut ? Crée-le !"}
+        </p>
+        <div className="my-4 mx-8 rounded-lg bg-slate-100 flex-grow" />
+      </div> */}
     </WithHeader>
   )
 }
