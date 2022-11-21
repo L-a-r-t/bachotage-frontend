@@ -14,9 +14,9 @@ import { ALPHABET } from "utils/consts"
 const Home: NextPage<Props> = ({ env }) => {
   const { user } = useTSelector((state) => state.auth)
   const images = useRef<HTMLDivElement[]>([])
-  const image0showing = useIntersection(images.current[0], 0.7)
-  const image1showing = useIntersection(images.current[1], 0.7)
-  const image2showing = useIntersection(images.current[2], 0.7)
+  const [image0showing, ref0] = useIntersection(0.7)
+  const [image1showing, ref1] = useIntersection(0.7)
+  const [image2showing, ref2] = useIntersection(0.7)
 
   const fakeResults = [
     ["f", "fx", "f", "t"],
@@ -126,8 +126,8 @@ const Home: NextPage<Props> = ({ env }) => {
           className="top-[80%] left-[25%] absolute -z-10 animate-[rise-10_7s_linear_infinite] text-red-main text-5xl"
         />
       </div>
-      <div className="relative w-full h-[200vh] grid grid-cols-2 grid-rows-3 gap-4">
-        <div className="pl-8">
+      <div className="relative w-full h-[200vh] flex flex-col sm:grid sm:grid-cols-2 sm:grid-rows-3 gap-4">
+        <div className="pl-8 pr-4 sm:pr-0 sm:pl-4">
           <p className="text-2xl font-bold">Passe un quiz corrigé</p>
           <p className="text-gray-800">
             Permettre d{"'"}apprendre efficacement grâce à un environnement
@@ -135,24 +135,25 @@ const Home: NextPage<Props> = ({ env }) => {
             cheval de bataille.
           </p>
         </div>
-        <div
-          className="p-6 pr-0 overflow-x-hidden"
-          ref={(r) => (images.current[0] = r!)}
-        >
+        <div className="p-6 pr-0 overflow-x-hidden" ref={ref0}>
           <div
             className={`w-full h-full rounded-l-lg bg-slate-100 shadow-lg shadow-slate-300/50 transition duration-[400ms] 
-            transform relative ${
+            transform relative gap-4 ${
               image0showing ? "translate-x-0" : "translate-x-3/4"
-            } flex flex-col justify-between items-center py-8`}
+            } flex flex-col justify-between items-center p-4 sm:py-8`}
           >
-            <div className="absolute top-8 right-8 text-sm">Question 3/10</div>
+            <div className="absolute top-4 right-4 sm:top-8 sm:right-8 text-sm">
+              <span className="hidden sm:inline">Question </span>3/10
+            </div>
             <p className="text-lg font-semibold">Quiz: Histoire française</p>
-            <p>En quelle année a débuté la Révolution Française ?</p>
-            <div className="flex flex-wrap gap-4">
+            <p className="text-center">
+              En quelle année a débuté la Révolution Française ?
+            </p>
+            <div className="flex flex-col w-full sm:flex-row flex-wrap justify-center gap-4">
               {["1792", "1789", "1914", "1779"].map((date) => (
                 <div
                   key={date}
-                  className={`py-4 px-6 text-center border border-blue-main ${
+                  className={`py-2 sm:py-4 w-full sm:w-auto px-6 text-center border border-blue-main ${
                     date == "1789"
                       ? "text-white bg-blue-main"
                       : "text-blue-main"
@@ -164,20 +165,17 @@ const Home: NextPage<Props> = ({ env }) => {
             </div>
           </div>
         </div>
-        <div className="pl-8">
+        <div className="pl-8 pr-4 sm:pr-0 sm:pl-4">
           <p className="text-2xl font-bold">Vois tes stats</p>
           <p className="text-gray-800">
             Historique des tentatives, temps moyen passé sur chaque question
             question, décomposition des résultats par thématiques, la totale.
           </p>
         </div>
-        <div
-          className="p-6 pr-0 overflow-x-hidden"
-          ref={(r) => (images.current[1] = r!)}
-        >
+        <div className="p-6 pr-0 overflow-x-hidden" ref={ref1}>
           <div
             className={`w-full h-full rounded-l-lg bg-slate-100 shadow-lg shadow-slate-300/50 transition duration-[400ms] 
-            transform overflow-y-hidden ${
+            transform overflow-y-hidden gap-4 ${
               image1showing ? "translate-x-0" : "translate-x-3/4"
             } flex flex-col justify-between items-center p-8`}
           >
@@ -213,7 +211,7 @@ const Home: NextPage<Props> = ({ env }) => {
             </div>
           </div>
         </div>
-        <div className="pl-8">
+        <div className="pl-8 pr-4 sm:pr-0 sm:pl-4">
           <p className="text-2xl font-bold">
             Tout le monde peut participer à la correction
           </p>
@@ -223,15 +221,12 @@ const Home: NextPage<Props> = ({ env }) => {
             Ici, on croit en l{"'"}intelligence collective !
           </p>
         </div>
-        <div
-          className="p-6 pr-0 overflow-x-hidden"
-          ref={(r) => (images.current[2] = r!)}
-        >
+        <div className="p-6 pr-0 overflow-x-hidden" ref={ref2}>
           <div
             className={`w-full h-full rounded-l-lg bg-slate-100 shadow-lg shadow-slate-300/50 transition duration-[400ms] 
             transform ${
               image2showing ? "translate-x-0" : "translate-x-3/4"
-            } flex flex-col gap-4 p-8`}
+            } flex flex-col gap-4 p-4 sm:p-8`}
           >
             <p className="text-lg font-bold text-center">Question 7</p>
             <div className="p-4 bg-slate-200 rounded w-10/12">

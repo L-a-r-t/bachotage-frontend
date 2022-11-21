@@ -36,14 +36,9 @@ export default function Published() {
           <p className="text-center">
             Vous n{"'"}avez encore publié aucun quiz.
           </p>
-          <div className="flex justify-center gap-4">
-            <Link href="/quiz/create" passHref>
-              <a className="button">Créer un quiz</a>
-            </Link>
-            <Link href="/account/quizzes/drafts" passHref>
-              <a className="button bg-main/10 text-slate-800">Brouillons</a>
-            </Link>
-          </div>
+          <Link href="/quiz/create" passHref>
+            <a className="button">Créer un quiz</a>
+          </Link>
         </div>
       )}
     </>
