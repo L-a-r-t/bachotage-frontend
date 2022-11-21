@@ -168,8 +168,8 @@ const Home: NextPage<Props> = ({ env }) => {
         <div className="pl-8 pr-4 sm:pr-0 sm:pl-4">
           <p className="text-2xl font-bold">Vois tes stats</p>
           <p className="text-gray-800">
-            Historique des tentatives, temps moyen passé sur chaque question
-            question, décomposition des résultats par thématiques, la totale.
+            Historique des tentatives, temps moyen passé sur chaque question,
+            décomposition des résultats par thématiques, la totale.
           </p>
         </div>
         <div className="p-6 pr-0 overflow-hidden" ref={ref1}>
