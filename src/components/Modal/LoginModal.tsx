@@ -17,7 +17,6 @@ import usePassword from "hooks/usePassword"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faEyeSlash } from "@fortawesome/free-regular-svg-icons/faEyeSlash"
 import { faEye } from "@fortawesome/free-regular-svg-icons/faEye"
-import { FirebaseError } from "firebase/app"
 import { isFirebaseError } from "utils/functions"
 
 export default function LoginModal() {
@@ -41,7 +40,7 @@ export default function LoginModal() {
   const onSubmit = async (data: FieldValues) => {
     const { email, firstName, lastName, password } = data
     try {
-      if (password == "") {
+      if (!password) {
         const actionCodeSettings: ActionCodeSettings = {
           url: `${window?.location.origin}/authenticate${
             firstName ? `?firstName=${firstName}&lastName=${lastName}` : ""
