@@ -23,14 +23,14 @@ export default function DropdownPopup({
           leaveTo="transform scale-95 opacity-0"
         >
           <Menu.Items
-            className={`absolute flex flex-col bg-white border border-main/30 
+            className={`absolute flex flex-col bg-white border border-main-30 
             rounded shadow ${pos[position]} -right-2 z-10`}
           >
             {items.map((item, idx) => (
               <Menu.Item key={`${keysBase}${idx}`}>
                 {({ active }) => (
                   <div
-                    className={`py-1 px-3 min-w-max ${active && "bg-main/10"}`}
+                    className={`py-1 px-3 min-w-max ${active && "bg-main-10"}`}
                   >
                     {item}
                   </div>

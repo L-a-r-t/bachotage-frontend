@@ -63,13 +63,13 @@ const MathPage: NextPage = () => {
             )}
           </div>
           <button
-            className="button bg-main/10 text-slate-700"
+            className="button bg-main-10 text-slate-700"
             onClick={showDet}
           >
             Déterminant {det && `: ${det}    (${detTime[0]}m${detTime[1]}s)`}
           </button>
           <button
-            className="button bg-main/10 text-slate-700"
+            className="button bg-main-10 text-slate-700"
             onClick={showInv}
           >
             Matrice inverse {inv && !inv.matrix && `: non inversible`}{" "}

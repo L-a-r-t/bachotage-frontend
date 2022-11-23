@@ -77,7 +77,7 @@ export default function Modal() {
           <div className="fixed inset-0 flex items-center justify-center z-50 py-8">
             <Dialog.Panel
               className="w-clamp max-h-full min-h-1/2 p-8 bg-white border 
-            border-main/30 rounded-2xl shadow overflow-y-auto"
+            border-main-30 rounded-2xl shadow overflow-y-auto"
             >
               {map[modal ?? prev]}
             </Dialog.Panel>

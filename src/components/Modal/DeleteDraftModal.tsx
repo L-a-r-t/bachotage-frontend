@@ -51,7 +51,7 @@ export default function DeleteDraftModal({ quiz, quizId }: Props) {
           Supprimer {loading && <Spinner white small />}
         </button>
         <button
-          className="button bg-main/20 text-slate-800"
+          className="button bg-main-20 text-main-100"
           onClick={() => dispatch(setModal({ modal: null }))}
         >
           Annuler

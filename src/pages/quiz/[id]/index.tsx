@@ -184,13 +184,13 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
   const tabs = ["Général", "Discussion", "Mes stats"]
 
   return quiz ? (
-    <WithHeader className="bg-main text-white">
+    <WithHeader className="bg-main-100 text-white">
       <Head>
         <title>Quiz: {quizProp?.name!}</title>
         <meta name="description" content={quizProp?.desc!} />
       </Head>
       <div className="min-h-fit-screen flex flex-col">
-        <div className="pb-9 md:pb-12 pt-8 sm:pt-3 px-8 md:px-12 grid grid-cols-3 gap-10 items-center bg-main rounded-b-3xl text-white">
+        <div className="pb-9 md:pb-12 pt-8 sm:pt-3 px-8 md:px-12 grid grid-cols-3 gap-10 items-center bg-main-100 rounded-b-3xl text-white">
           <div className="col-span-3 md:col-span-2">
             <h1 className="text-3xl sm:text-4xl font-bold">
               Quiz: {quiz.name}
@@ -199,7 +199,7 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
               {quiz.categories.map((category) => (
                 <span
                   key={category}
-                  className="py-1 px-3 rounded-full bg-white text-main text-sm min-w-max"
+                  className="py-1 px-3 rounded-full bg-white text-main-100 text-sm min-w-max"
                 >
                   {category}
                 </span>
@@ -262,7 +262,7 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
             </div>
           </div>
           <Link href={`/quiz/${router.query.id as string}/try`}>
-            <a className="button bg-white text-main col-span-3 md:col-span-1">
+            <a className="button bg-white text-main-100 col-span-3 md:col-span-1">
               Tentative
             </a>
           </Link>
@@ -272,8 +272,8 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
             {tabs.map((tab) => (
               <Tab
                 key={tab}
-                className="py-1 px-2 font-semibold rounded text-main 
-                ui-selected:bg-main ui-selected:text-white"
+                className="py-1 px-2 font-semibold rounded text-main-100 
+                ui-selected:bg-main-100 ui-selected:text-white"
               >
                 {tab}
               </Tab>
@@ -290,7 +290,7 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
                 </p>
                 <Latex>{quiz.desc}</Latex>
               </div>
-              <div className="bg-main/10 col-span-3 sm:col-span-1 rounded p-4 flex flex-col">
+              <div className="bg-main-10 col-span-3 sm:col-span-1 rounded p-4 flex flex-col">
                 <h2 className="font-semibold">Mon score moyen</h2>
                 <div className="flex-grow flex items-center justify-center">
                   {userHistory &&
@@ -321,7 +321,7 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
                     ))}
                 </div>
               </div>
-              <div className="bg-main/10 rounded p-4 col-span-3 sm:col-span-2">
+              <div className="bg-main-10 rounded p-4 col-span-3 sm:col-span-2">
                 <h2 className="font-semibold">Je sais pas quoi mettre ici</h2>
                 <div className="flex justify-center">
                   <div className="w-32">
@@ -329,7 +329,7 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
                   </div>
                 </div>
               </div>
-              <div className="bg-main/10 rounded p-4 overflow-y-auto col-span-3 sm:col-span-1">
+              <div className="bg-main-10 rounded p-4 overflow-y-auto col-span-3 sm:col-span-1">
                 <h2 className="font-semibold">Mises à jour</h2>
                 {quiz.questions.some((q, idx) => quiz.changes[idx]) ? (
                   <div className="flex flex-col gap-2">
@@ -366,7 +366,7 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
                       {quiz.questions[pProps.currentPage - 1].tags?.map(
                         (tag) => (
                           <span
-                            className="py-1 px-2 bg-main/50 text-white text-sm rounded-full"
+                            className="py-1 px-2 bg-main-50 text-white text-sm rounded-full"
                             key={tag}
                           >
                             {tag}
@@ -421,7 +421,7 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
                       )}
                       <div className="relative group">
                         <div
-                          className={`input border-none min-h-[6.5rem] bg-main/10 pr-8 group-hover:hidden group-focus-within:hidden ${
+                          className={`input border-none min-h-[6.5rem] bg-main-10 pr-8 group-hover:hidden group-focus-within:hidden ${
                             message === "" && "text-black/50"
                           }`}
                         >
@@ -432,7 +432,7 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
                           </Latex>
                         </div>
                         <textarea
-                          className="input bg-main/10 border-none resize-none pr-8 hidden group-hover:block focus-visible:block placeholder:text-black/50"
+                          className="input bg-main-10 border-none resize-none pr-8 hidden group-hover:block focus-visible:block placeholder:text-black/50"
                           placeholder={
                             discussion[pProps.currentPage - 1].length == 0
                               ? "Posez une question ou donnez une explication"
@@ -455,7 +455,7 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
                           Tri :
                           <DropdownPopup
                             label={sortOptions[currentSort]}
-                            className="bg-main/10 py-2 px-4 rounded"
+                            className="bg-main-10 py-2 px-4 rounded"
                             position="up"
                             items={(
                               Object.keys(sortOptions) as Array<
@@ -497,7 +497,7 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
                     </div>
                   </div>
                   <div className="relative flex flex-col items-stretch md:w-72 pt-8">
-                    <div className="md:sticky md:top-4 bg-main/10 p-4 min-h-48 rounded">
+                    <div className="md:sticky md:top-4 bg-main-10 p-4 min-h-48 rounded">
                       <ProposedChange
                         quiz={quiz}
                         qIndex={pProps.currentPage - 1}

@@ -22,7 +22,7 @@ export default function Hits() {
       </p>
       <div className="flex flex-col gap-4">
         {hits.map((quiz) => (
-          <div key={quiz.objectID} className="relative rounded bg-main/5">
+          <div key={quiz.objectID} className="relative rounded bg-main-5">
             <Link href={`/quiz/${quiz.objectID}`} passHref>
               <a className="w-full h-full">
                 <div className="p-4">
@@ -31,7 +31,7 @@ export default function Hits() {
                     {quiz.categories.map((category) => (
                       <span
                         key={quiz.objectID + category}
-                        className="py-1 px-3 rounded-full bg-main/50 text-white text-sm min-w-max"
+                        className="py-1 px-3 rounded-full bg-main-50 text-white text-sm min-w-max"
                       >
                         {category}
                       </span>

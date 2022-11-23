@@ -124,7 +124,7 @@ const QuizResults: NextPage<Props> = ({ attempt: _attempt, quiz: _quiz }) => {
         <title>{`Résultats: ${quiz?.name}`}</title>
       </Head>
       <div className="p-4 sm:p-8 h-screen">
-        <div className="relative p-6 pt-10 sm:pt-6 min-h-full sm:h-full rounded-xl bg-main/10 flex flex-col justify-between items-center overflow-y-auto gap-6">
+        <div className="relative p-6 pt-10 sm:pt-6 min-h-full sm:h-full rounded-xl bg-main-10 flex flex-col justify-between items-center overflow-y-auto gap-6">
           <Link href={`/quiz/${router.query.id as string}`} passHref>
             <a>
               <h1 className="text-center text-xl sm:text-2xl font-bold">
@@ -223,7 +223,7 @@ const QuizResults: NextPage<Props> = ({ attempt: _attempt, quiz: _quiz }) => {
                   >
                     <Popover.Panel
                       className="absolute top-full z-10 sm:left-auto sm:transform-none sm:right-0 w-72 bg-white p-4 rounded 
-                      shadow border border-main/50 left-1/2 transform -translate-x-1/2 mt-2"
+                      shadow border border-main-50 left-1/2 transform -translate-x-1/2 mt-2"
                     >
                       <p>
                         La réponse à cette question est débattue. Les

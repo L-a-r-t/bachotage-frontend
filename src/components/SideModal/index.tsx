@@ -57,7 +57,7 @@ export default function SideModal() {
             <Dialog.Panel
               className={`${
                 sideModal == "discussQuestion" ? "w-clamp-xl" : "w-clamp-64"
-              } max-h-full bg-white border-l border-main/50`}
+              } max-h-full bg-white border-l border-main-50`}
             >
               {map[sideModal ?? prev]}
             </Dialog.Panel>

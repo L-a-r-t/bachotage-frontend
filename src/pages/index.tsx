@@ -44,7 +44,7 @@ const Home: NextPage<Props> = ({ env }) => {
         image0showing || image1showing || image2showing
           ? "bg-white"
           : "bg-transparent"
-      } text-main`}
+      } text-main-100`}
       stickyHeader
     >
       <Head>

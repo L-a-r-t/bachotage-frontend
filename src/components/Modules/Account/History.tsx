@@ -36,7 +36,7 @@ export default function UserHistory() {
           const minutes = Math.floor(attempt.time / 60)
           return (
             <div
-              className="relative rounded bg-main/5"
+              className="relative rounded bg-main-5"
               key={`${attempt.date._seconds}-${attempt.quizId}`}
             >
               <Link
@@ -93,7 +93,7 @@ export default function UserHistory() {
         ) : (
           <button
             onClick={next}
-            className="bg-transparent text-main font-semibold"
+            className="bg-transparent text-main-100 font-semibold"
           >
             Plus
           </button>

@@ -90,7 +90,7 @@ export default function ProposedChange({ quiz, qIndex }: Props) {
         <p className="text-center text-lg">Proposition de mise à jour</p>
         <p className="text-center text-sm italic">de {change.author}</p>
       </div>
-      <div className="p-4 rounded-lg bg-main/10">
+      <div className="p-4 rounded-lg bg-main-10">
         <p>{change.argument}</p>
       </div>
       <div>

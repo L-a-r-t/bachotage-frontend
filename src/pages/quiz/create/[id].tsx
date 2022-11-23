@@ -32,6 +32,7 @@ const CreateQuiz: NextPage<Props> = ({ quiz, quizId }) => {
   const { questions } = useTSelector((state) => state.createQuestion)
   const { user } = useTSelector((state) => state.auth)
   const [loading, setLoading] = useState(false)
+  const [initialized, setInitialized] = useState(false)
   const [selected, setSelected] = useState(quiz?.categories ?? ([] as string[]))
   const [categories, setCategories] = useState([] as Category[])
   const {
@@ -64,6 +65,10 @@ const CreateQuiz: NextPage<Props> = ({ quiz, quizId }) => {
   }, [])
 
   useEffect(() => {
+    if (!initialized) {
+      setInitialized(true)
+      return
+    }
     formRef.current?.requestSubmit()
   }, [questions])
 
@@ -169,7 +174,7 @@ const CreateQuiz: NextPage<Props> = ({ quiz, quizId }) => {
         <div className="grid gap-4 md:gap-8 grid-cols-3 flex-grow">
           <div className="col-span-3 sm:col-span-1 flex flex-col">
             <h2 className="text-lg mb-2">Informations</h2>
-            <fieldset className="w-full bg-main/10 rounded p-4 flex flex-col gap-2 flex-grow shadow-sm">
+            <fieldset className="w-full bg-main-10 rounded p-4 flex flex-col gap-2 flex-grow shadow-sm">
               <Input
                 name="singleAnswer"
                 errors={errors}
@@ -225,11 +230,11 @@ const CreateQuiz: NextPage<Props> = ({ quiz, quizId }) => {
                 className="group"
               >
                 <textarea
-                  className="input border-none bg-main/10 hidden group-hover:block focus-visible:block"
+                  className="input border-none bg-main-10 hidden group-hover:block focus-visible:block"
                   rows={4}
                   {...register("desc")}
                 />
-                <div className="input border-none min-h-[3rem] bg-main/10 group-hover:hidden group-focus-within:hidden">
+                <div className="input border-none min-h-[3rem] bg-main-10 group-hover:hidden group-focus-within:hidden">
                   <Latex>{watch().desc}</Latex>
                 </div>
               </Input>
@@ -237,11 +242,11 @@ const CreateQuiz: NextPage<Props> = ({ quiz, quizId }) => {
           </div>
           <div className="flex-grow col-span-3 sm:col-span-2 flex flex-col">
             <h2 className="text-lg mb-2">Questions ({questions.length})</h2>
-            <fieldset className="bg-main/10 rounded p-4 flex flex-col gap-4 flex-grow">
+            <fieldset className="bg-main-10 rounded p-4 flex flex-col gap-4 flex-grow">
               {questions.map((q, index) => (
                 <div
                   key={`q${index}`}
-                  className="bg-main/20 rounded p-4 flex justify-between items-center cursor-pointer"
+                  className="bg-main-20 rounded p-4 flex justify-between items-center cursor-pointer"
                   onClick={() =>
                     dispatch(
                       setModal({
@@ -263,7 +268,7 @@ const CreateQuiz: NextPage<Props> = ({ quiz, quizId }) => {
                       {q.tags?.map((tag) => (
                         <span
                           key={q.prompt + tag}
-                          className="py-0.5 px-2 text-sm bg-white/60 rounded-full w-max"
+                          className="py-0.5 px-2 text-sm bg-main-5 rounded-full w-max"
                         >
                           {tag}
                         </span>
@@ -299,7 +304,7 @@ const CreateQuiz: NextPage<Props> = ({ quiz, quizId }) => {
               Sauvegarder{loading && <Spinner small white />}
             </button>
             <button
-              className="button bg-main/20 text-main"
+              className="button bg-main-20 text-main-100"
               type="submit"
               onClick={publish}
             >

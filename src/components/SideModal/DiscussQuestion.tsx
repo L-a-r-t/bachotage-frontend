@@ -51,15 +51,15 @@ export default function DiscussQuestion({ quiz: _quiz, qIndex }: Props) {
       <Tab.Group>
         <Tab.List className="flex justify-center gap-2">
           <Tab
-            className="py-2 px-4 text-main bg-white rounded transition font-semibold
-            duration-300 ease-in-out ui-selected:text-white ui-selected:bg-main"
+            className="py-2 px-4 text-main-100 bg-white rounded transition font-semibold
+            duration-300 ease-in-out ui-selected:text-white ui-selected:bg-main-100"
           >
             Discussion
           </Tab>
           <Tab
             className={`py-2 px-4 bg-white rounded transition font-semibold
-            duration-300 ease-in-out ui-selected:text-white ui-selected:bg-main
-            ${change ? "text-yellow-500" : "text-main"}`}
+            duration-300 ease-in-out ui-selected:text-white ui-selected:bg-main-100
+            ${change ? "text-yellow-500" : "text-main-100"}`}
           >
             Réponses
           </Tab>
@@ -91,7 +91,7 @@ export default function DiscussQuestion({ quiz: _quiz, qIndex }: Props) {
             >
               <Input name="msg" errors={errors} className="relative group">
                 <textarea
-                  className="input border-none bg-main/10 hidden group-hover:block focus-visible:block placeholder:text-black/50 pr-8"
+                  className="input border-none bg-main-10 hidden group-hover:block focus-visible:block placeholder:text-black/50 pr-8"
                   placeholder={
                     discussion[qIndex].length == 0
                       ? "Posez une question ou donnez une explication"
@@ -101,7 +101,7 @@ export default function DiscussQuestion({ quiz: _quiz, qIndex }: Props) {
                   rows={3}
                 />
                 <div
-                  className={`input border-none pr-8 min-h-[5rem] bg-main/10 group-hover:hidden group-focus-within:hidden ${
+                  className={`input border-none pr-8 min-h-[5rem] bg-main-10 group-hover:hidden group-focus-within:hidden ${
                     watch().msg === "" && "text-black/50"
                   }`}
                 >

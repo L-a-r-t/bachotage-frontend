@@ -40,7 +40,7 @@ export default function WithSlideInHeader({
         >
           <Header
             sticky={stickyHeader}
-            className={`bg-white text-main ${className}`}
+            className={`bg-white text-main-100 ${className}`}
           />
         </Transition>
       </div>
