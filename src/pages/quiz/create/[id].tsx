@@ -8,7 +8,7 @@ import { DBQuiz } from "types/quiz"
 import { useProtect } from "hooks"
 import { adminDB } from "firebaseconfig/admin"
 import { db } from "firebaseconfig"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore"
 import Spinner from "components/UI/Spinner"
 import { removeQuestion, setQuestions } from "store/createQuestion.slice"
@@ -28,6 +28,7 @@ const CreateQuiz: NextPage<Props> = ({ quiz, quizId }) => {
     "Vous n'êtes pas l'auteur de ce quiz"
   )
   const dispatch = useTDispatch()
+  const formRef = useRef<HTMLFormElement>(null)
   const { questions } = useTSelector((state) => state.createQuestion)
   const { user } = useTSelector((state) => state.auth)
   const [loading, setLoading] = useState(false)
@@ -38,6 +39,7 @@ const CreateQuiz: NextPage<Props> = ({ quiz, quizId }) => {
     formState: { errors },
     handleSubmit,
     watch,
+    getValues,
   } = useForm({
     defaultValues: {
       name: quiz?.name,
@@ -61,6 +63,10 @@ const CreateQuiz: NextPage<Props> = ({ quiz, quizId }) => {
     })()
   }, [])
 
+  useEffect(() => {
+    formRef.current?.requestSubmit()
+  }, [questions])
+
   const select = (option: string) => {
     setSelected((prev) => [...prev, option])
   }
@@ -71,6 +77,15 @@ const CreateQuiz: NextPage<Props> = ({ quiz, quizId }) => {
   }
 
   const publish = () => {
+    if (!getValues("desc")) {
+      dispatch(
+        setAlert({
+          message: "Votre quiz doit avoir une description",
+          error: true,
+        })
+      )
+      return
+    }
     if (questions.length == 0) {
       dispatch(
         setAlert({
@@ -99,32 +114,40 @@ const CreateQuiz: NextPage<Props> = ({ quiz, quizId }) => {
 
   const onSubmit = async (data: FieldValues) => {
     if (!user) return
-    const quizRef = doc(db, "quizzes", quizId)
-    setLoading(true)
-    const names = categories.map((c) => c.name)
-    const inedit = selected.reduce(
-      (acc, curr) => (names.includes(curr) ? acc : [...acc, curr]),
-      [] as string[]
-    )
-    if (inedit.length > 0) {
-      inedit.forEach((c) =>
-        updateDoc(doc(db, "global", "categories"), {
-          [toSlug(c)]: {
-            authorId: user.uid,
-            name: c,
-            slug: toSlug(c),
-            quizzes: 0,
-          } as Category,
-        })
+    try {
+      const quizRef = doc(db, "quizzes", quizId)
+      setLoading(true)
+      const names = categories.map((c) => c.name)
+      const inedit = selected.reduce(
+        (acc, curr) => (names.includes(curr) ? acc : [...acc, curr]),
+        [] as string[]
       )
+      if (inedit.length > 0) {
+        inedit.forEach((c) =>
+          updateDoc(doc(db, "global", "categories"), {
+            [toSlug(c)]: {
+              authorId: user.uid,
+              name: c,
+              slug: toSlug(c),
+              quizzes: 0,
+            } as Category,
+          })
+        )
+      }
+      await updateDoc(quizRef, {
+        ...data,
+        questions: [...questions],
+        categories: selected,
+      })
+      dispatch(setAlert({ message: "Quiz sauvegardé!", dontOverride: true }))
+    } catch (err) {
+      console.error(err)
+      dispatch(
+        setAlert({ message: "La sauvegarde du quiz a échoué", error: true })
+      )
+    } finally {
+      setLoading(false)
     }
-    await updateDoc(quizRef, {
-      ...data,
-      questions: [...questions],
-      categories: selected,
-    })
-    setLoading(false)
-    dispatch(setAlert({ message: "Quiz sauvegardé!", dontOverride: true }))
   }
 
   return !quiz || redirect ? null : (
@@ -134,6 +157,7 @@ const CreateQuiz: NextPage<Props> = ({ quiz, quizId }) => {
       </Head>
       <form
         id="quiz"
+        ref={formRef}
         className="p-4 md:px-8 min-h-fit-screen flex flex-col gap-4"
         onSubmit={handleSubmit(onSubmit)}
       >
@@ -203,7 +227,7 @@ const CreateQuiz: NextPage<Props> = ({ quiz, quizId }) => {
                 <textarea
                   className="input border-none bg-main/10 hidden group-hover:block focus-visible:block"
                   rows={4}
-                  {...register("desc", { required: true })}
+                  {...register("desc")}
                 />
                 <div className="input border-none min-h-[3rem] bg-main/10 group-hover:hidden group-focus-within:hidden">
                   <Latex>{watch().desc}</Latex>
@@ -228,7 +252,7 @@ const CreateQuiz: NextPage<Props> = ({ quiz, quizId }) => {
                   }
                 >
                   <div className="flex flex-col">
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 flex-wrap">
                       <p className="font-bold">
                         Question #{index + 1} ({q.answers.length} réponses,{" "}
                         {q.answers.some((a) => a.correct)
@@ -239,7 +263,7 @@ const CreateQuiz: NextPage<Props> = ({ quiz, quizId }) => {
                       {q.tags?.map((tag) => (
                         <span
                           key={q.prompt + tag}
-                          className="py-0.5 px-2 text-sm bg-white/60 rounded-full"
+                          className="py-0.5 px-2 text-sm bg-white/60 rounded-full w-max"
                         >
                           {tag}
                         </span>
