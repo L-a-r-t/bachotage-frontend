@@ -156,7 +156,7 @@ export default function SubmitAnswerModal({
             </button>
             <button
               type="button"
-              className="button bg-main/10 text-main/50"
+              className="button bg-main-10 text-main-50"
               onClick={() => dispatch(setModal({ modal: null }))}
             >
               Annuler

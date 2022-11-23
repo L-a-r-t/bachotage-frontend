@@ -60,9 +60,9 @@ const Pagination = ({
   if (range.length < 2 && hideOnSinglePage) return null
 
   const pageItem =
-    "list-none flex justify-center items-center w-8 h-8 bg-main/20 cursor-pointer rounded transition duration-200"
+    "list-none flex justify-center items-center w-8 h-8 bg-main-20 cursor-pointer rounded transition duration-200"
   const navItem =
-    "list-none flex justify-center items-center w-8 h-8 bg-main/40 cursor-pointer rounded font-bold"
+    "list-none flex justify-center items-center w-8 h-8 bg-main-40 cursor-pointer rounded font-bold"
 
   return (
     <>
@@ -73,7 +73,7 @@ const Pagination = ({
         <div className="flex w-max items-center gap-2">
           <input
             value={jumperValue}
-            className="pl-2 ml-2 h-8 w-16 bg-main/20 rounded placeholder:text-gray-800"
+            className="pl-2 ml-2 h-8 w-16 bg-main-20 rounded placeholder:text-gray-800"
             max={range[range.length - 1]}
             onChange={(e) => setJumperValue(Number(e.target.value))}
             placeholder={String(currentPage)}
@@ -92,7 +92,7 @@ const Pagination = ({
             {sizeOptions.map((option) => (
               <option
                 key={`size${option}`}
-                className="bg-main/20"
+                className="bg-main-20"
               >{`${option} / page`}</option>
             ))}
           </select>
@@ -118,7 +118,7 @@ const Pagination = ({
                 key={`page${page}`}
                 onClick={() => toPage(page)}
                 className={`list-none flex justify-center items-center w-8 h-8 cursor-pointer rounded ${
-                  page == currentPage ? "bg-main text-white" : "bg-main/20"
+                  page == currentPage ? "bg-main-100 text-white" : "bg-main-20"
                 }`}
               >
                 {page}
@@ -138,7 +138,7 @@ const Pagination = ({
             {sizeOptions.map((option) => (
               <option
                 key={`size${option}`}
-                className="bg-main/20"
+                className="bg-main-20"
               >{`${option} / page`}</option>
             ))}
           </select>
@@ -149,7 +149,7 @@ const Pagination = ({
             <input
               type="number"
               value={jumperValue}
-              className="pl-2 ml-2 h-8 w-16 bg-main/20 rounded placeholder:text-gray-800"
+              className="pl-2 ml-2 h-8 w-16 bg-main-20 rounded placeholder:text-gray-800"
               max={range[range.length - 1]}
               onChange={(e) =>
                 setJumperValue(

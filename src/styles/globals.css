@@ -52,18 +52,18 @@
 @layer components {
   @layer components {  
     .button {
-      @apply py-2 px-6 bg-main text-white font-semibold rounded disabled:bg-gray-400 
+      @apply py-2 px-6 bg-main-100 text-white font-semibold rounded disabled:bg-gray-400 
       flex justify-center items-center gap-1
     }
   
     .button-small {
-      @apply py-1 px-3 bg-main text-white text-sm font-semibold rounded disabled:bg-gray-400
+      @apply py-1 px-3 bg-main-100 text-white text-sm font-semibold rounded disabled:bg-gray-400
       flex justify-center items-center gap-0.5
     }
   
     .input {
       @apply w-full py-1 px-2 rounded-md focus-within:outline-2 
-      focus-within:outline-main resize-y bg-main/10
+      focus-within:outline-main-100 resize-y bg-main-100/10
     }
 
     .link {
@@ -71,7 +71,7 @@
     }
 
     .checkbox {
-      @apply w-4 h-4 accent-main
+      @apply w-4 h-4 accent-main-100
     }
 
     .responsiveLayout {

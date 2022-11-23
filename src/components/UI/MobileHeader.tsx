@@ -12,7 +12,7 @@ export default function MobileHeader() {
   return (
     <Transition show={!Boolean(sideModal)} as={Fragment}>
       <button
-        className="fixed top-2 right-4 z-10 sm:hidden text-4xl text-main mix-blend-difference"
+        className="fixed top-2 right-4 z-10 sm:hidden text-4xl text-main-100 mix-blend-difference"
         onClick={() => dispatch(setSideModal({ modal: "header" }))}
       >
         <FontAwesomeIcon icon={faBars} />

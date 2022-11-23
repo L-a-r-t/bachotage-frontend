@@ -153,13 +153,13 @@ const TryQuiz: NextPage<Props> = ({ quizProp }) => {
       </Head>
       <div className="p-4 sm:p-8 h-screen">
         {!quiz && (
-          <div className="h-full rounded-xl bg-main/10 flex justify-center items-center">
+          <div className="h-full rounded-xl bg-main-10 flex justify-center items-center">
             <Spinner />
           </div>
         )}
         {quiz && qIndex == -1 && quiz.questions.length == 0 && (
           <>
-            <div className="h-full rounded-xl bg-main/10 flex flex-col gap-4 justify-center items-center">
+            <div className="h-full rounded-xl bg-main-10 flex flex-col gap-4 justify-center items-center">
               <h1 className="text-center text-xl sm:text-2xl font-bold">
                 Quiz: {quiz?.name}
               </h1>
@@ -175,7 +175,7 @@ const TryQuiz: NextPage<Props> = ({ quizProp }) => {
         )}
         {quiz && qIndex == -1 && quiz.questions.length > 0 && (
           <>
-            <div className="h-full rounded-xl bg-main/10 flex flex-col gap-4 justify-center items-center">
+            <div className="h-full rounded-xl bg-main-10 flex flex-col gap-4 justify-center items-center">
               <h1 className="text-center text-xl sm:text-2xl font-bold">
                 Quiz: {quiz?.name}
               </h1>
@@ -204,7 +204,7 @@ const TryQuiz: NextPage<Props> = ({ quizProp }) => {
         {quiz && qIndex >= 0 && qIndex < quiz.questions.length && (
           <>
             <div
-              className="relative p-6 min-h-full sm:h-full rounded-xl bg-main/10 
+              className="relative p-6 min-h-full sm:h-full rounded-xl bg-main-10 
               flex flex-col justify-between items-center gap-4"
             >
               <div className="absolute top-2 right-0 sm:top-6 sm:right-6 flex w-full justify-center sm:w-auto sm:justify-start gap-2 items-center text-lg">

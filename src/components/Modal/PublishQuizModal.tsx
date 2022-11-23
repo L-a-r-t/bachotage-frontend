@@ -62,7 +62,7 @@ export default function PublishQuizModal({ questions, categories }: Props) {
           Publier
         </button>
         <button
-          className="button bg-main/20 text-slate-800"
+          className="button bg-main620 text-slate-800"
           onClick={() => dispatch(setModal({ modal: null }))}
         >
           Annuler

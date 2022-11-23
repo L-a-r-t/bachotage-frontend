@@ -2,7 +2,7 @@ export default function Spinner({ white, small }: Props) {
   return (
     <div
       className={`animate-spin rounded-full border-b-transparent inline-block
-        min-w-fit ${white ? "border-white" : "border-main"}
+        min-w-fit ${white ? "border-white" : "border-main-100"}
         ${
           small
             ? "w-4 aspect-square h-4 border-2"

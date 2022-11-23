@@ -31,7 +31,7 @@ export default function AutoComplete({
           <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
             <FontAwesomeIcon
               icon={faSort}
-              className="text-lg text-main/50"
+              className="text-lg text-main-50"
               aria-hidden="true"
             />
           </Combobox.Button>
@@ -48,7 +48,7 @@ export default function AutoComplete({
               <Combobox.Option
                 className={({ active }) =>
                   `relative cursor-default select-none py-2 ${
-                    active ? "bg-main/10 text-black" : "text-black"
+                    active ? "bg-main-10 text-black" : "text-black"
                   } text-center`
                 }
                 value={""}
@@ -66,7 +66,7 @@ export default function AutoComplete({
                   key={`filter${_value.name}`}
                   className={({ active }) =>
                     `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                      active ? "bg-main/10 text-black" : "text-black"
+                      active ? "bg-main-10 text-black" : "text-black"
                     }`
                   }
                   value={_value.name}
@@ -82,7 +82,7 @@ export default function AutoComplete({
                       </span>
                       {selected ? (
                         <span
-                          className={`absolute inset-y-0 left-0 flex items-center pl-3 text-main`}
+                          className={`absolute inset-y-0 left-0 flex items-center pl-3 text-main-100`}
                         >
                           <FontAwesomeIcon
                             icon={faCheck}

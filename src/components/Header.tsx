@@ -34,7 +34,7 @@ export default function Header({ sticky, className }: HeaderProps) {
       <MobileHeader />
       <div
         className={`hidden h-12 w-full sm:flex p-6 justify-between items-center
-          bg-main text-white font-bold relative z-10 ${
+          bg-main-100 text-white font-bold relative z-10 ${
             sticky && "sticky top-0"
           } ${className}`}
       >
@@ -51,12 +51,12 @@ export default function Header({ sticky, className }: HeaderProps) {
                 <a>Créer un quiz</a>
               </Link>
               <Dropdown
-                className="py-1 px-3 font-bold bg-white text-main rounded"
+                className="py-1 px-3 font-bold bg-white text-main-100 rounded"
                 label={user.username}
                 items={[
                   ...links.map((link) => (
                     <Link href={link.href} key={link.href} passHref>
-                      <a className="text-main">{link.label}</a>
+                      <a className="text-main-100">{link.label}</a>
                     </Link>
                   )),
                   <button

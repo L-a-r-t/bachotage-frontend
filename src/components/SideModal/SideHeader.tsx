@@ -29,18 +29,18 @@ export default function SideHeader() {
   ]
 
   return (
-    <div className="flex flex-col gap-12 p-8 h-full max-h-full text-main font-semibold text-xl">
+    <div className="flex flex-col gap-12 p-8 h-full max-h-full text-main-100 font-semibold text-xl">
       <Link href="/" passHref>
         <a className="text-3xl text-center font-bold">QOAT</a>
       </Link>
       <div className="flex flex-col items-start gap-4">
-        <div className="w-full border-b border-main -my-1" />
+        <div className="w-full border-b border-main-100 -my-1" />
         <Link href="/quiz/browse" passHref>
           <a onClick={() => dispatch(setSideModal({ modal: null }))}>
             Chercher un quiz
           </a>
         </Link>
-        <div className="w-full border-b border-main -my-1" />
+        <div className="w-full border-b border-main-100 -my-1" />
         {user && (
           <>
             <Link href="/quiz/create" passHref>
@@ -48,7 +48,7 @@ export default function SideHeader() {
                 Créer un quiz
               </a>
             </Link>
-            <div className="w-full border-b border-main -my-1" />
+            <div className="w-full border-b border-main-100 -my-1" />
             <Menu as={Fragment}>
               <Menu.Button>Théo</Menu.Button>
               <Transition
@@ -65,14 +65,14 @@ export default function SideHeader() {
                   static={router.asPath.includes("account") || undefined}
                   className="flex flex-col items-start gap-4 w-full text-base"
                 >
-                  <div className="w-full border-b border-main -my-1" />
+                  <div className="w-full border-b border-main-100 -my-1" />
                   {links.map((link) => (
                     <>
                       <Menu.Item key={link.href}>
                         <div key={`${link.href}gettinanerrorsomewherehere`}>
                           <Link href={link.href} passHref>
                             <a
-                              className="text-main pl-8"
+                              className="text-main-100 pl-8"
                               onClick={() =>
                                 dispatch(setSideModal({ modal: null }))
                               }
@@ -83,7 +83,7 @@ export default function SideHeader() {
                         </div>
                       </Menu.Item>
                       <div
-                        className="w-10/12 border-b border-main -my-1"
+                        className="w-10/12 border-b border-main-100 -my-1"
                         key={`${link.href}div`}
                       />
                     </>

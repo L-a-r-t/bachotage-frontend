@@ -60,7 +60,7 @@ export default function SearchWidget({
 
   return (
     <div className="flex flex-col">
-      <div className="sticky top-8 inset-x-0 flex flex-col justify-between md:min-w-max md:max-w-xs p-4 bg-main text-white rounded-xl">
+      <div className="sticky top-8 inset-x-0 flex flex-col justify-between md:min-w-max md:max-w-xs p-4 bg-main-100 text-white rounded-xl">
         <form
           onSubmit={handleSubmit(handleSearch)}
           className="flex flex-col gap-2"
@@ -78,7 +78,7 @@ export default function SearchWidget({
             <div className="relative">
               <button
                 type="submit"
-                className="absolute top-1 right-2 text-main"
+                className="absolute top-1 right-2 text-main-100"
               >
                 <FontAwesomeIcon icon={faMagnifyingGlass} />
               </button>
@@ -101,7 +101,7 @@ export default function SearchWidget({
         <button
           type="submit"
           form="refine"
-          className="input bg-white text-main mt-16"
+          className="input bg-white text-main-100 mt-16"
         >
           Rechercher
         </button>

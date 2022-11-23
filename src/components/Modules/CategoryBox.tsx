@@ -41,7 +41,7 @@ export default function CategoryBox({
             <span
               key={category}
               onClick={() => unselect(category)}
-              className="py-1 px-3 rounded-full bg-main/50 hover:bg-main text-white text-sm cursor-pointer"
+              className="py-1 px-3 rounded-full bg-main-50 hover:bg-main-100 text-white text-sm cursor-pointer"
             >
               {categories.reduce(
                 (acc, curr) => (acc = curr.name == category ? curr.name : acc),
@@ -52,14 +52,14 @@ export default function CategoryBox({
           {_selected.length < 3 && (
             <>
               <Combobox.Input
-                className="bg-transparent border-b border-main text-sm w-24 leading-5 text-gray-900"
+                className="bg-transparent border-b border-main-100 text-sm w-24 leading-5 text-gray-900"
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
               />
               <Combobox.Button className="absolute right-1 top-2.5 flex items-center pr-2">
                 <FontAwesomeIcon
                   icon={faSort}
-                  className="text-lg text-main/50"
+                  className="text-lg text-main-50"
                   aria-hidden="true"
                 />
               </Combobox.Button>
@@ -73,12 +73,12 @@ export default function CategoryBox({
           leaveTo="opacity-0"
           afterLeave={() => setQuery("")}
         >
-          <Combobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+          <Combobox.Options className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
             {filtered.length === 0 && query !== "" ? (
               <Combobox.Option
                 className={({ active }) =>
                   `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                    active ? "bg-main/10 text-black" : "text-black"
+                    active ? "bg-main-10 text-black" : "text-black"
                   }`
                 }
                 value={query}
@@ -91,7 +91,7 @@ export default function CategoryBox({
                   key={`${category.slug}option`}
                   className={({ active }) =>
                     `relative cursor-default select-none py-2 px-4 ${
-                      active ? "bg-main/10 text-black" : "text-black"
+                      active ? "bg-main-10 text-black" : "text-black"
                     }`
                   }
                   value={category.name}

@@ -26,8 +26,8 @@ const MyQuizzes: NextPage<Props> = ({ tab }) => {
           {tabs.map((tab) => (
             <Tab
               key={tab}
-              className="py-1 px-2 font-bold rounded text-main 
-                ui-selected:bg-main ui-selected:text-white"
+              className="py-1 px-2 font-bold rounded text-main-100 
+                ui-selected:bg-main-100 ui-selected:text-white"
             >
               {tab}
             </Tab>

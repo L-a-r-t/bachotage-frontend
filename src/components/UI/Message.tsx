@@ -23,7 +23,7 @@ export default function SentMessage({
   return (
     <div
       className={`${
-        message.authorId == user?.uid ? "bg-main/5" : "bg-main/10"
+        message.authorId == user?.uid ? "bg-main-5" : "bg-main-10"
       } px-4 py-2 rounded`}
     >
       <p className="whitespace-pre-wrap">

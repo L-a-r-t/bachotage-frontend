@@ -35,7 +35,7 @@ export default function QuizCard({ quiz, href, options, quizId }: Props) {
   }
 
   return (
-    <div className="relative rounded bg-main/5">
+    <div className="relative rounded bg-main-5">
       <DropdownPopup
         label={<FontAwesomeIcon icon={faEllipsisVertical} />}
         items={options.map((option) => map[option])}

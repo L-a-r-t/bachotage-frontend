@@ -10,13 +10,13 @@ export default function Stepper({
         <div
           key={`step${idx}`}
           className={`relative h-1.5 w-full ${
-            idx < currentStep ? "bg-main" : "bg-gray-400"
+            idx < currentStep ? "bg-main-100" : "bg-gray-400"
           }`}
         >
           <div
             onClick={() => toStep(idx)}
             className={`absolute -top-3 -left-2 w-8 h-8 border-4 border-spacing-4 rounded-full bg-white ${
-              idx <= currentStep ? "border-main" : "border-gray-400"
+              idx <= currentStep ? "border-main-100" : "border-gray-400"
             } cursor-pointer flex justify-center items-center`}
           >
             {idx + 1}
@@ -25,13 +25,13 @@ export default function Stepper({
       ))}
       <div
         className={`relative h-1.5 w-full ${
-          currentStep >= steps - 1 ? "bg-main" : "bg-gray-400"
+          currentStep >= steps - 1 ? "bg-main-100" : "bg-gray-400"
         }`}
       >
         <div
           onClick={() => toStep(steps - 2)}
           className={`absolute -top-3 -left-2 w-8 h-8 border-4 rounded-full bg-white ${
-            currentStep >= steps - 2 ? "border-main" : "border-gray-400"
+            currentStep >= steps - 2 ? "border-main-100" : "border-gray-400"
           } cursor-pointer flex justify-center items-center`}
         >
           {steps - 1}
@@ -39,7 +39,7 @@ export default function Stepper({
         <div
           onClick={() => toStep(steps - 1)}
           className={`absolute -top-3 -right-2 w-8 h-8 border-4 rounded-full bg-white ${
-            currentStep >= steps - 1 ? "border-main" : "border-gray-400"
+            currentStep >= steps - 1 ? "border-main-100" : "border-gray-400"
           } cursor-pointer flex justify-center items-center`}
         >
           {steps}

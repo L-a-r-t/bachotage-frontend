@@ -41,7 +41,7 @@ const KaTeX: NextPage = () => {
       <Head>
         <title>KaTeX</title>
       </Head>
-      <div className="h-screen md:h-fit-screen bg-main flex flex-col justify-center">
+      <div className="h-screen md:h-fit-screen bg-main-100 flex flex-col justify-center">
         <h1 className="text-center text-white text-3xl sm:text-4xl font-bold md:-mt-12">
           QOAT utilise le{" "}
           <a href="https://katex.org" target="_blank" rel="noreferrer">
@@ -49,15 +49,15 @@ const KaTeX: NextPage = () => {
           </a>
         </h1>
         <div className="flex flex-col md:flex-row justify-center items-stretch mt-12 md:items-center">
-          <div className="bg-main flex justify-center items-center md:w-1/2">
-            <div className="bg-white w-11/12 sm:w-10/12 py-12 px-2 sm:text-xl rounded-xl text-main flex justify-center items-center">
+          <div className="bg-main-100 flex justify-center items-center md:w-1/2">
+            <div className="bg-white w-11/12 sm:w-10/12 py-12 px-2 sm:text-xl rounded-xl text-main-100 flex justify-center items-center">
               <p
                 ref={katexRef}
                 className="after:animate-[katexDemo_10s_linear_infinite] after:text-center latexValue"
               ></p>
             </div>
           </div>
-          <div className="bg-main h-60 md:w-1/2 text-3xl md:text-4xl text-white flex justify-center items-center latexRoot"></div>
+          <div className="bg-main-100 h-60 md:w-1/2 text-3xl md:text-4xl text-white flex justify-center items-center latexRoot"></div>
         </div>
       </div>
     </WithHeader>

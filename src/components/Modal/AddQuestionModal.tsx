@@ -163,7 +163,7 @@ export default function QuestionModal({ question, qIndex }: Props) {
       {answersCount < 6 && (
         <button
           type="button"
-          className="button-small bg-green-100 text-main"
+          className="button-small bg-green-100 text-main-100"
           onClick={() => setAnswersCount((prev) => prev + 1)}
         >
           Ajouter une réponse
