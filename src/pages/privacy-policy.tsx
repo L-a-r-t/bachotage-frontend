@@ -8,7 +8,7 @@ const CGU: NextPage = () => {
       <Head>
         <title>Politique de confidentialité</title>
       </Head>
-      <div className="responsiveLayout h-fit-screen px-4 gap-2">
+      <div className="responsiveLayout min-h-fit-screen px-4 gap-2">
         <h1 className="text-3xl font-bold text-center">
           Politique de confidentialité
         </h1>

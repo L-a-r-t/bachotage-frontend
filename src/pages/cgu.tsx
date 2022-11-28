@@ -8,7 +8,7 @@ const CGU: NextPage = () => {
       <Head>
         <title>Conditions Générales d{"'"}Utilisation</title>
       </Head>
-      <div className="responsiveLayout h-fit-screen px-4 gap-2">
+      <div className="responsiveLayout min-h-fit-screen px-4 gap-2">
         <h1 className="text-3xl font-bold text-center">
           Conditions générales d{"'"}utilisation
         </h1>

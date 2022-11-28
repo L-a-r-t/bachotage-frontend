@@ -9,7 +9,7 @@ const About: NextPage = () => {
       <Head>
         <title>À propos</title>
       </Head>
-      <div className="responsiveLayout h-fit-screen px-4">
+      <div className="responsiveLayout min-h-fit-screen px-4">
         <h1 className="text-3xl font-bold text-center">À propos</h1>
         <div className="flex flex-col-reverse sm:grid sm:grid-cols-2 sm:grid-rows-1 gap-4">
           <div className="w-full">
