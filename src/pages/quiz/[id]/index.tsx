@@ -4,7 +4,7 @@ import { DBQuiz } from "types/quiz"
 import { Fragment, useEffect, useState, useRef } from "react"
 import { useTDispatch, useTSelector } from "hooks/redux"
 import { useRouter } from "next/router"
-import { setAlert } from "store/modal.slice"
+import { setAlert, setModal } from "store/modal.slice"
 import WithHeader from "components/Layout/WithHeader"
 import { Tab } from "@headlessui/react"
 import Link from "next/link"
@@ -244,19 +244,19 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
                         : "Enregistrer"}
                     </button>
                   ),
-                  <button
-                    className="text-black"
-                    key="Signalerlequiz"
-                    onClick={() =>
-                      dispatch(
-                        setAlert({
-                          message: "Votre signalement a été pris en compte",
-                        })
-                      )
-                    }
-                  >
-                    <FontAwesomeIcon icon={faFlag} /> Signaler
-                  </button>,
+                  // <button
+                  //   className="text-black"
+                  //   key="Signalerlequiz"
+                  //   onClick={() =>
+                  //     dispatch(
+                  //       setAlert({
+                  //         message: "Votre signalement a été pris en compte",
+                  //       })
+                  //     )
+                  //   }
+                  // >
+                  //   <FontAwesomeIcon icon={faFlag} /> Signaler
+                  // </button>,
                 ]}
               />
             </div>
@@ -293,8 +293,8 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
               <div className="bg-main-10 col-span-3 sm:col-span-1 rounded p-4 flex flex-col">
                 <h2 className="font-semibold">Mon score moyen</h2>
                 <div className="flex-grow flex items-center justify-center">
-                  {userHistory &&
-                    (userHistory.attempts.length > 0 ? (
+                  {userHistory ? (
+                    userHistory.attempts.length > 0 ? (
                       <p className="text-4xl font-bold">
                         <AnimatedCount
                           target={
@@ -318,7 +318,18 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
                       </p>
                     ) : (
                       <p>{"Vous n'avez encore jamais passé ce quiz"}</p>
-                    ))}
+                    )
+                  ) : (
+                    <div className="flex flex-col items-center">
+                      <p>Connectez-vous pour accéder à vos statistiques</p>
+                      <button
+                        className="button"
+                        onClick={() => dispatch(setModal({ modal: "login" }))}
+                      >
+                        Se connecter
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="bg-main-10 rounded p-4 col-span-3 sm:col-span-2">
@@ -348,9 +359,21 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
             </Tab.Panel>
             <Tab.Panel className="-pt-4 pb-4">
               {!discussion ? (
-                <div className="flex justify-center">
-                  <Spinner />
-                </div>
+                user ? (
+                  <div className="flex justify-center">
+                    <Spinner />
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center">
+                    <p>Vous devez être connecté pour voir la discussion</p>
+                    <button
+                      className="button"
+                      onClick={() => dispatch(setModal({ modal: "login" }))}
+                    >
+                      Se connecter
+                    </button>
+                  </div>
+                )
               ) : (
                 <div className="flex flex-col-reverse md:flex-row justify-center gap-4">
                   <div className="w-clamp mx-auto md:mx-0 flex-shrink flex flex-col gap-4">
@@ -510,9 +533,21 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
             </Tab.Panel>
             <Tab.Panel className="-pt-4 pb-4">
               {isLoading || !userHistory ? (
-                <div className="flex justify-center">
-                  <Spinner />
-                </div>
+                user ? (
+                  <div className="flex justify-center">
+                    <Spinner />
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center">
+                    <p>Vous devez être connecté pour voir vos statistiques</p>
+                    <button
+                      className="button"
+                      onClick={() => dispatch(setModal({ modal: "login" }))}
+                    >
+                      Se connecter
+                    </button>
+                  </div>
+                )
               ) : userHistory.attempts.length > 0 ? (
                 <div className="responsiveLayout">
                   <Bar

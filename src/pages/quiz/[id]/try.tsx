@@ -20,7 +20,13 @@ import Latex from "react-latex"
 import Popup from "components/UI/Popup"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faWarning } from "@fortawesome/free-solid-svg-icons/faWarning"
-import { arrayUnion, doc, setDoc } from "firebase/firestore"
+import {
+  arrayUnion,
+  doc,
+  increment,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore"
 import { db } from "firebaseconfig/index"
 import { AttemptQuestion } from "types/user"
 import WithSlideInHeader from "components/Layout/WithSlideInHeader"
@@ -132,7 +138,9 @@ const TryQuiz: NextPage<Props> = ({ quizProp }) => {
     }
     const attemptId = `${attempt.quizId}-${attempt.date._seconds}`
     const tempRef = doc(db, "quizzes", attempt.quizId, "data", "temp")
+    const quizRef = doc(db, "quizzes", attempt.quizId)
     setDoc(tempRef, { history: arrayUnion(attempt) }, { merge: true })
+    updateDoc(quizRef, { tries: increment(1) })
     if (!user) {
       dispatch(_endQuiz(attempt))
       router.replace(`/quiz/${attempt.quizId}/results`)

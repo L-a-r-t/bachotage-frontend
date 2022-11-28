@@ -12,6 +12,7 @@ export type DBQuiz = {
   questions: DBQuestion[]
   changes: { [index: number]: Change | null }
   version: number
+  tries: number
 }
 
 export type AppQuiz = {
