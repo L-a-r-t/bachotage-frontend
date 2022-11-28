@@ -18,6 +18,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faEyeSlash } from "@fortawesome/free-regular-svg-icons/faEyeSlash"
 import { faEye } from "@fortawesome/free-regular-svg-icons/faEye"
 import { isFirebaseError } from "utils/functions"
+import Link from "next/link"
 
 export default function LoginModal() {
   const dispatch = useTDispatch()
@@ -58,7 +59,6 @@ export default function LoginModal() {
         auth.updateCurrentUser(res.user)
       }
     } catch (err) {
-      console.error(err)
       if (isFirebaseError(err)) {
         if (err.code.includes("wrong-password")) {
           dispatch(
@@ -73,6 +73,7 @@ export default function LoginModal() {
           return
         }
       }
+      console.error(err)
       dispatch(
         setAlert({ message: "Oups, il y a eu un problème !", error: true })
       )
@@ -154,12 +155,16 @@ export default function LoginModal() {
               </Input>
             )}
             {!username && (
-              <Input
-                name="cgu"
-                errors={errors}
-                label="J'accepte les conditions générales d'utilisation"
-                check
-              >
+              <Input name="cgu" errors={errors} check>
+                <label htmlFor="cgu">
+                  J{"'"}ai lu et j{"'"}accepte les{" "}
+                  <Link href="/cgu" passHref>
+                    <a className="link" target="_blank">
+                      conditions générales d{"'"}utilisation
+                    </a>
+                  </Link>
+                  .
+                </label>
                 <input
                   type="checkbox"
                   className="checkbox"
