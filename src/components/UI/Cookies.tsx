@@ -33,7 +33,7 @@ export default function CookiesBar() {
       leave="transition duration-300 ease-in"
       leaveFrom="transform translate-y-0 opacity-100"
       leaveTo="transform translate-y-16 opacity-0"
-      className="fixed inset-x-0 bottom-0 p-4 w-full flex justify-between items-center bg-main-100 text-white"
+      className="fixed inset-x-0 bottom-0 p-4 w-full flex gap-4 justify-between items-center bg-main-100 text-white"
     >
       <p>
         QOAT utilise des cookies pour sauvegarder vos préférences et à des fins
@@ -47,12 +47,17 @@ export default function CookiesBar() {
         </Link>
         )
       </p>
-      <button className="button min-w-max" onClick={refuseCookies}>
-        {"Je refuse"}
-      </button>
-      <button className="button bg-white text-main-100" onClick={acceptCookies}>
-        {"J'accepte"}
-      </button>
+      <div className="flex flex-col sm:flex-row gap-4">
+        <button className="button min-w-max" onClick={refuseCookies}>
+          {"Je refuse"}
+        </button>
+        <button
+          className="button bg-white text-main-100"
+          onClick={acceptCookies}
+        >
+          {"J'accepte"}
+        </button>
+      </div>
     </Transition>
   )
 }
