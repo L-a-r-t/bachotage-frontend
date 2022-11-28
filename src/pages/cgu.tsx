@@ -30,6 +30,10 @@ const CGU: NextPage = () => {
             "La plateforme se réserve également le droit de suspendre le compte de l'utilisateur si elle constate - à sa propre discrétion - que ce dernier abuse de certaines fonctionnalités telles que la correction collaborative à des fins nuisibles."
           }
         </p>
+        <p>
+          Vous pouvez envoyer un e-mail à contact@qoat.fr pour plus de
+          renseignements ou en cas de problème
+        </p>
       </div>
     </WithHeader>
   )

@@ -27,6 +27,10 @@ const CGU: NextPage = () => {
             "Concernant vos données stockées, la plateforme stocke et est la seule à avoir accès à vos données qui incluent votre nom et prénom, votre email et votre activité sur la plateforme (historique de tentatives, etc.). Si vous en avez défini un, votre mot de passe est crypté et est inaccessible même pour la plateforme."
           }
         </p>
+        <p>
+          Vous pouvez envoyer un e-mail à contact@qoat.fr pour plus de
+          renseignements ou en cas de problème
+        </p>
       </div>
     </WithHeader>
   )

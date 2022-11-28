@@ -26,7 +26,7 @@ const About: NextPage = () => {
           <div>
             <p>
               QOAT est une banque de qcm créée par Théo Lartigau, actuellement
-              étudiant en L3 éco-gestion qui cherche à intégrer l{"'"}ENSAE.
+              étudiant en L3 éco-gestion à l{"'"}Université de Bordeaux.
             </p>
             <p className="my-2">
               {"N'hésitez pas à m'ajouter sur "}
