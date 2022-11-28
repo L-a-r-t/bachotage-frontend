@@ -35,7 +35,7 @@ const app = initializeApp(firebaseConfig)
 let analytics: Analytics
 if (
   typeof window != "undefined" &&
-  Boolean(localStorage.getItem("cookies-allowed"))
+  localStorage.getItem("cookies-allowed") === "true"
 )
   analytics = getAnalytics(app)
 const db = getFirestore(app)
