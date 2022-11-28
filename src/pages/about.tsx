@@ -9,7 +9,7 @@ const About: NextPage = () => {
       <Head>
         <title>À propos</title>
       </Head>
-      <div className="responsiveLayout h-fit-screen px-4">
+      <div className="responsiveLayout min-h-fit-screen px-4">
         <h1 className="text-3xl font-bold text-center">À propos</h1>
         <div className="flex flex-col-reverse sm:grid sm:grid-cols-2 sm:grid-rows-1 gap-4">
           <div className="w-full">
@@ -26,7 +26,7 @@ const About: NextPage = () => {
           <div>
             <p>
               QOAT est une banque de qcm créée par Théo Lartigau, actuellement
-              étudiant en L3 éco-gestion qui cherche à intégrer l{"'"}ENSAE.
+              étudiant en L3 éco-gestion à l{"'"}Université de Bordeaux.
             </p>
             <p className="my-2">
               {"N'hésitez pas à m'ajouter sur "}

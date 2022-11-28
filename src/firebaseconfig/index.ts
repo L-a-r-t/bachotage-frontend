@@ -33,7 +33,11 @@ export const firebaseConfig =
 // Initialize Firebase
 const app = initializeApp(firebaseConfig)
 let analytics: Analytics
-if (typeof window != "undefined") analytics = getAnalytics(app)
+if (
+  typeof window != "undefined" &&
+  Boolean(localStorage.getItem("cookies-allowed"))
+)
+  analytics = getAnalytics(app)
 const db = getFirestore(app)
 const auth = getAuth(app)
 const functions = getFunctions(app, "europe-west1")

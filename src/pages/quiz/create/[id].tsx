@@ -185,7 +185,6 @@ const CreateQuiz: NextPage<Props> = ({ quiz, quizId }) => {
                   type="checkbox"
                   className="checkbox"
                   {...register("singleAnswer")}
-                  defaultChecked={true}
                 />
               </Input>
               <Input
@@ -198,7 +197,6 @@ const CreateQuiz: NextPage<Props> = ({ quiz, quizId }) => {
                   type="checkbox"
                   className="checkbox"
                   {...register("negativePoints")}
-                  defaultChecked={false}
                 />
               </Input>
               <Input
@@ -211,7 +209,6 @@ const CreateQuiz: NextPage<Props> = ({ quiz, quizId }) => {
                   type="checkbox"
                   className="checkbox"
                   {...register("shuffle")}
-                  defaultChecked={true}
                 />
               </Input>
               <div>
