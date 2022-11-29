@@ -56,7 +56,7 @@ export default function SideModal() {
           <div className="fixed inset-0 flex justify-end items-stretch z-30">
             <Dialog.Panel
               className={`${
-                sideModal == "discussQuestion" ? "w-clamp-xl" : "w-clamp-64"
+                sideModal == "discussQuestion" ? "w-clamp-side" : "w-clamp-64"
               } max-h-full bg-white border-l border-main-50`}
             >
               {map[sideModal ?? prev]}
