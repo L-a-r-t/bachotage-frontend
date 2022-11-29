@@ -108,3 +108,8 @@ export function formatTime(seconds: number) {
   const minutes = Math.floor(seconds / 60)
   return minutes > 0 ? `${minutes}m${seconds - minutes * 60}s` : `${seconds}s`
 }
+
+export function randomRange(min: number, max: number) {
+  const random = Math.floor(Math.random() * (max - min) + min)
+  return random
+}

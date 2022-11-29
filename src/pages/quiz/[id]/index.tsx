@@ -50,6 +50,7 @@ import {
 import { Bar, Line, getElementAtEvent } from "react-chartjs-2"
 import dayjs from "dayjs"
 import AnimatedCount from "components/UI/AnimatedCount"
+import TipOfTheDay from "components/UI/Tip"
 
 ChartJS.register(
   CategoryScale,
@@ -735,6 +736,7 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
           </Tab.Panels>
         </Tab.Group>
       </div>
+      <TipOfTheDay />
     </WithHeader>
   ) : null
 }

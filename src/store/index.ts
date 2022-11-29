@@ -6,6 +6,7 @@ import { default as createQuestionReducer } from "./createQuestion.slice"
 import { default as discussionReducer } from "./discussion.slice"
 import { historyApi } from "./historyApi"
 import { quizApi } from "./quizApi"
+import { globalApi } from "./globalApi"
 
 const store = configureStore({
   reducer: {
@@ -16,9 +17,13 @@ const store = configureStore({
     discussion: discussionReducer,
     [historyApi.reducerPath]: historyApi.reducer,
     [quizApi.reducerPath]: quizApi.reducer,
+    [globalApi.reducerPath]: globalApi.reducer,
   },
   middleware: (gDM) =>
-    gDM().concat(historyApi.middleware).concat(quizApi.middleware),
+    gDM()
+      .concat(historyApi.middleware)
+      .concat(quizApi.middleware)
+      .concat(globalApi.middleware),
 })
 
 export default store
