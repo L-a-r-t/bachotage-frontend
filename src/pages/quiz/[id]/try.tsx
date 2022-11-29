@@ -64,7 +64,7 @@ const TryQuiz: NextPage<Props> = ({ quizProp }) => {
   }, [qIndex, quiz])
 
   useEffect(() => {
-    if (quiz) setQuizLength(Math.min(quiz.questions.length, 10))
+    if (quiz) setQuizLength(Math.min(quiz.questions.length, 5))
   }, [quiz])
 
   const handleAnswer = (idx: number) => {
@@ -234,7 +234,11 @@ const TryQuiz: NextPage<Props> = ({ quizProp }) => {
               <h1 className="text-center text-xl sm:text-2xl font-bold mt-2 sm:mt-0">
                 Quiz: {quiz.name}
               </h1>
-              <h2 className="text-center text-xl sm:text-2xl">
+              <h2
+                className={`text-center text-xl ${
+                  quiz.questions[qIndex].prompt.length > 50 ? "" : "sm:text-2xl"
+                }`}
+              >
                 <Latex>{quiz.questions[qIndex].prompt}</Latex>
               </h2>
               <div className="flex flex-col justify-between items-center gap-4">

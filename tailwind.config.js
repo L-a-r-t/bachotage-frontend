@@ -28,6 +28,7 @@ module.exports = {
         "clamp-64": "clamp(40%, 16rem, 95%)",
         "clamp-72": "clamp(40%, 18rem, 95%)",
         "clamp-xl": "clamp(70%, 24rem, 95%)",
+        "clamp-side": "clamp(50%, 24rem, 85%)",
       },
       minWidth: {
         36: "9rem",

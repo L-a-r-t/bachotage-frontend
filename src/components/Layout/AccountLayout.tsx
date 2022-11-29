@@ -1,5 +1,6 @@
 import Popup from "components/UI/Popup"
 import Spinner from "components/UI/Spinner"
+import TipOfTheDay from "components/UI/Tip"
 import { signOut } from "firebase/auth"
 import { auth } from "firebaseconfig"
 import { useProtect } from "hooks/index"
@@ -84,6 +85,7 @@ export default function AccountLayout({ children, active }: Props) {
           <div className="flex flex-col gap-4">{children}</div>
         </div>
       </div>
+      <TipOfTheDay />
     </WithHeader>
   )
 }

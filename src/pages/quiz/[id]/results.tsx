@@ -26,6 +26,7 @@ import { adminDB } from "firebaseconfig/admin"
 import { DBQuiz } from "types/quiz"
 import WithSlideInHeader from "components/Layout/WithSlideInHeader"
 import Link from "next/link"
+import TipOfTheDay from "components/UI/Tip"
 
 const QuizResults: NextPage<Props> = ({ attempt: _attempt, quiz: _quiz }) => {
   const dispatch = useTDispatch()
@@ -310,6 +311,7 @@ const QuizResults: NextPage<Props> = ({ attempt: _attempt, quiz: _quiz }) => {
           )}
         </div>
       </div>
+      <TipOfTheDay />
     </WithSlideInHeader>
   )
 }

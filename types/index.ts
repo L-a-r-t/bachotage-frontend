@@ -11,3 +11,10 @@ export type Category = {
   quizzes: number
   slug: string
 }
+
+export type Tip = {
+  id: string
+  content: string
+  upvotes: number
+  downvotes: number
+}
