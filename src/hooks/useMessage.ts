@@ -49,7 +49,7 @@ const useMessage = () => {
           [qIndex]: arrayUnion({
             ...msg,
             vote: { [user.uid]: 1 },
-            published: serverTimestamp(),
+            published: { _seconds: dayjs().unix(), _nanoseconds: 0 },
           }),
         }),
         updateDoc(userRef, { contributions: increment(1) }),
