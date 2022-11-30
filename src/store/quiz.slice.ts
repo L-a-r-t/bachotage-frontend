@@ -78,11 +78,17 @@ export const quizSlice = createSlice({
       state.dbIndex = state.quiz?.questions[state.qIndex - 1]?.index ?? 0
       state.qIndex--
     },
-    startQuiz: (state, action: PayloadAction<number>) => {
+    startQuiz: (
+      state,
+      action: PayloadAction<{ length: number; tags: string[] }>
+    ) => {
+      const { length, tags } = action.payload
       if (state.quiz)
         state.quiz = {
           ...state.quiz,
-          questions: state.quiz.questions.slice(0, action.payload),
+          questions: state.quiz.questions
+            .filter((q) => q.tags.some((t) => tags.includes(t)))
+            .slice(0, length),
         }
       state.dbIndex = state.quiz?.questions[state.qIndex + 1]?.index ?? 0
       state.qIndex++

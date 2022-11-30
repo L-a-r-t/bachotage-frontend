@@ -95,6 +95,7 @@ export default function QuestionModal({ question, qIndex }: Props) {
           Tags <FontAwesomeIcon icon={faCircleQuestion} />
         </Popup>
         <CategoryBox
+          max={5}
           categories={quizTags.map((tag) => ({ name: tag }))}
           selected={tags}
           select={select}
