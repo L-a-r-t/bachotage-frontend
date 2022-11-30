@@ -404,7 +404,7 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
                       </Latex>
                     </p>
                     <div className="flex flex-col justify-between items-center gap-4">
-                      <span className="flex flex-col w-full md:w-auto md:flex-row md:justify-center gap-4">
+                      <span className="flex flex-col w-full md:w-auto md:flex-row md:justify-center md:flex-wrap gap-4">
                         {quiz.questions[pProps.currentPage - 1].answers.map(
                           (ans) => (
                             <button

@@ -38,6 +38,9 @@ const TryQuiz: NextPage<Props> = ({ quizProp }) => {
   const [answers, setAnswers] = useState(new Set<number>())
   const [questionTime, setQuestionTime] = useState(dayjs())
   const [quizLength, setQuizLength] = useState(-1)
+  const [maxLength, setMaxLength] = useState(quizProp?.questions.length ?? 1)
+  const [quizTags, setQuizTags] = useState<string[]>([])
+  const [attemptTags, setAttemptTags] = useState<Set<string>>(new Set<string>())
   const { user } = useTSelector((state) => state.auth)
 
   const {
@@ -64,8 +67,34 @@ const TryQuiz: NextPage<Props> = ({ quizProp }) => {
   }, [qIndex, quiz])
 
   useEffect(() => {
-    if (quiz) setQuizLength(Math.min(quiz.questions.length, 5))
+    setQuizLength((curr) =>
+      curr == 0 ? Math.min(5, maxLength) : Math.min(curr, maxLength)
+    )
+  }, [maxLength])
+
+  useEffect(() => {
+    if (quiz) {
+      setQuizLength(Math.min(quiz.questions.length, 5))
+      const tagsSet = quiz.questions.reduce((set, q) => {
+        q.tags.forEach((t) => {
+          if (!set.has(t)) set.add(t)
+        })
+        return set
+      }, new Set<string>())
+      setQuizTags(Array.from(tagsSet))
+      setAttemptTags(tagsSet)
+    }
   }, [quiz])
+
+  const handleTag = (tag: string) => {
+    if (!quiz) return
+    const tags = new Set(attemptTags)
+    tags.has(tag) ? tags.delete(tag) : tags.add(tag)
+    setAttemptTags(tags)
+    setMaxLength(
+      quiz.questions.filter((q) => q.tags.some((t) => tags.has(t))).length
+    )
+  }
 
   const handleAnswer = (idx: number) => {
     setAnswers((prev) => {
@@ -96,7 +125,7 @@ const TryQuiz: NextPage<Props> = ({ quizProp }) => {
 
   const start = () => {
     setQuestionTime(dayjs())
-    dispatch(startQuiz(quizLength))
+    dispatch(startQuiz({ length: quizLength, tags: Array.from(attemptTags) }))
   }
 
   const endQuiz = async () => {
@@ -194,7 +223,11 @@ const TryQuiz: NextPage<Props> = ({ quizProp }) => {
                     type="number"
                     value={quizLength}
                     onChange={(e) => setQuizLength(Number(e.target.value))}
-                    max={quiz.questions.length}
+                    max={
+                      quiz.questions.filter((q) =>
+                        q.tags.some((t) => attemptTags.has(t))
+                      ).length
+                    }
                     min={1}
                   />
                 ) : (
@@ -203,9 +236,29 @@ const TryQuiz: NextPage<Props> = ({ quizProp }) => {
                 questions à{" "}
                 {quiz?.singleAnswer ? "réponse unique" : "réponses multiples"}
               </p>
-              <button className="button w-fit" onClick={start}>
+              <button
+                className="button w-fit"
+                disabled={attemptTags.size == 0}
+                onClick={start}
+              >
                 Commencer !
               </button>
+              <div className="w-clamp">
+                <p className="text-center">Catégories de questions</p>
+                <div className="flex flex-wrap justify-center gap-2">
+                  {quizTags.map((tag) => (
+                    <span
+                      key={tag}
+                      onClick={() => handleTag(tag)}
+                      className={`py-1 px-3 rounded-full ${
+                        attemptTags.has(tag) ? "bg-main-100" : "bg-main-50"
+                      } text-white text-sm cursor-pointer`}
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
             </div>
           </>
         )}
