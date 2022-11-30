@@ -214,6 +214,7 @@ const CreateQuiz: NextPage<Props> = ({ quiz, quizId }) => {
               <div>
                 <p>Catégories (3 max)</p>
                 <CategoryBox
+                  max={3}
                   categories={categories}
                   selected={selected}
                   select={select}

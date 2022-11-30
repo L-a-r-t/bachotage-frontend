@@ -9,6 +9,7 @@ export default function CategoryBox({
   selected: _selected,
   select,
   unselect,
+  max,
 }: Props) {
   const [query, setQuery] = useState("")
 
@@ -49,7 +50,7 @@ export default function CategoryBox({
               ) || category}
             </span>
           ))}
-          {_selected.length < 3 && (
+          {_selected.length < max && (
             <>
               <Combobox.Input
                 className="bg-transparent border-b border-main-100 text-sm w-24 leading-5 text-gray-900"
@@ -117,4 +118,5 @@ type Props = {
   selected: string[]
   select: (option: string) => void
   unselect: (option: string) => void
+  max: number
 }
