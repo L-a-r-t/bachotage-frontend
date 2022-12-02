@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit"
 import type { PayloadAction } from "@reduxjs/toolkit"
 import { Answer, AppQuiz, DBQuiz, Change } from "types/quiz"
-import { randomize } from "../utils/functions"
+import { check, randomize } from "../utils/functions"
 import { Attempt, AttemptQuestion } from "types/user"
 
 // Define a type for the slice state
@@ -80,14 +80,19 @@ export const quizSlice = createSlice({
     },
     startQuiz: (
       state,
-      action: PayloadAction<{ length: number; tags: string[] }>
+      action: PayloadAction<{ length: number; tags: string[]; filter: boolean }>
     ) => {
-      const { length, tags } = action.payload
+      const { length, tags, filter } = action.payload
       if (state.quiz)
         state.quiz = {
           ...state.quiz,
           questions: state.quiz.questions
-            .filter((q) => q.tags.some((t) => tags.includes(t)))
+            .filter((q) =>
+              check(
+                q.tags.some((t) => tags.includes(t)),
+                filter
+              )
+            )
             .slice(0, length),
         }
       state.dbIndex = state.quiz?.questions[state.qIndex + 1]?.index ?? 0

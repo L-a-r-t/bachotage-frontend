@@ -113,3 +113,12 @@ export function randomRange(min: number, max: number) {
   const random = Math.floor(Math.random() * (max - min) + min)
   return random
 }
+
+/**
+ *
+ * @param value The boolean to compare to b
+ * @returns True if booleans are equal
+ */
+export function check(value: boolean, b: boolean) {
+  return b ? value : !value
+}

@@ -32,6 +32,9 @@ import { AttemptQuestion } from "types/user"
 import WithSlideInHeader from "components/Layout/WithSlideInHeader"
 import Spinner from "components/UI/Spinner"
 import Link from "next/link"
+import { useToggle } from "hooks/index"
+import { check } from "utils/functions"
+import { faCircleQuestion } from "@fortawesome/free-regular-svg-icons/faCircleQuestion"
 
 const TryQuiz: NextPage<Props> = ({ quizProp }) => {
   const dispatch = useTDispatch()
@@ -41,6 +44,7 @@ const TryQuiz: NextPage<Props> = ({ quizProp }) => {
   const [maxLength, setMaxLength] = useState(quizProp?.questions.length ?? 1)
   const [quizTags, setQuizTags] = useState<string[]>([])
   const [attemptTags, setAttemptTags] = useState<Set<string>>(new Set<string>())
+  const [inclusive, toggleInclusive] = useToggle(true)
   const { user } = useTSelector((state) => state.auth)
 
   const {
@@ -73,6 +77,17 @@ const TryQuiz: NextPage<Props> = ({ quizProp }) => {
   }, [maxLength])
 
   useEffect(() => {
+    if (!quiz) return
+    const newTags = new Set(quizTags.filter((tag) => !attemptTags.has(tag)))
+    setAttemptTags(newTags)
+    setMaxLength(
+      quiz.questions.filter((q) =>
+        q.tags.some((t) => check(newTags.has(t), inclusive))
+      ).length
+    )
+  }, [inclusive])
+
+  useEffect(() => {
     if (quiz) {
       setQuizLength(Math.min(quiz.questions.length, 5))
       const tagsSet = quiz.questions.reduce((set, q) => {
@@ -92,7 +107,9 @@ const TryQuiz: NextPage<Props> = ({ quizProp }) => {
     tags.has(tag) ? tags.delete(tag) : tags.add(tag)
     setAttemptTags(tags)
     setMaxLength(
-      quiz.questions.filter((q) => q.tags.some((t) => tags.has(t))).length
+      quiz.questions.filter((q) =>
+        q.tags.some((t) => check(tags.has(t), inclusive))
+      ).length
     )
   }
 
@@ -125,7 +142,13 @@ const TryQuiz: NextPage<Props> = ({ quizProp }) => {
 
   const start = () => {
     setQuestionTime(dayjs())
-    dispatch(startQuiz({ length: quizLength, tags: Array.from(attemptTags) }))
+    dispatch(
+      startQuiz({
+        length: quizLength,
+        tags: Array.from(attemptTags),
+        filter: inclusive,
+      })
+    )
   }
 
   const endQuiz = async () => {
@@ -225,7 +248,7 @@ const TryQuiz: NextPage<Props> = ({ quizProp }) => {
                     onChange={(e) => setQuizLength(Number(e.target.value))}
                     max={
                       quiz.questions.filter((q) =>
-                        q.tags.some((t) => attemptTags.has(t))
+                        q.tags.some((t) => check(attemptTags.has(t), inclusive))
                       ).length
                     }
                     min={1}
@@ -238,13 +261,40 @@ const TryQuiz: NextPage<Props> = ({ quizProp }) => {
               </p>
               <button
                 className="button w-fit"
-                disabled={attemptTags.size == 0}
+                disabled={quizLength == 0}
                 onClick={start}
               >
                 Commencer !
               </button>
               <div className="w-clamp">
-                <p className="text-center">Catégories de questions</p>
+                <div className="flex justify-center items-center gap-2 my-4">
+                  <Popup
+                    position="up"
+                    popup="Les catégories de questions à inclure/exclure de votre tentative."
+                  >
+                    Filtres <FontAwesomeIcon icon={faCircleQuestion} />
+                  </Popup>
+                  <div onClick={() => toggleInclusive()}>
+                    <button
+                      className={`px-2 py-0.5 rounded-l ${
+                        inclusive
+                          ? "bg-green-main text-white"
+                          : "bg-white text-main-100"
+                      } text-sm`}
+                    >
+                      Inclusifs
+                    </button>
+                    <button
+                      className={`px-2 py-0.5 rounded-r ${
+                        inclusive
+                          ? "bg-white text-main-100"
+                          : "bg-red-main text-white"
+                      } text-sm`}
+                    >
+                      Exclusifs
+                    </button>
+                  </div>
+                </div>
                 <div className="flex flex-wrap justify-center gap-2">
                   {quizTags.map((tag) => (
                     <span
