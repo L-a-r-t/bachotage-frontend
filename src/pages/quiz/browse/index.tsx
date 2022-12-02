@@ -58,7 +58,7 @@ const BrowseQuiz: NextPage = () => {
           },
         }}
       >
-        <div className="w-clamp-xl flex flex-col mx-auto h-fit-screen gap-4 py-4">
+        <div className="w-clamp-xl flex flex-col mx-auto min-h-fit-screen gap-4 py-4">
           <div className="flex flex-col md:flex-row md:justify-center gap-4 flex-grow">
             <SearchWidget
               categories={categories}

@@ -33,7 +33,7 @@ export default function Popup({ children, position, popup }: PopupProps) {
       >
         <div className={`absolute ${pos[position]} z-20`}>
           <div
-            className={`rounded text-sm py-1 px-2 bg-slate-900 text-white bg-opacity-80 w-max max-w-sm`}
+            className={`rounded text-sm py-1 px-2 bg-slate-900 text-white bg-opacity-80 w-max max-w-[16rem] sm:max-w-sm`}
           >
             {popup}
           </div>
