@@ -552,32 +552,34 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
                 )
               ) : userHistory.attempts.length > 0 ? (
                 <div className="responsiveLayout">
-                  <Bar
-                    options={{
-                      responsive: true,
-                      indexAxis: "y",
-                      parsing: {
-                        xAxisKey: "stat",
-                        yAxisKey: "tag",
-                      },
-                    }}
-                    data={{
-                      labels: userHistory.stats.byTag.map((tag) => tag.tag),
-                      datasets: [
-                        {
-                          label: "Taux de réussite",
-                          data: userHistory.stats.byTag.map((tag) => ({
-                            tag: tag.tag,
-                            stat:
-                              Math.round(
-                                (tag.score * 100) / tag.questions.length
-                              ) / 100,
-                          })),
-                          backgroundColor: "rgb(17, 94, 87)",
+                  {userHistory.stats.byTag.length > 0 && (
+                    <Bar
+                      options={{
+                        responsive: true,
+                        indexAxis: "y",
+                        parsing: {
+                          xAxisKey: "stat",
+                          yAxisKey: "tag",
                         },
-                      ],
-                    }}
-                  />
+                      }}
+                      data={{
+                        labels: userHistory.stats.byTag.map((tag) => tag.tag),
+                        datasets: [
+                          {
+                            label: "Taux de réussite",
+                            data: userHistory.stats.byTag.map((tag) => ({
+                              tag: tag.tag,
+                              stat:
+                                Math.round(
+                                  (tag.score * 100) / tag.questions.length
+                                ) / 100,
+                            })),
+                            backgroundColor: "rgb(17, 94, 87)",
+                          },
+                        ],
+                      }}
+                    />
+                  )}
                   <Bar
                     ref={chartRef}
                     onClick={onHistoryClick}
