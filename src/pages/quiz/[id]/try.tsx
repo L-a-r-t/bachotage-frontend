@@ -77,7 +77,7 @@ const TryQuiz: NextPage<Props> = ({ quizProp }) => {
   }, [maxLength])
 
   useEffect(() => {
-    if (!quiz) return
+    if (!quiz || quizTags.length == 0) return
     const newTags = new Set(quizTags.filter((tag) => !attemptTags.has(tag)))
     setAttemptTags(newTags)
     setMaxLength(

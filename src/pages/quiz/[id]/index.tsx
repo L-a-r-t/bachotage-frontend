@@ -70,6 +70,8 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
   const chartRef = useRef<any>()
   const timesRef = useRef<any>()
   const [message, setMessage] = useState("")
+  const [longAnswers, setLongAnswers] = useState(false)
+  const [page, setPage] = useState(1)
   const { sendMsg: send, loading, voteMsg } = useMessage()
   const { user } = useTSelector((state) => state.auth)
   const { data: userHistory, isLoading } = useGetQuizHistoryQuery({
@@ -108,6 +110,15 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
       )
     })()
   }, [discussion, discussionQuizId, user])
+
+  useEffect(() => {
+    if (!quiz) return
+    const newPage = pProps.currentPage - 1
+    setPage(newPage)
+    setLongAnswers(
+      quiz.questions[newPage].answers.some((ans) => ans.text.length > 64)
+    )
+  }, [pProps.currentPage, quiz])
 
   const sendMsg = protect(async () => {
     const msg = message
@@ -387,54 +398,50 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
                       />
                     </div>
                     <div className="flex flex-wrap gap-2">
-                      {quiz.questions[pProps.currentPage - 1].tags?.map(
-                        (tag) => (
-                          <span
-                            className="py-1 px-2 bg-main-50 text-white text-sm rounded-full"
-                            key={tag}
-                          >
-                            {tag}
-                          </span>
-                        )
-                      )}
+                      {quiz.questions[page].tags?.map((tag) => (
+                        <span
+                          className="py-1 px-2 bg-main-50 text-white text-sm rounded-full"
+                          key={tag}
+                        >
+                          {tag}
+                        </span>
+                      ))}
                     </div>
                     <p className="text-center text-xl">
-                      <Latex>
-                        {quiz.questions[pProps.currentPage - 1].prompt}
-                      </Latex>
+                      <Latex>{quiz.questions[page].prompt}</Latex>
                     </p>
                     <div className="flex flex-col justify-between items-center gap-4">
-                      <span className="flex flex-col w-full md:w-auto md:flex-row md:justify-center md:flex-wrap gap-4">
-                        {quiz.questions[pProps.currentPage - 1].answers.map(
-                          (ans) => (
-                            <button
-                              key={ans.text}
-                              type="button"
-                              className={`relative button min-w-36 md:max-w-1/4 justify-center bg-transparent
+                      <span
+                        className={`flex flex-col w-full ${
+                          longAnswers
+                            ? ""
+                            : "md:w-auto md:flex-row md:justify-center md:flex-wrap"
+                        } gap-4`}
+                      >
+                        {quiz.questions[page].answers.map((ans) => (
+                          <button
+                            key={ans.text}
+                            type="button"
+                            className={`relative button min-w-36 ${
+                              longAnswers ? "" : "md:max-w-1/4"
+                            } justify-center bg-transparent
                               ${
                                 ans.correct
                                   ? "border-2 border-green-main text-green-main"
                                   : "border border-blue-main text-blue-main"
                               } cursor-default text-sm`}
-                            >
-                              <Latex>{ans.text}</Latex>
-                            </button>
-                          )
-                        )}
+                          >
+                            <Latex>{ans.text}</Latex>
+                          </button>
+                        ))}
                       </span>
                     </div>
                     <div className="flex flex-col gap-4">
-                      {userHistory?.stats.timeAverages[
-                        pProps.currentPage - 1
-                      ] ? (
+                      {userHistory?.stats.timeAverages[page] ? (
                         <span className="text-center">
                           Vous passez en moyenne{" "}
                           <span className="font-bold">
-                            {formatTime(
-                              userHistory.stats.timeAverages[
-                                pProps.currentPage - 1
-                              ]
-                            )}{" "}
+                            {formatTime(userHistory.stats.timeAverages[page])}{" "}
                           </span>
                           sur cette question
                         </span>
@@ -458,7 +465,7 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
                         <textarea
                           className="input bg-main-10 border-none resize-none pr-8 hidden group-hover:block focus-visible:block placeholder:text-black/50"
                           placeholder={
-                            discussion[pProps.currentPage - 1].length == 0
+                            discussion[page].length == 0
                               ? "Posez une question ou donnez une explication"
                               : "Contribuez à la discussion"
                           }
@@ -498,20 +505,17 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
                           />
                         </span>
                       </div>
-                      {sortMessages(
-                        discussion[pProps.currentPage - 1],
-                        currentSort
-                      ).map((m) => (
+                      {sortMessages(discussion[page], currentSort).map((m) => (
                         <Message
                           key={`m${m.index}`}
                           message={m}
                           index={m.index}
-                          qIndex={pProps.currentPage - 1}
+                          qIndex={page}
                           voteMsg={voteMsg}
                           loading={loading}
                         />
                       ))}
-                      {discussion[pProps.currentPage - 1].length == 0 && (
+                      {discussion[page].length == 0 && (
                         <p className="text-center">
                           {
                             "Il n'y pas encore de messages au sujet de cette question"
@@ -522,10 +526,7 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
                   </div>
                   <div className="relative flex flex-col items-stretch md:w-72 pt-8">
                     <div className="md:sticky md:top-4 bg-main-10 p-4 min-h-48 rounded">
-                      <ProposedChange
-                        quiz={quiz}
-                        qIndex={pProps.currentPage - 1}
-                      />
+                      <ProposedChange quiz={quiz} qIndex={page} />
                     </div>
                     <div className="flex-grow" />
                   </div>
@@ -551,32 +552,34 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
                 )
               ) : userHistory.attempts.length > 0 ? (
                 <div className="responsiveLayout">
-                  <Bar
-                    options={{
-                      responsive: true,
-                      indexAxis: "y",
-                      parsing: {
-                        xAxisKey: "stat",
-                        yAxisKey: "tag",
-                      },
-                    }}
-                    data={{
-                      labels: userHistory.stats.byTag.map((tag) => tag.tag),
-                      datasets: [
-                        {
-                          label: "Taux de réussite",
-                          data: userHistory.stats.byTag.map((tag) => ({
-                            tag: tag.tag,
-                            stat:
-                              Math.round(
-                                (tag.score * 100) / tag.questions.length
-                              ) / 100,
-                          })),
-                          backgroundColor: "rgb(17, 94, 87)",
+                  {userHistory.stats.byTag.length > 0 && (
+                    <Bar
+                      options={{
+                        responsive: true,
+                        indexAxis: "y",
+                        parsing: {
+                          xAxisKey: "stat",
+                          yAxisKey: "tag",
                         },
-                      ],
-                    }}
-                  />
+                      }}
+                      data={{
+                        labels: userHistory.stats.byTag.map((tag) => tag.tag),
+                        datasets: [
+                          {
+                            label: "Taux de réussite",
+                            data: userHistory.stats.byTag.map((tag) => ({
+                              tag: tag.tag,
+                              stat:
+                                Math.round(
+                                  (tag.score * 100) / tag.questions.length
+                                ) / 100,
+                            })),
+                            backgroundColor: "rgb(17, 94, 87)",
+                          },
+                        ],
+                      }}
+                    />
+                  )}
                   <Bar
                     ref={chartRef}
                     onClick={onHistoryClick}

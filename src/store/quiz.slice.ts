@@ -86,14 +86,17 @@ export const quizSlice = createSlice({
       if (state.quiz)
         state.quiz = {
           ...state.quiz,
-          questions: state.quiz.questions
-            .filter((q) =>
-              check(
-                q.tags.some((t) => tags.includes(t)),
-                filter
-              )
-            )
-            .slice(0, length),
+          questions:
+            tags.length > 0
+              ? state.quiz.questions
+                  .filter((q) =>
+                    check(
+                      q.tags.some((t) => tags.includes(t)),
+                      filter
+                    )
+                  )
+                  .slice(0, length)
+              : state.quiz.questions.slice(0, length),
         }
       state.dbIndex = state.quiz?.questions[state.qIndex + 1]?.index ?? 0
       state.qIndex++
