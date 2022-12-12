@@ -1,34 +1,32 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# (QOAT (Quizzes Of All Time))[https://www.qoat.fr/]
 
-## Getting Started
+<img width="946" alt="Capture d’écran 2022-12-11 184950" src="https://user-images.githubusercontent.com/104721818/207087010-c2370483-e9f7-49f4-8ed5-244c753e850e.png">
 
-First, run the development server:
+QOAT is on online platform for creating, passing and discussing online quizzes. The platform allows for collaborative correction of quizzes. This is a fullstack personal project (wireframed, designed & developped by myself) that has been used in a real environment.
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+<img width="947" alt="Capture d’écran 2022-12-11 185220" src="https://user-images.githubusercontent.com/104721818/207087075-87b11d12-0470-47b8-aea9-18638e105091.png">
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Features
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+- Creating a quiz
+- Search quizzes (by name/category)
+- Attempts history and statistics
+- Filter questions by type during an attempt & on statistics
+- Discussion forum for each quiz
+- Possibility for collaborative correction of questions
+- KaTeX support
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+<img width="960" alt="Capture d’écran 2022-12-12 162648" src="https://user-images.githubusercontent.com/104721818/207087119-26b6fed9-e324-46c8-a9f4-fa841f92afbe.png">
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+## Tools used
 
-## Learn More
+- Typescript
+- Nextjs
+- Redux & RTK query
+- TailwindCSS & HeadlessUI
+- Firebase (auth, database, cloud functions)
+- Algolia
 
-To learn more about Next.js, take a look at the following resources:
+## Main challenges
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Among other things, implementing an auth process that's as frictionless as possible from an UX standpoint required a lot of prototyping & incremental upgrades. This was also my first time with Algolia and building a custom UI for it's instant search API had me spend quite an hefty amount of time in the docs.
