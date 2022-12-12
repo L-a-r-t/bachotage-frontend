@@ -68,12 +68,12 @@ export default function DiscussQuestion({ quiz: _quiz, qIndex }: Props) {
           <Tab.Panel className="h-full max-h-[calc(100%-2.5rem)] flex flex-col justify-between">
             <div className="flex flex-col gap-2 mt-4 sm:px-4 pb-4 overflow-y-auto flex-shrink">
               <h2>Question #{qIndex + 1}</h2>
-              {discussion[qIndex].length == 0 && (
+              {discussion.messages[qIndex].length == 0 && (
                 <p>
                   {"Il n'y pas encore de messages au sujet de cette question"}
                 </p>
               )}
-              {discussion[qIndex].map((m, idx) => (
+              {discussion.messages[qIndex].map((m, idx) => (
                 <SentMessage
                   key={`md${idx}${m.authorId}`}
                   message={m}
@@ -93,7 +93,7 @@ export default function DiscussQuestion({ quiz: _quiz, qIndex }: Props) {
                 <textarea
                   className="input border-none bg-main-10 hidden group-hover:block focus-visible:block placeholder:text-black/50 pr-8"
                   placeholder={
-                    discussion[qIndex].length == 0
+                    discussion.messages[qIndex].length == 0
                       ? "Posez une question ou donnez une explication"
                       : "Ecrire un message..."
                   }

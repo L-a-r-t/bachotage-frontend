@@ -18,3 +18,7 @@ export type Tip = {
   upvotes: number
   downvotes: number
 }
+
+export type Indexable<T> = {
+  [index: number]: T
+}

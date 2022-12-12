@@ -1,6 +1,8 @@
 import { NextPage } from "next"
 import { useState } from "react"
 import dayjs from "dayjs"
+import { httpsCallable } from "firebase/functions"
+import { functions } from "firebaseconfig/index"
 
 const MathPage: NextPage = () => {
   const [matrix, setMatrix] = useState<number[][]>([])
@@ -32,8 +34,16 @@ const MathPage: NextPage = () => {
     setInv(getInv(matrix))
   }
 
+  const updateDB = async () => {
+    const func = httpsCallable(functions, "updateDiscussions")
+    await func()
+  }
+
   return (
     <div className="responsiveLayout">
+      <button className="button" onClick={updateDB}>
+        Update database
+      </button>
       <span className="flex justify-center gap-4">
         <button className="button" onClick={() => newMatrix(2)}>
           Matrice 2x2

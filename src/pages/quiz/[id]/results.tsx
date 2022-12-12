@@ -27,6 +27,7 @@ import { DBQuiz } from "types/quiz"
 import WithSlideInHeader from "components/Layout/WithSlideInHeader"
 import Link from "next/link"
 import TipOfTheDay from "components/UI/Tip"
+import { Discussion } from "types/discuss"
 
 const QuizResults: NextPage<Props> = ({ attempt: _attempt, quiz: _quiz }) => {
   const dispatch = useTDispatch()
@@ -98,14 +99,17 @@ const QuizResults: NextPage<Props> = ({ attempt: _attempt, quiz: _quiz }) => {
     else dispatch(setDiscussion(null))
     if (!user) return
     ;(async () => {
-      const getDiscussion = httpsCallable(functions, "getDiscussion")
+      const getDiscussion = httpsCallable<any, Discussion>(
+        functions,
+        "getDiscussion"
+      )
       const newDiscussion = (
         await getDiscussion({ quizId: router.query.id as string })
       ).data
       if (!newDiscussion) return
       dispatch(
         setDiscussion({
-          discussion: Object.values(newDiscussion),
+          discussion: newDiscussion,
           quizId: router.query.id as string,
         })
       )

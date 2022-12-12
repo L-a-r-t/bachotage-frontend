@@ -51,6 +51,7 @@ import { Bar, Line, getElementAtEvent } from "react-chartjs-2"
 import dayjs from "dayjs"
 import AnimatedCount from "components/UI/AnimatedCount"
 import TipOfTheDay from "components/UI/Tip"
+import { Discussion } from "types/discuss"
 
 ChartJS.register(
   CategoryScale,
@@ -99,12 +100,15 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
     else dispatch(setDiscussion(null))
     if (!user) return
     ;(async () => {
-      const getDiscussion = httpsCallable(functions, "getDiscussion")
+      const getDiscussion = httpsCallable<any, Discussion>(
+        functions,
+        "getDiscussion"
+      )
       const newDiscussion = (await getDiscussion({ quizId })).data
       if (!newDiscussion) return
       dispatch(
         setDiscussion({
-          discussion: Object.values(newDiscussion),
+          discussion: newDiscussion,
           quizId: quizId as string,
         })
       )
@@ -465,7 +469,7 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
                         <textarea
                           className="input bg-main-10 border-none resize-none pr-8 hidden group-hover:block focus-visible:block placeholder:text-black/50"
                           placeholder={
-                            discussion[page].length == 0
+                            discussion.messages[page].length == 0
                               ? "Posez une question ou donnez une explication"
                               : "Contribuez à la discussion"
                           }
@@ -505,17 +509,19 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
                           />
                         </span>
                       </div>
-                      {sortMessages(discussion[page], currentSort).map((m) => (
-                        <Message
-                          key={`m${m.index}`}
-                          message={m}
-                          index={m.index}
-                          qIndex={page}
-                          voteMsg={voteMsg}
-                          loading={loading}
-                        />
-                      ))}
-                      {discussion[page].length == 0 && (
+                      {sortMessages(discussion.messages[page], currentSort).map(
+                        (m) => (
+                          <Message
+                            key={`m${m.index}`}
+                            message={m}
+                            index={m.index}
+                            qIndex={page}
+                            voteMsg={voteMsg}
+                            loading={loading}
+                          />
+                        )
+                      )}
+                      {discussion.messages[page].length == 0 && (
                         <p className="text-center">
                           {
                             "Il n'y pas encore de messages au sujet de cette question"
