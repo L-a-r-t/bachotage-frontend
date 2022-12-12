@@ -1,10 +1,15 @@
-import { Timestamp } from "."
+import { Indexable, Timestamp } from "."
 
-export type Feed = {
+export type Discussion = {
   quizName: string
-  question: number
-  questionPrompt: string
-  messages: Message[]
+  following: boolean
+  messages: Indexable<Message[]>
+}
+
+export type DBDiscussion = {
+  quizName: string
+  following: string[]
+  messages: Indexable<DBMessage[]>
 }
 
 export type Message = {
@@ -27,7 +32,7 @@ export type DBMessage = {
   published: Timestamp
   lastEdited?: number
   score: number
-  vote: { [uid: string]: number }
+  vote: { [uid: string]: -1 | 0 | 1 }
 }
 
 export type SortedMessage = Message & {

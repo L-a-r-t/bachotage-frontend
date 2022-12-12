@@ -1,10 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit"
 import type { PayloadAction } from "@reduxjs/toolkit"
-import { Message } from "types/discuss"
+import { Discussion, Message } from "types/discuss"
 
 // Define a type for the slice state
 type DiscussionState = {
-  discussion: Message[][] | null
+  discussion: Discussion | null
   currentSort: "recent" | "old" | "relevant"
   discussionQuizId: string
 }
@@ -28,7 +28,7 @@ export const discussionSlice = createSlice({
     },
     setDiscussion: (
       state,
-      action: PayloadAction<{ discussion: Message[][]; quizId: string } | null>
+      action: PayloadAction<{ discussion: Discussion; quizId: string } | null>
     ) => {
       if (action.payload === null) {
         state.discussion = action.payload
@@ -44,7 +44,7 @@ export const discussionSlice = createSlice({
     ) => {
       if (!state.discussion) return
       const { msg, qIndex } = action.payload
-      state.discussion[qIndex].push(msg)
+      state.discussion.messages[qIndex].push(msg)
     },
     voteMessage: (
       state,
@@ -56,9 +56,9 @@ export const discussionSlice = createSlice({
     ) => {
       if (!state.discussion) return
       const { vote, msgIndex, qIndex } = action.payload
-      const delta = vote - state.discussion[qIndex][msgIndex].vote
-      state.discussion[qIndex][msgIndex].score += delta
-      state.discussion[qIndex][msgIndex].vote = vote
+      const delta = vote - state.discussion.messages[qIndex][msgIndex].vote
+      state.discussion.messages[qIndex][msgIndex].score += delta
+      state.discussion.messages[qIndex][msgIndex].vote = vote
     },
   },
 })
