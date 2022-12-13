@@ -247,11 +247,15 @@ const TryQuiz: NextPage<Props> = ({ quizProp }) => {
                     value={quizLength}
                     onChange={(e) => setQuizLength(Number(e.target.value))}
                     max={
-                      quiz.questions.filter((q) =>
-                        q.tags.some((t) => check(attemptTags.has(t), inclusive))
-                      ).length
+                      quizTags.length > 0
+                        ? quiz.questions.filter((q) =>
+                            q.tags.some((t) =>
+                              check(attemptTags.has(t), inclusive)
+                            )
+                          ).length
+                        : quiz.questions.length
                     }
-                    min={1}
+                    min={0}
                   />
                 ) : (
                   `${quiz.questions.length} `
