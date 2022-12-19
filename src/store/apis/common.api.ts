@@ -38,7 +38,9 @@ export const commonApi = createApi({
         try {
           const ref = doc(db, "global", "categories")
           const categoriesDoc = await getDoc(ref)
-          const data = categoriesDoc.data() as Category[]
+          const rawData = categoriesDoc.data()
+          if (!rawData) throw new Error("No categories document was found")
+          const data = Object.values(rawData) as Category[]
           return { data }
         } catch (error) {
           return { error }
