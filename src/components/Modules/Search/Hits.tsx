@@ -14,7 +14,7 @@ export default function Hits() {
   return (
     <div className="flex-grow h-full overflow-y-auto md:pr-4">
       {status == "loading" || status == "stalled" ? (
-        <div className="flex justify-center items-center overflow-visible">
+        <div className="flex justify-center items-center py-4 overflow-visible">
           <Spinner />
         </div>
       ) : (
