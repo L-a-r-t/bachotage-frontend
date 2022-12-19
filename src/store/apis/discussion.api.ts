@@ -18,7 +18,7 @@ export const discussionApi = createApi({
             functions,
             "getDiscussion"
           )
-          const data = (await getDiscussion(quizId)).data
+          const data = (await getDiscussion({ quizId })).data
           return { data }
         } catch (error) {
           return { error }
