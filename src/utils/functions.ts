@@ -1,8 +1,12 @@
-import dayjs from "dayjs"
+import dayjs, { Dayjs } from "dayjs"
 import { FirebaseError } from "firebase/app"
+import { NextRouter } from "next/router"
 import store from "store/index"
-import { setAlert, setModal } from "store/modal.slice"
+import { setAlert, setModal } from "store/reducers/modal.slice"
 import { Message, SortedMessage } from "types/discuss"
+import { Timestamp } from "types/index"
+import { DBQuiz } from "types/quiz"
+import { LightQuiz } from "types/user"
 
 /**
  * @param array
@@ -121,4 +125,29 @@ export function randomRange(min: number, max: number) {
  */
 export function check(value: boolean, b: boolean) {
   return b ? value : !value
+}
+
+export function toLightQuiz(quiz: DBQuiz, quizId: string) {
+  return {
+    ...quiz,
+    id: quizId,
+    questions: {
+      length: quiz.questions.length,
+    },
+  } as LightQuiz
+}
+
+export function timestamp(dayjs: Dayjs) {
+  return {
+    _seconds: dayjs.unix(),
+    _nanoseconds: 0,
+  } as Timestamp
+}
+
+export function getQuizId(router: NextRouter) {
+  const quizId = router.query.id
+  if (!quizId) {
+    throw new Error("No 'id' param in router query")
+  }
+  return quizId as string
 }
