@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faBars } from "@fortawesome/free-solid-svg-icons/faBars"
 import { useTDispatch, useTSelector } from "hooks/redux"
 import { Transition } from "@headlessui/react"
-import { setSideModal } from "store/modal.slice"
+import { setSideModal } from "store/reducers/modal.slice"
 import { Fragment } from "react"
 
 export default function MobileHeader() {

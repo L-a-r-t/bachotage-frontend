@@ -6,7 +6,7 @@ import { Transition } from "@headlessui/react"
 import dayjs from "dayjs"
 import { useToggle } from "hooks/index"
 import { useEffect, useState } from "react"
-import { useGetRandomTipQuery } from "store/globalApi"
+import { useGetRandomTipQuery } from "store/apis/common.api"
 import { doc, increment, updateDoc } from "firebase/firestore"
 import { db } from "firebaseconfig/index"
 

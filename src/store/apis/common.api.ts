@@ -1,11 +1,18 @@
 import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react"
-import { collection, getDocs, query, where } from "firebase/firestore"
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore"
 import { db } from "firebaseconfig/index"
-import { Tip } from "types/index"
+import { Category, Tip } from "types/index"
 import { randomRange } from "utils/functions"
 
-export const globalApi = createApi({
-  reducerPath: "globalApi",
+export const commonApi = createApi({
+  reducerPath: "commonApi",
   baseQuery: fakeBaseQuery(),
   endpoints: (build) => ({
     getRandomTip: build.query<Tip, { prevId: string }>({
@@ -26,7 +33,19 @@ export const globalApi = createApi({
         }
       },
     }),
+    getCategories: build.query<Category[], void>({
+      async queryFn() {
+        try {
+          const ref = doc(db, "global", "categories")
+          const categoriesDoc = await getDoc(ref)
+          const data = categoriesDoc.data() as Category[]
+          return { data }
+        } catch (error) {
+          return { error }
+        }
+      },
+    }),
   }),
 })
 
-export const { useGetRandomTipQuery } = globalApi
+export const { useGetRandomTipQuery, useGetCategoriesQuery } = commonApi

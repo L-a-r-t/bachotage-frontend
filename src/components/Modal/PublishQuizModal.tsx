@@ -1,41 +1,19 @@
-import {
-  doc,
-  FieldValue,
-  increment,
-  setDoc,
-  updateDoc,
-} from "firebase/firestore"
-import { db } from "firebaseconfig"
 import { useTDispatch, useTSelector } from "hooks/redux"
 import { useRouter } from "next/router"
-import { setAlert, setModal } from "store/modal.slice"
-import { useState } from "react"
-import { toSlug } from "utils/functions"
+import { setAlert, setModal } from "store/reducers/modal.slice"
 import { Category } from "types/index"
+import { usePublishQuizMutation } from "store/apis/quiz.api"
+import { getQuizId } from "utils/functions"
 
 export default function PublishQuizModal({ questions, categories }: Props) {
-  const [loading, setLoading] = useState(false)
+  const [publishQuiz] = usePublishQuizMutation()
   const dispatch = useTDispatch()
   const router = useRouter()
 
   const publish = async () => {
     try {
-      const quizId = router.query.id as string
-      const docRef = doc(db, "quizzes", quizId)
-      const discussionRef = doc(db, "discussions", quizId)
-      const categoriesRef = doc(db, "global", "categories")
-      const catUpdates = categories.reduce((acc, category) => {
-        acc[`${category.slug}.quizzes`] = increment(1)
-        return acc
-      }, {} as { [slug: string]: FieldValue })
-      const emptyArray = Object.assign({}, new Array(questions).fill([]))
-      const emptyObject = Object.assign({}, new Array(questions).fill(null))
-      setLoading(true)
-      await Promise.allSettled([
-        updateDoc(docRef, { published: true, changes: emptyObject }),
-        updateDoc(categoriesRef, catUpdates),
-        setDoc(discussionRef, emptyArray),
-      ])
+      const quizId = getQuizId(router)
+      await publishQuiz({ quizId, qCount: questions, categories })
       dispatch(setAlert({ message: "Quiz publié avec succés!" }))
       router.replace(`/quiz/${quizId}`)
     } catch (err) {
@@ -44,7 +22,6 @@ export default function PublishQuizModal({ questions, categories }: Props) {
       )
       console.error(err)
     } finally {
-      setLoading(false)
       dispatch(setModal({ modal: null }))
     }
   }

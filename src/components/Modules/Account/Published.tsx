@@ -3,7 +3,7 @@ import Spinner from "components/UI/Spinner"
 import { useProtect } from "hooks"
 import { useTSelector } from "hooks/redux"
 import Link from "next/link"
-import { useGetPublishedQuery } from "store/quizApi"
+import { useGetPublishedQuery } from "store/apis/quiz.api"
 
 export default function Published() {
   useProtect()

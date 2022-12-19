@@ -1,10 +1,9 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons/faEllipsisVertical"
 import Link from "next/link"
-import { DBQuiz } from "types/quiz"
 import DropdownPopup from "./DropdownPopup"
 import { useTDispatch } from "hooks/redux"
-import { setModal } from "store/modal.slice"
+import { setModal } from "store/reducers/modal.slice"
 import { LightQuiz } from "types/user"
 import Latex from "react-latex"
 

@@ -8,7 +8,7 @@ import { GetServerSideProps, NextPage } from "next"
 import Head from "next/head"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
-import { setAlert } from "store/modal.slice"
+import { setAlert } from "store/reducers/modal.slice"
 import { OnSigninReq, OnSigninRes } from "types/functions"
 
 const Authenticate: NextPage = ({ query }: any) => {

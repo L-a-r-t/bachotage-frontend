@@ -1,27 +1,20 @@
-import { doc, runTransaction } from "firebase/firestore"
-import { db } from "firebaseconfig"
 import { useTDispatch, useTSelector } from "hooks/redux"
 import { useRouter } from "next/router"
-import { setAlert, setModal } from "store/modal.slice"
-import { useState } from "react"
+import { setAlert, setModal } from "store/reducers/modal.slice"
 import { DBQuiz } from "types/quiz"
 import Spinner from "components/UI/Spinner"
+import { useDeleteDrafMutation } from "store/apis/quiz.api"
 
 export default function DeleteDraftModal({ quiz, quizId }: Props) {
-  const [loading, setLoading] = useState(false)
+  const [deleteDraft, { isLoading }] = useDeleteDrafMutation()
   const dispatch = useTDispatch()
   const { user } = useTSelector((state) => state.auth)
   const router = useRouter()
 
-  const deleteDraft = async () => {
+  const deleteQuiz = async () => {
     if (!user) return
-    const quizRef = doc(db, "quizzes", quizId)
-    const discussionRef = doc(db, "discussions", quizId)
     try {
-      setLoading(true)
-      await runTransaction(db, async (transaction) => {
-        transaction.delete(quizRef).delete(discussionRef)
-      })
+      await deleteDraft(quizId)
       dispatch(setAlert({ message: `"${quiz.name}" a bien été supprimé` }))
       if (router.asPath.includes("/account/quizzes?tab=2")) {
         router.reload()
@@ -32,8 +25,6 @@ export default function DeleteDraftModal({ quiz, quizId }: Props) {
     } catch (err) {
       dispatch(setAlert({ message: `Oups, il y a eu une erreur`, error: true }))
       console.error(err)
-    } finally {
-      setLoading(false)
     }
   }
 
@@ -47,8 +38,8 @@ export default function DeleteDraftModal({ quiz, quizId }: Props) {
         souhaitez-vous continuer ?
       </p>
       <div className="flex gap-4">
-        <button className="button bg-red-main" onClick={deleteDraft}>
-          Supprimer {loading && <Spinner white small />}
+        <button className="button bg-red-main" onClick={deleteQuiz}>
+          Supprimer {isLoading && <Spinner white small />}
         </button>
         <button
           className="button bg-main-20 text-main-100"

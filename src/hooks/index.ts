@@ -14,7 +14,7 @@ import { auth } from "firebaseconfig"
 import { clamp } from "utils/functions"
 import { useRouter } from "next/router"
 import { useState, useEffect } from "react"
-import { setAlert } from "store/modal.slice"
+import { setAlert } from "store/reducers/modal.slice"
 import { useTDispatch, useTSelector } from "./redux"
 
 export function useStepper(steps: number) {

@@ -1,15 +1,14 @@
 import { onAuthStateChanged } from "firebase/auth"
-import { doc, getDoc } from "firebase/firestore"
 import { useTDispatch } from "hooks/redux"
-import { useRouter } from "next/router"
 import { PropsWithChildren, useEffect } from "react"
-import { setAuth } from "store/auth.slice"
-import { setModal } from "store/modal.slice"
-import { UserData } from "types/user"
-import { auth, db } from "./firebaseconfig"
+import { useLazyGetUserDataQuery } from "store/apis/auth.api"
+import { setAuth } from "store/reducers/auth.slice"
+import { setModal } from "store/reducers/modal.slice"
+import { auth } from "./firebaseconfig"
 
 export default function AuthLayer({ children }: PropsWithChildren) {
   const dispatch = useTDispatch()
+  const [getUserData] = useLazyGetUserDataQuery()
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -20,8 +19,7 @@ export default function AuthLayer({ children }: PropsWithChildren) {
             username: localStorage.getItem("username") ?? "anon",
           })
         )
-        const userDoc = doc(db, "users", user.uid, "private", "data")
-        const userData = (await getDoc(userDoc)).data() as UserData | undefined
+        const userData = await getUserData(user.uid).unwrap()
         if (userData?.onboarded === false) {
           dispatch(setModal({ modal: "onboarding" }))
         }

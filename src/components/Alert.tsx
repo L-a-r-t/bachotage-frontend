@@ -1,7 +1,7 @@
 import { useTDispatch, useTSelector } from "hooks/redux"
 import { useEffect, useState } from "react"
 import { createPortal } from "react-dom"
-import { setAlert } from "store/modal.slice"
+import { setAlert } from "store/reducers/modal.slice"
 
 export default function Alert() {
   const dispatch = useTDispatch()

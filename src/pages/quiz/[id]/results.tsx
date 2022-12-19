@@ -4,9 +4,6 @@ import { faHouse } from "@fortawesome/free-solid-svg-icons/faHouse"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import AnimatedCount from "components/UI/AnimatedCount"
 import Pagination from "components/UI/Pagination"
-import dayjs from "dayjs"
-import { httpsCallable } from "firebase/functions"
-import { functions } from "firebaseconfig"
 import { ALPHABET } from "utils/consts"
 import { useTDispatch, useTSelector } from "hooks/redux"
 import usePagination from "hooks/usePagination"
@@ -15,9 +12,9 @@ import Head from "next/head"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 import Latex from "react-latex"
-import { setDiscussion } from "store/discussion.slice"
-import { setSideModal } from "store/modal.slice"
-import { toQuestion } from "store/quiz.slice"
+import { setDiscussion } from "store/reducers/discussion.slice"
+import { setSideModal } from "store/reducers/modal.slice"
+import { toQuestion } from "store/reducers/quiz.slice"
 import Popup from "components/UI/Popup"
 import { Popover, Transition } from "@headlessui/react"
 import { protect } from "utils/functions"
@@ -27,9 +24,13 @@ import { DBQuiz } from "types/quiz"
 import WithSlideInHeader from "components/Layout/WithSlideInHeader"
 import Link from "next/link"
 import TipOfTheDay from "components/UI/Tip"
-import { Discussion } from "types/discuss"
+import { useGetDiscussionQuery } from "store/apis/discussion.api"
 
-const QuizResults: NextPage<Props> = ({ attempt: _attempt, quiz: _quiz }) => {
+const QuizResults: NextPage<Props> = ({
+  attempt: _attempt,
+  quiz: _quiz,
+  quizId,
+}) => {
   const dispatch = useTDispatch()
   const { user } = useTSelector((state) => state.auth)
   const {
@@ -37,6 +38,7 @@ const QuizResults: NextPage<Props> = ({ attempt: _attempt, quiz: _quiz }) => {
     feedback,
     qIndex: _qIndex,
   } = useTSelector((state) => state.quiz)
+  const { data: rawDiscussion } = useGetDiscussionQuery(quizId)
   const { discussion, discussionQuizId } = useTSelector(
     (state) => state.discussion
   )
@@ -89,32 +91,25 @@ const QuizResults: NextPage<Props> = ({ attempt: _attempt, quiz: _quiz }) => {
 
   useEffect(() => {
     if (!attempt || !quiz) {
-      router.replace(`/quiz/${router.query.id}`)
+      router.replace(`/quiz/${quizId}`)
     }
     setMinutes(Math.floor((attempt?.time ?? 0) / 60))
   }, [attempt, quiz])
 
   useEffect(() => {
-    if (discussion && discussionQuizId == router.query.id) return
+    if (discussion && discussionQuizId == quizId) return
     else dispatch(setDiscussion(null))
     if (!user) return
     ;(async () => {
-      const getDiscussion = httpsCallable<any, Discussion>(
-        functions,
-        "getDiscussion"
-      )
-      const newDiscussion = (
-        await getDiscussion({ quizId: router.query.id as string })
-      ).data
-      if (!newDiscussion) return
+      if (!rawDiscussion) return
       dispatch(
         setDiscussion({
-          discussion: newDiscussion,
-          quizId: router.query.id as string,
+          discussion: rawDiscussion,
+          quizId: quizId as string,
         })
       )
     })()
-  }, [discussion, discussionQuizId, user])
+  }, [discussion, discussionQuizId, rawDiscussion, user])
 
   const showDiscussion = protect(() => {
     if (!quiz?.published) return
@@ -130,7 +125,7 @@ const QuizResults: NextPage<Props> = ({ attempt: _attempt, quiz: _quiz }) => {
       </Head>
       <div className="p-4 sm:p-8 h-screen">
         <div className="relative p-6 pt-10 sm:pt-6 min-h-full sm:h-full rounded-xl bg-main-10 flex flex-col justify-between items-center overflow-y-auto gap-6">
-          <Link href={`/quiz/${router.query.id as string}`} passHref>
+          <Link href={`/quiz/${quizId as string}`} passHref>
             <a>
               <h1 className="text-center text-xl sm:text-2xl font-bold">
                 Quiz: {quiz?.name}
@@ -139,7 +134,7 @@ const QuizResults: NextPage<Props> = ({ attempt: _attempt, quiz: _quiz }) => {
           </Link>
           {attempt && recap && (
             <>
-              <Link href={`/quiz/${router.query.id as string}`} passHref>
+              <Link href={`/quiz/${quizId as string}`} passHref>
                 <a className="absolute left-4 top-2 text-xl">
                   <FontAwesomeIcon icon={faHouse} />
                 </a>
@@ -325,6 +320,7 @@ export default QuizResults
 type Props = {
   attempt: Attempt | null
   quiz: DBQuiz | null
+  quizId: string
 }
 
 export const getServerSideProps: GetServerSideProps<Props> = async (
@@ -338,6 +334,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
       props: {
         attempt: null,
         quiz: null,
+        quizId: id,
       },
     }
   }
@@ -352,6 +349,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
     props: {
       attempt: attempt ?? null,
       quiz: quiz ?? null,
+      quizId: id,
     },
   }
 }
