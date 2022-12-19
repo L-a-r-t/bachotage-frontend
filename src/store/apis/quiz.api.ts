@@ -157,7 +157,7 @@ export const quizApi = createApi({
       },
     }),
     publishQuiz: build.mutation<void, PublishQuizArgs>({
-      async queryFn({ quizId, qCount, categories }) {
+      async queryFn({ quizId, qCount, quizName, categories }) {
         try {
           const docRef = doc(db, "quizzes", quizId)
           const discussionRef = doc(db, "discussions", quizId)
@@ -171,7 +171,11 @@ export const quizApi = createApi({
           await Promise.allSettled([
             updateDoc(docRef, { published: true, changes: emptyObject }),
             updateDoc(categoriesRef, catUpdates),
-            setDoc(discussionRef, emptyArray),
+            setDoc(discussionRef, {
+              messages: emptyArray,
+              following: [],
+              quizName,
+            }),
           ])
           return { data: undefined }
         } catch (error) {
@@ -216,4 +220,5 @@ type PublishQuizArgs = {
   qCount: number
   categories: Category[]
   quizId: string
+  quizName: string
 }

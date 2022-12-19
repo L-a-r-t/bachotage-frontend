@@ -46,7 +46,7 @@ const useMessage = () => {
       setLoading(true)
       const res = await Promise.all([
         updateDoc(docRef, {
-          [qIndex]: arrayUnion({
+          [`messages.${qIndex}`]: arrayUnion({
             ...msg,
             vote: { [user.uid]: 1 },
             published: timestamp(dayjs()),
@@ -75,7 +75,7 @@ const useMessage = () => {
       dispatch(voteMessage({ vote, msgIndex, qIndex }))
       await runTransaction(db, async (transaction) => {
         const doc = await transaction.get(docRef)
-        const data = doc.data()?.[qIndex] as any[]
+        const data = doc.data()?.messages[qIndex] as any[]
         const delta = vote - (data[msgIndex].vote[user.uid] ?? 0)
         const msg = {
           ...data[msgIndex],
@@ -83,7 +83,7 @@ const useMessage = () => {
           score: data[msgIndex].score + delta,
         }
         transaction.update(docRef, {
-          [qIndex]: [
+          [`messages.${qIndex}`]: [
             ...data.slice(0, msgIndex),
             msg,
             ...data.slice(msgIndex + 1),

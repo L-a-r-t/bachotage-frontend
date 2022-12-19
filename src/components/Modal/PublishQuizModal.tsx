@@ -5,7 +5,11 @@ import { Category } from "types/index"
 import { usePublishQuizMutation } from "store/apis/quiz.api"
 import { getQuizId } from "utils/functions"
 
-export default function PublishQuizModal({ questions, categories }: Props) {
+export default function PublishQuizModal({
+  questions,
+  categories,
+  quizName,
+}: Props) {
   const [publishQuiz] = usePublishQuizMutation()
   const dispatch = useTDispatch()
   const router = useRouter()
@@ -13,7 +17,7 @@ export default function PublishQuizModal({ questions, categories }: Props) {
   const publish = async () => {
     try {
       const quizId = getQuizId(router)
-      await publishQuiz({ quizId, qCount: questions, categories })
+      await publishQuiz({ quizId, qCount: questions, categories, quizName })
       dispatch(setAlert({ message: "Quiz publié avec succés!" }))
       router.replace(`/quiz/${quizId}`)
     } catch (err) {
@@ -52,4 +56,5 @@ export default function PublishQuizModal({ questions, categories }: Props) {
 type Props = {
   questions: number
   categories: Category[]
+  quizName: string
 }

@@ -106,7 +106,11 @@ const CreateQuiz: NextPage<Props> = ({ quiz, quizId }) => {
     dispatch(
       setModal({
         modal: "publishQuiz",
-        props: { questions: questions.length, categories: categories },
+        props: {
+          questions: questions.length,
+          categories: categories,
+          quizName: quiz?.name ?? "",
+        },
       })
     )
   }
