@@ -1,14 +1,13 @@
 import WithHeader from "components/Layout/WithHeader"
 import { NextPage } from "next"
 import { useEffect, useState } from "react"
-import { doc, getDoc } from "firebase/firestore"
-import { db } from "firebaseconfig/index"
 import { Category } from "types/index"
 import Head from "next/head"
 import algoliasearch from "algoliasearch/lite"
 import { InstantSearch } from "react-instantsearch-hooks-web"
 import SearchWidget from "components/Modules/Search/SearchWidget"
 import Hits from "components/Modules/Search/Hits"
+import { useGetCategoriesQuery } from "store/apis/common.api"
 
 const searchClient = algoliasearch(
   process.env.NEXT_PUBLIC_VERCEL_ENV == "production"
@@ -20,6 +19,7 @@ const searchClient = algoliasearch(
 )
 
 const BrowseQuiz: NextPage = () => {
+  const { data: rawCategories } = useGetCategoriesQuery()
   const [categories, setCategories] = useState([] as Category[])
   const [selectedCategory, setSelectedCategory] = useState("")
 
@@ -30,17 +30,14 @@ const BrowseQuiz: NextPage = () => {
 
   useEffect(() => {
     ;(async () => {
-      const ref = doc(db, "global", "categories")
-      const categoriesDoc = await getDoc(ref)
-      const data = categoriesDoc.data()
-      if (data)
+      if (rawCategories)
         setCategories(
-          Object.values(data)
+          Object.values(rawCategories)
             .filter((category) => category.quizzes > 0)
             .sort((a, b) => b.quizzes - a.quizzes)
         )
     })()
-  }, [])
+  }, [rawCategories])
 
   return (
     <WithHeader>

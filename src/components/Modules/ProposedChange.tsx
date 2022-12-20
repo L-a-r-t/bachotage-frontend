@@ -5,14 +5,14 @@ import { useTDispatch, useTSelector } from "hooks/redux"
 import Latex from "react-latex"
 import { DBQuiz } from "types/quiz"
 import { useState, useEffect } from "react"
-import { setAlert, setModal } from "store/modal.slice"
-import { voteChange as voteStoreChange } from "store/quiz.slice"
-import { doc, updateDoc } from "firebase/firestore"
-import { db, functions } from "firebaseconfig"
+import { setAlert, setModal } from "store/reducers/modal.slice"
+import { voteChange as voteStoreChange } from "store/reducers/quiz.slice"
 import { useRouter } from "next/router"
-import { httpsCallable } from "firebase/functions"
-import { TrackChangeVotesReq, TrackChangeVotesRes } from "types/functions"
-import { protect } from "utils/functions"
+import { getQuizId, protect } from "utils/functions"
+import {
+  useTrackChangeMutation,
+  useVoteChangeMutation,
+} from "store/apis/discussion.api"
 
 export default function ProposedChange({ quiz, qIndex }: Props) {
   const { user } = useTSelector((state) => state.auth)
@@ -22,7 +22,8 @@ export default function ProposedChange({ quiz, qIndex }: Props) {
     quiz.changes[qIndex]?.votes[user?.uid ?? ""] ??
       changes[qIndex]?.votes[user?.uid ?? ""]
   )
-  const [loading, setLoading] = useState(false)
+  const [sendVote] = useVoteChangeMutation()
+  const [trackVote] = useTrackChangeMutation()
   const dispatch = useTDispatch()
   const router = useRouter()
 
@@ -39,35 +40,29 @@ export default function ProposedChange({ quiz, qIndex }: Props) {
   const voteChange = protect(async (vote: -1 | 0 | 1) => {
     if (!user || !change) return
     const _vote = userVote === vote ? 0 : vote
+    setUserVote(_vote)
     try {
-      const docRef = doc(db, "quizzes", router.query.id as string)
-      const path = `changes.${qIndex}.votes.${user.uid}`
-      await updateDoc(docRef, {
-        [path]: _vote,
+      await sendVote({
+        uid: user.uid,
+        quizId: getQuizId(router),
+        qIndex,
+        vote: _vote,
       })
-      setUserVote(_vote)
       dispatch(voteStoreChange({ vote: _vote, uid: user.uid, index: qIndex }))
       dispatch(setAlert({ message: "Votre vote a été pris en compte" }))
-      setLoading(false)
-      const trackChangeVotes = httpsCallable<
-        TrackChangeVotesReq,
-        TrackChangeVotesRes
-      >(functions, "trackChangeVotes")
-      const res = await trackChangeVotes({
-        quizId: router.query.id as string,
-        changeIndex: qIndex,
-      })
-      console.log(res)
-      const resData = res.data
-      if (resData.status == "stale") return
-      if (resData.status == "valid")
+      const res = await trackVote({
+        quizId: getQuizId(router),
+        qIndex,
+      }).unwrap()
+      if (res.status == "stale") return
+      if (res.status == "valid")
         dispatch(
           setAlert({
             message:
               "La proposition a été retenue, merci pour votre contribution !",
           })
         )
-      if (resData.status == "invalid")
+      if (res.status == "invalid")
         dispatch(
           setAlert({
             message:
@@ -79,8 +74,6 @@ export default function ProposedChange({ quiz, qIndex }: Props) {
         setAlert({ message: "Oups ! Il y a eu une erreur", error: true })
       )
       console.error(err)
-    } finally {
-      setLoading(false)
     }
   })
 

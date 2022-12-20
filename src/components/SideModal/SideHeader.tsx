@@ -5,8 +5,8 @@ import { useTDispatch, useTSelector } from "hooks/redux"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { Fragment } from "react"
-import { setAuth } from "store/auth.slice"
-import { setAlert, setModal, setSideModal } from "store/modal.slice"
+import { setAuth } from "store/reducers/auth.slice"
+import { setAlert, setModal, setSideModal } from "store/reducers/modal.slice"
 
 export default function SideHeader() {
   const dispatch = useTDispatch()

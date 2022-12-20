@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit"
 import type { PayloadAction } from "@reduxjs/toolkit"
 import { Answer, AppQuiz, DBQuiz, Change } from "types/quiz"
-import { check, randomize } from "../utils/functions"
+import { check, randomize } from "utils/functions"
 import { Attempt, AttemptQuestion } from "types/user"
 
 // Define a type for the slice state

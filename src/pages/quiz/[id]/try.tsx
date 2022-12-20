@@ -7,7 +7,7 @@ import {
   previous,
   skip,
   startQuiz,
-} from "store/quiz.slice"
+} from "store/reducers/quiz.slice"
 import { useTDispatch, useTSelector } from "hooks/redux"
 import { Change, DBQuiz } from "types/quiz"
 import Head from "next/head"
@@ -15,7 +15,7 @@ import { useRouter } from "next/router"
 import { ALPHABET } from "utils/consts"
 import dayjs from "dayjs"
 import { adminDB } from "firebaseconfig/admin"
-import { setAlert } from "store/modal.slice"
+import { setAlert } from "store/reducers/modal.slice"
 import Latex from "react-latex"
 import Popup from "components/UI/Popup"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -33,7 +33,7 @@ import WithSlideInHeader from "components/Layout/WithSlideInHeader"
 import Spinner from "components/UI/Spinner"
 import Link from "next/link"
 import { useToggle } from "hooks/index"
-import { check } from "utils/functions"
+import { check, getQuizId, timestamp } from "utils/functions"
 import { faCircleQuestion } from "@fortawesome/free-regular-svg-icons/faCircleQuestion"
 
 const TryQuiz: NextPage<Props> = ({ quizProp }) => {
@@ -179,10 +179,10 @@ const TryQuiz: NextPage<Props> = ({ quizProp }) => {
     const score = answersFeedback.reduce((acc, ans) => (acc += ans.score), 0)
     const time = answersFeedback.reduce((t, ans) => (t += ans.time), 0)
     const attempt = {
-      quizId: router.query.id as string,
+      quizId: getQuizId(router),
       quizName: quiz.name,
       quizVersion: quiz.version,
-      date: { _seconds: dayjs().unix(), _nanoseconds: 0 },
+      date: timestamp(dayjs()),
       score,
       time,
       questions: answersFeedback,
@@ -227,7 +227,7 @@ const TryQuiz: NextPage<Props> = ({ quizProp }) => {
                 Les questions de ce quiz ne sont pas encore corrigées.
                 Contribuez à la correction !
               </p>
-              <Link href={`/quiz/${router.query.id as string}`} passHref>
+              <Link href={`/quiz/${getQuizId(router)}`} passHref>
                 <a className="button w-fit">Retour au quiz</a>
               </Link>
             </div>

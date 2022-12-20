@@ -1,29 +1,30 @@
 import Spinner from "components/UI/Spinner"
-import { httpsCallable } from "firebase/functions"
-import { functions } from "firebaseconfig"
 import { useProtect } from "hooks"
+import { useTDispatch } from "hooks/redux"
 import { NextPage } from "next"
 import Head from "next/head"
 import { useRouter } from "next/router"
 import { useEffect } from "react"
-import { GenerateQuizReq, GenerateQuizRes } from "types/functions"
+import { useCreateQuizMutation } from "store/apis/quiz.api"
+import { setAlert } from "store/reducers/modal.slice"
 
 const GenerateQuiz: NextPage = () => {
   const { user, redirect } = useProtect()
   const router = useRouter()
+  const dispatch = useTDispatch()
+  const [createQuiz] = useCreateQuizMutation()
 
   useEffect(() => {
     ;(async () => {
-      if (!user) return
-      const generateQuiz = httpsCallable<GenerateQuizReq, GenerateQuizRes>(
-        functions,
-        "generateQuiz"
-      )
-      const { data } = await generateQuiz()
-      if (data.id) {
+      try {
+        if (!user) return
+        const data = await createQuiz(undefined).unwrap()
         router.push(`/quiz/create/${data.id}`)
-      } else {
-        console.error("Couldn't generate a quiz")
+      } catch (err) {
+        console.error(err)
+        dispatch(
+          setAlert({ message: "Oups ! Il y a eu un problème", error: true })
+        )
       }
     })()
   }, [])

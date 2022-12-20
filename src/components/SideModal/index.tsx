@@ -4,7 +4,7 @@ import { useTDispatch, useTSelector } from "../../hooks/redux"
 import {
   setSideModal,
   SideModal as SideModalTypes,
-} from "../../store/modal.slice"
+} from "store/reducers/modal.slice"
 import DiscussQuestion from "./DiscussQuestion"
 import SideHeader from "./SideHeader"
 

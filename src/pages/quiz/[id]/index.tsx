@@ -4,16 +4,17 @@ import { DBQuiz } from "types/quiz"
 import { Fragment, useEffect, useState, useRef } from "react"
 import { useTDispatch, useTSelector } from "hooks/redux"
 import { useRouter } from "next/router"
-import { setAlert, setModal } from "store/modal.slice"
+import { setAlert, setModal } from "store/reducers/modal.slice"
+import {
+  pickSortingOption,
+  setDiscussion,
+} from "store/reducers/discussion.slice"
 import WithHeader from "components/Layout/WithHeader"
 import { Tab } from "@headlessui/react"
 import Link from "next/link"
 import Spinner from "components/UI/Spinner"
 import Pagination from "components/UI/Pagination"
 import usePagination from "hooks/usePagination"
-import { httpsCallable } from "firebase/functions"
-import { db, functions } from "firebaseconfig"
-import { pickSortingOption, setDiscussion } from "store/discussion.slice"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import Latex from "react-latex"
 import useMessage from "hooks/useMessage"
@@ -28,14 +29,20 @@ import { faFlag } from "@fortawesome/free-solid-svg-icons/faFlag"
 import WIP from "components/UI/WIP"
 import ProposedChange from "components/Modules/ProposedChange"
 import Message from "components/UI/Message"
-import { formatDate, formatTime, protect, sortMessages } from "utils/functions"
+import {
+  formatDate,
+  formatTime,
+  getQuizId,
+  protect,
+  sortMessages,
+  toLightQuiz,
+} from "utils/functions"
 import DropdownPopup from "components/UI/DropdownPopup"
 import Popup from "components/UI/Popup"
-import { arrayUnion, doc, updateDoc } from "firebase/firestore"
-import { setAuth } from "store/auth.slice"
+import { setAuth } from "store/reducers/auth.slice"
 import { Attempt, LightQuiz } from "types/user"
 import Head from "next/head"
-import { useGetQuizHistoryQuery } from "store/historyApi"
+import { useGetQuizHistoryQuery } from "store/apis/history.api"
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -52,6 +59,11 @@ import dayjs from "dayjs"
 import AnimatedCount from "components/UI/AnimatedCount"
 import TipOfTheDay from "components/UI/Tip"
 import { Discussion } from "types/discuss"
+import { useGetDiscussionQuery } from "store/apis/discussion.api"
+import {
+  useBookmarkQuizMutation,
+  useUnmarkQuizMutation,
+} from "store/apis/quiz.api"
 
 ChartJS.register(
   CategoryScale,
@@ -79,6 +91,9 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
     quizId,
     uid: user?.uid ?? "",
   })
+  const { data: rawDiscussion } = useGetDiscussionQuery(quizId)
+  const [bookmarkQuiz] = useBookmarkQuizMutation()
+  const [unmarkQuiz] = useUnmarkQuizMutation()
   const { discussion, discussionQuizId, currentSort } = useTSelector(
     (state) => state.discussion
   )
@@ -100,20 +115,15 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
     else dispatch(setDiscussion(null))
     if (!user) return
     ;(async () => {
-      const getDiscussion = httpsCallable<any, Discussion>(
-        functions,
-        "getDiscussion"
-      )
-      const newDiscussion = (await getDiscussion({ quizId })).data
-      if (!newDiscussion) return
+      if (!rawDiscussion) return
       dispatch(
         setDiscussion({
-          discussion: newDiscussion,
+          discussion: rawDiscussion,
           quizId: quizId as string,
         })
       )
     })()
-  }, [discussion, discussionQuizId, user])
+  }, [discussion, discussionQuizId, user, rawDiscussion])
 
   useEffect(() => {
     if (!quiz) return
@@ -132,11 +142,8 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
 
   const saveQuiz = protect(async () => {
     if (!user || !user.data || !quiz) return
-    const dataRef = doc(db, "users", user.uid, "private", "data")
-    const lightQuiz: LightQuiz = { ...quiz, id: quizId }
-    await updateDoc(dataRef, {
-      savedQuizzes: arrayUnion(lightQuiz),
-    })
+    const lightQuiz: LightQuiz = toLightQuiz(quiz, quizId)
+    await bookmarkQuiz({ quiz: lightQuiz, uid: user.uid })
     dispatch(
       setAuth({
         ...user,
@@ -156,11 +163,8 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
 
   const unsaveQuiz = protect(async () => {
     if (!user || !user.data) return
-    const dataRef = doc(db, "users", user.uid, "private", "data")
     const newArr = user.data.savedQuizzes.filter((q) => q.id != quizId)
-    await updateDoc(dataRef, {
-      savedQuizzes: newArr,
-    })
+    await unmarkQuiz({ newSavedQuizzes: newArr, uid: user.uid })
     dispatch(setAuth({ ...user, data: { ...user.data, savedQuizzes: newArr } }))
     dispatch(
       setAlert({
@@ -174,7 +178,7 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
     const data = (getElementAtEvent(chartRef.current, e)[0].element as any)
       .$context.raw as HistoryChartData
     router.push({
-      pathname: `/quiz/${router.query.id as string}/results`,
+      pathname: `/quiz/${getQuizId(router)}/results`,
       query: { u: data.uid, t: data.t },
     })
   }
@@ -239,10 +243,7 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
               <DropdownPopup
                 label={<FontAwesomeIcon icon={faEllipsisVertical} />}
                 items={[
-                  <Link
-                    href={`/quiz/${router.query.id as string}/try`}
-                    key="Tentative"
-                  >
+                  <Link href={`/quiz/${getQuizId(router)}/try`} key="Tentative">
                     <a className="text-black">Tentative</a>
                   </Link>,
                   user?.data && (
@@ -277,7 +278,7 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
               />
             </div>
           </div>
-          <Link href={`/quiz/${router.query.id as string}/try`}>
+          <Link href={`/quiz/${getQuizId(router)}/try`}>
             <a className="button bg-white text-main-100 col-span-3 md:col-span-1">
               Tentative
             </a>
@@ -736,7 +737,7 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
               ) : (
                 <div className="flex flex-col items-center gap-2">
                   <p>{"Vous n'avez encore jamais passé ce quiz"}</p>
-                  <Link href={`/quiz/${router.query.id as string}/try`}>
+                  <Link href={`/quiz/${getQuizId(router)}/try`}>
                     <a className="button">Tentative</a>
                   </Link>
                 </div>

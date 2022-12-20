@@ -1,17 +1,17 @@
 import { useTDispatch, useTSelector } from "./redux"
 import { useState } from "react"
-import { addMessage, voteMessage } from "store/discussion.slice"
+import { addMessage, voteMessage } from "store/reducers/discussion.slice"
 import { useRouter } from "next/router"
 import {
   arrayUnion,
   doc,
   increment,
   runTransaction,
-  serverTimestamp,
   updateDoc,
 } from "firebase/firestore"
 import { db } from "firebaseconfig"
 import dayjs from "dayjs"
+import { getQuizId, timestamp } from "utils/functions"
 
 const useMessage = () => {
   const dispatch = useTDispatch()
@@ -25,7 +25,7 @@ const useMessage = () => {
     if (!user) return
     try {
       setError(false)
-      const docRef = doc(db, "discussions", router.query.id as string)
+      const docRef = doc(db, "discussions", getQuizId(router))
       const userRef = doc(db, "users", user.uid)
       const msg = {
         content,
@@ -38,7 +38,7 @@ const useMessage = () => {
           msg: {
             ...msg,
             vote: 1,
-            published: { _seconds: dayjs().unix(), _nanoseconds: 0 },
+            published: timestamp(dayjs()),
           },
           qIndex,
         })
@@ -46,10 +46,10 @@ const useMessage = () => {
       setLoading(true)
       const res = await Promise.all([
         updateDoc(docRef, {
-          [qIndex]: arrayUnion({
+          [`messages.${qIndex}`]: arrayUnion({
             ...msg,
             vote: { [user.uid]: 1 },
-            published: { _seconds: dayjs().unix(), _nanoseconds: 0 },
+            published: timestamp(dayjs()),
           }),
         }),
         updateDoc(userRef, { contributions: increment(1) }),
@@ -71,11 +71,11 @@ const useMessage = () => {
     if (!user) return
     try {
       setError(false)
-      const docRef = doc(db, "discussions", router.query.id as string)
+      const docRef = doc(db, "discussions", getQuizId(router))
       dispatch(voteMessage({ vote, msgIndex, qIndex }))
       await runTransaction(db, async (transaction) => {
         const doc = await transaction.get(docRef)
-        const data = doc.data()?.[qIndex] as any[]
+        const data = doc.data()?.messages[qIndex] as any[]
         const delta = vote - (data[msgIndex].vote[user.uid] ?? 0)
         const msg = {
           ...data[msgIndex],
@@ -83,7 +83,7 @@ const useMessage = () => {
           score: data[msgIndex].score + delta,
         }
         transaction.update(docRef, {
-          [qIndex]: [
+          [`messages.${qIndex}`]: [
             ...data.slice(0, msgIndex),
             msg,
             ...data.slice(msgIndex + 1),

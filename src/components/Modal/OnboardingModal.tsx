@@ -5,18 +5,17 @@ import { useEffect, useState } from "react"
 import { FieldValues, useForm } from "react-hook-form"
 import { ERR_REQUIRED } from "utils/consts"
 import usePassword from "hooks/usePassword"
-import { setAlert, setModal } from "store/modal.slice"
+import { setAlert, setModal } from "store/reducers/modal.slice"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faEye } from "@fortawesome/free-regular-svg-icons/faEye"
 import { faEyeSlash } from "@fortawesome/free-regular-svg-icons/faEyeSlash"
-import { updatePassword } from "firebase/auth"
-import { auth, db } from "firebaseconfig/index"
-import { doc, updateDoc } from "firebase/firestore"
 import Spinner from "components/UI/Spinner"
+import { useUpdateOnboardedStatusMutation } from "store/apis/auth.api"
 
 export default function OnboardingModal() {
   const { user } = useTSelector((state) => state.auth)
   const [loading, setLoading] = useState(false)
+  const [onboard] = useUpdateOnboardedStatusMutation()
   const [passwordType, togglePassword] = usePassword()
   const router = useRouter()
   const dispatch = useTDispatch()
@@ -35,13 +34,11 @@ export default function OnboardingModal() {
 
   const onSubmit = async (data: FieldValues) => {
     try {
-      if (!user?.data?.email || !auth.currentUser) {
+      if (!user?.data?.email) {
         throw new Error()
       }
       setLoading(true)
-      await updatePassword(auth.currentUser, data.password)
-      const userData = doc(db, "users", user.uid, "private", "data")
-      await updateDoc(userData, { onboarded: true })
+      await onboard({ uid: user.uid, password: data.password })
       dispatch(setAlert({ message: "Votre compte est prêt, bon bachotage !" }))
       dispatch(setModal({ modal: null }))
     } catch (err) {

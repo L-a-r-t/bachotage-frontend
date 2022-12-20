@@ -2,15 +2,16 @@ import { useTDispatch, useTSelector } from "hooks/redux"
 import { useState } from "react"
 import Latex from "react-latex"
 import { FieldValues, useForm } from "react-hook-form"
-import { setAlert, setModal } from "store/modal.slice"
+import { setAlert, setModal } from "store/reducers/modal.slice"
+import { addChange } from "store/reducers/quiz.slice"
 import Input from "components/UI/Input"
 import { Transition } from "@headlessui/react"
-import { doc, serverTimestamp, updateDoc } from "firebase/firestore"
-import { db } from "firebaseconfig"
 import { useRouter } from "next/router"
 import { AppQuiz, Change, DBQuiz } from "types/quiz"
 import Spinner from "components/UI/Spinner"
-import { addChange } from "store/quiz.slice"
+import dayjs from "dayjs"
+import { getQuizId, timestamp } from "utils/functions"
+import { useSubmitChangeMutation } from "store/apis/discussion.api"
 
 export default function SubmitAnswerModal({
   appQuiz,
@@ -29,6 +30,7 @@ export default function SubmitAnswerModal({
     handleSubmit,
   } = useForm()
   const dispatch = useTDispatch()
+  const [submitChange] = useSubmitChangeMutation()
   const router = useRouter()
 
   const handleAnswer = (idx: number) => {
@@ -67,7 +69,6 @@ export default function SubmitAnswerModal({
       ? answersArray.map((ans) => appQuiz.questions[qIndex].answers[ans].index)
       : answersArray
     try {
-      const quizRef = doc(db, "quizzes", router.query.id as string)
       const change = {
         type: ["answer"],
         argument: data.argument,
@@ -79,12 +80,18 @@ export default function SubmitAnswerModal({
           text: null,
           correct: realAnswers.includes(index),
         })),
-      } as Change
-      setLoading(true)
-      await updateDoc(quizRef, {
-        [`changes.${dbIndex}`]: { ...change, date: serverTimestamp() },
+      } as Omit<Change, "date">
+      await submitChange({
+        quizId: getQuizId(router),
+        change,
+        dbIndex,
       })
-      dispatch(addChange({ change, index: dbIndex }))
+      dispatch(
+        addChange({
+          change: { ...change, date: timestamp(dayjs()) },
+          index: dbIndex,
+        })
+      )
       dispatch(
         setAlert({ message: "Proposition de réponse soumise au vote !" })
       )
