@@ -1,6 +1,6 @@
 # [QOAT (Quizzes Of All Time)](https://www.qoat.fr/)
 
-<img width="946" alt="Capture d’écran 2022-12-11 184950" src="https://user-images.githubusercontent.com/104721818/207087010-c2370483-e9f7-49f4-8ed5-244c753e850e.png">
+![qoat](https://user-images.githubusercontent.com/104721818/208779918-0e20a101-006f-4510-8794-fb5e47433540.gif)
 
 QOAT is on online platform for creating, passing and discussing online quizzes. The platform allows for collaborative correction of quizzes. This is a fullstack personal project (wireframed, designed & developped by myself) that has been used in a real environment.
 
@@ -14,7 +14,7 @@ QOAT is on online platform for creating, passing and discussing online quizzes. 
 - Possibility for collaborative correction of questions
 - KaTeX support
 
-## Tools used
+## Technologies used
 
 - Typescript
 - Nextjs
