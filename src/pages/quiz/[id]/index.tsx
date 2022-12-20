@@ -25,12 +25,10 @@ import { faCheck } from "@fortawesome/free-solid-svg-icons/faCheck"
 import { faBookmark as fasBookmark } from "@fortawesome/free-solid-svg-icons/faBookmark"
 import { faBookmark as farBookmark } from "@fortawesome/free-regular-svg-icons/faBookmark"
 import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons/faEllipsisVertical"
-import { faFlag } from "@fortawesome/free-solid-svg-icons/faFlag"
 import WIP from "components/UI/WIP"
 import ProposedChange from "components/Modules/ProposedChange"
 import Message from "components/UI/Message"
 import {
-  formatDate,
   formatTime,
   getQuizId,
   protect,
@@ -40,22 +38,10 @@ import {
 import DropdownPopup from "components/UI/DropdownPopup"
 import Popup from "components/UI/Popup"
 import { setAuth } from "store/reducers/auth.slice"
-import { Attempt, LightQuiz } from "types/user"
+import { LightQuiz } from "types/user"
 import Head from "next/head"
 import { useGetQuizHistoryQuery } from "store/apis/history.api"
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js"
-import { Bar, Line, getElementAtEvent } from "react-chartjs-2"
-import dayjs from "dayjs"
+import { getElementAtEvent } from "react-chartjs-2"
 import AnimatedCount from "components/UI/AnimatedCount"
 import TipOfTheDay from "components/UI/Tip"
 import { Discussion } from "types/discuss"
@@ -64,17 +50,9 @@ import {
   useBookmarkQuizMutation,
   useUnmarkQuizMutation,
 } from "store/apis/quiz.api"
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-)
+import QuestionsAvg from "components/Modules/Charts/QuestionsAvg"
+import HistoryChart from "components/Modules/Charts/History"
+import SuccessRate from "components/Modules/Charts/SuccessRate"
 
 const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
   const [quiz, setQuiz] = useState(quizProp)
@@ -176,7 +154,7 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
   const onHistoryClick = (e: any) => {
     if (!getElementAtEvent(chartRef.current, e)[0]) return
     const data = (getElementAtEvent(chartRef.current, e)[0].element as any)
-      .$context.raw as HistoryChartData
+      .$context.raw as { uid: string; t: number }
     router.push({
       pathname: `/quiz/${getQuizId(router)}/results`,
       query: { u: data.uid, t: data.t },
@@ -560,179 +538,14 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
               ) : userHistory.attempts.length > 0 ? (
                 <div className="responsiveLayout">
                   {userHistory.stats.byTag.length > 0 && (
-                    <Bar
-                      options={{
-                        responsive: true,
-                        indexAxis: "y",
-                        parsing: {
-                          xAxisKey: "stat",
-                          yAxisKey: "tag",
-                        },
-                      }}
-                      data={{
-                        labels: userHistory.stats.byTag.map((tag) => tag.tag),
-                        datasets: [
-                          {
-                            label: "Taux de réussite",
-                            data: userHistory.stats.byTag.map((tag) => ({
-                              tag: tag.tag,
-                              stat:
-                                Math.round(
-                                  (tag.score * 100) / tag.questions.length
-                                ) / 100,
-                            })),
-                            backgroundColor: "rgb(17, 94, 87)",
-                          },
-                        ],
-                      }}
-                    />
+                    <SuccessRate userHistory={userHistory} />
                   )}
-                  <Bar
+                  <HistoryChart
                     ref={chartRef}
-                    onClick={onHistoryClick}
-                    options={{
-                      responsive: true,
-                      scales: {
-                        xAxes: { display: true },
-                        y1: {
-                          type: "linear",
-                          position: "left",
-                          display: true,
-                          beginAtZero: true,
-                        },
-                        y2: {
-                          type: "linear",
-                          position: "right",
-                          display: true,
-                          grid: {
-                            drawOnChartArea: false,
-                          },
-                          beginAtZero: true,
-                        },
-                      },
-                      plugins: {
-                        tooltip: {
-                          callbacks: {
-                            title: (ctx) => {
-                              const raw = ctx[0].raw as HistoryChartData
-                              return `${raw.score}/${
-                                raw.questions
-                              } - ${formatTime(raw.time)}`
-                            },
-                            label: (ctx) => {
-                              const raw = ctx.raw as HistoryChartData
-                              return `Score: ${raw.score}/${raw.questions}`
-                            },
-                            afterBody: (ctx) => {
-                              const raw = ctx[0].raw as HistoryChartData
-                              return `Durée: ${formatTime(raw.time)}`
-                            },
-                          },
-                        },
-                      },
-                      parsing: {
-                        yAxisKey: "stat",
-                        xAxisKey: "t",
-                      },
-                    }}
-                    data={{
-                      labels: userHistory.attempts.map((a) =>
-                        formatDate(a.date._seconds)
-                      ),
-                      datasets: [
-                        {
-                          label: "Score (équivalent /10)",
-                          yAxisID: "y1",
-                          data: userHistory.attempts.map(
-                            (attempt) =>
-                              ({
-                                uid: attempt.uid,
-                                score: attempt.score,
-                                stat:
-                                  Math.round(
-                                    (attempt.score * 100) /
-                                      attempt.questions.length
-                                  ) / 10,
-                                time: attempt.time,
-                                questions: attempt.questions.length,
-                                date: dayjs(
-                                  attempt.date._seconds * 1000
-                                ).format("DD/MM - HH[h]mm"),
-                                quizId: attempt.quizId,
-                                t: attempt.date._seconds,
-                              } as HistoryChartData)
-                          ),
-                          backgroundColor: "rgb(17, 94, 87)",
-                        },
-                        {
-                          label: "Durée (secondes)",
-                          yAxisID: "y2",
-                          hidden: true,
-                          data: userHistory.attempts.map(
-                            (attempt) =>
-                              ({
-                                uid: attempt.uid,
-                                score: attempt.score,
-                                stat: attempt.time,
-                                time: attempt.time,
-                                questions: attempt.questions.length,
-                                date: dayjs(
-                                  attempt.date._seconds * 1000
-                                ).format("DD/MM - HH[h]mm"),
-                                quizId: attempt.quizId,
-                                t: attempt.date._seconds,
-                              } as HistoryChartData)
-                          ),
-                          backgroundColor: "rgb(147, 229, 223)",
-                        },
-                      ],
-                    }}
+                    userHistory={userHistory}
+                    onHistoryClick={onHistoryClick}
                   />
-                  <Bar
-                    ref={timesRef}
-                    options={{
-                      responsive: true,
-                      scales: {
-                        xAxes: { display: true },
-                      },
-                      plugins: {
-                        tooltip: {
-                          callbacks: {
-                            title: (ctx) => {
-                              const raw = ctx[0].raw as TimeChartData
-                              return raw.question
-                            },
-                            label: (ctx) => {
-                              const raw = ctx.raw as TimeChartData
-                              return `Temps: ${formatTime(raw.time)}`
-                            },
-                          },
-                        },
-                      },
-                      parsing: {
-                        yAxisKey: "time",
-                        xAxisKey: "index",
-                      },
-                    }}
-                    data={{
-                      labels: userHistory.stats.timeAverages.map(
-                        (a, index) => index
-                      ),
-                      datasets: [
-                        {
-                          label: "Temps moyen par question (secondes)",
-                          data: userHistory.stats.timeAverages.map(
-                            (stat, index) => ({
-                              index: index + 1,
-                              question: `Question #${index + 1}`,
-                              time: stat ?? 0,
-                            })
-                          ),
-                          backgroundColor: "rgb(17, 94, 87)",
-                        },
-                      ],
-                    }}
-                  />
+                  <QuestionsAvg ref={timesRef} userHistory={userHistory} />
                 </div>
               ) : (
                 <div className="flex flex-col items-center gap-2">
@@ -750,19 +563,6 @@ const AboutQuiz: NextPage<Props> = ({ quizProp, quizId, tab }) => {
     </WithHeader>
   ) : null
 }
-
-type HistoryChartData = {
-  score: number
-  stat: number
-  time: number
-  questions: number
-  date: string
-  quizId: string
-  uid: string
-  t: number
-}
-
-type TimeChartData = { index: number; question: string; time: number }
 
 export default AboutQuiz
 
