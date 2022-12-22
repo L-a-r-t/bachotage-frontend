@@ -21,8 +21,6 @@
       "components/*": ["src/components/*"],
       "hooks/*": ["src/hooks/*"],
       "hooks": ["src/hooks"],
-      "firebaseconfig/*": ["src/firebaseconfig/*"],
-      "firebaseconfig": ["src/firebaseconfig"],
       "pages/*": ["src/pages/*"],
       "store/*": ["src/store/*"],
       "styles/*": ["src/styles/*"],

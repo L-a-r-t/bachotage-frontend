@@ -9,7 +9,7 @@ import {
   runTransaction,
   updateDoc,
 } from "firebase/firestore"
-import { db } from "firebaseconfig"
+import { db } from "config/firebase"
 import dayjs from "dayjs"
 import { getQuizId, timestamp } from "utils/functions"
 
