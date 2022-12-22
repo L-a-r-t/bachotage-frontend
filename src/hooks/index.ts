@@ -10,7 +10,7 @@ import {
   query as _query,
   startAfter,
 } from "firebase/firestore"
-import { auth } from "firebaseconfig"
+import { auth } from "config/firebase"
 import { clamp } from "utils/functions"
 import { useRouter } from "next/router"
 import { useState, useEffect } from "react"
