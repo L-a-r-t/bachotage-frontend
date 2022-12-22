@@ -1,4 +1,4 @@
-import { auth } from "firebaseconfig/index"
+import { auth } from "config/firebase"
 import {
   ActionCodeSettings,
   sendSignInLinkToEmail,

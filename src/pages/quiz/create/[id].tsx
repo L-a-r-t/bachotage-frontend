@@ -10,7 +10,7 @@ import {
 } from "store/reducers/createQuestion.slice"
 import { DBQuiz } from "types/quiz"
 import { useProtect } from "hooks"
-import { adminDB } from "firebaseconfig/admin"
+import { adminDB } from "config/firebase/admin"
 import { useState, useEffect, useRef } from "react"
 import Spinner from "components/UI/Spinner"
 import Latex from "react-latex"

@@ -1,7 +1,7 @@
 import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react"
 import { doc, serverTimestamp, updateDoc } from "firebase/firestore"
 import { httpsCallable } from "firebase/functions"
-import { db, functions } from "firebaseconfig/index"
+import { db, functions } from "config/firebase"
 import { Discussion } from "types/discuss"
 import { TrackChangeVotesReq, TrackChangeVotesRes } from "types/functions"
 import { Change } from "types/quiz"

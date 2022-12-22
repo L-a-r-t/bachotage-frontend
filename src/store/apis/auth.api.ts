@@ -1,7 +1,7 @@
 import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react"
 import { updatePassword } from "firebase/auth"
 import { doc, getDoc, updateDoc } from "firebase/firestore"
-import { auth, db } from "firebaseconfig/index"
+import { auth, db } from "config/firebase"
 import { UserData } from "types/user"
 
 export const authApi = createApi({

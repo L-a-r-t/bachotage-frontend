@@ -1,6 +1,6 @@
 import { Menu, Transition } from "@headlessui/react"
 import { signOut } from "firebase/auth"
-import { auth } from "firebaseconfig/index"
+import { auth } from "config/firebase"
 import { useTDispatch, useTSelector } from "hooks/redux"
 import Link from "next/link"
 import { useRouter } from "next/router"

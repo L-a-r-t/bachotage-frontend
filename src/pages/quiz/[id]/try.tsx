@@ -14,7 +14,7 @@ import Head from "next/head"
 import { useRouter } from "next/router"
 import { ALPHABET } from "utils/consts"
 import dayjs from "dayjs"
-import { adminDB } from "firebaseconfig/admin"
+import { adminDB } from "config/firebase/admin"
 import { setAlert } from "store/reducers/modal.slice"
 import Latex from "react-latex"
 import Popup from "components/UI/Popup"
@@ -27,7 +27,7 @@ import {
   setDoc,
   updateDoc,
 } from "firebase/firestore"
-import { db } from "firebaseconfig/index"
+import { db } from "config/firebase"
 import { AttemptQuestion } from "types/user"
 import WithSlideInHeader from "components/Layout/WithSlideInHeader"
 import Spinner from "components/UI/Spinner"

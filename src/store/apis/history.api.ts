@@ -7,7 +7,7 @@ import {
   query,
   where,
 } from "firebase/firestore"
-import { db } from "firebaseconfig/index"
+import { db } from "config/firebase"
 import { Attempt } from "types/user"
 
 export const historyApi = createApi({

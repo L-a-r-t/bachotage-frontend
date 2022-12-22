@@ -13,7 +13,7 @@ import {
   where,
 } from "firebase/firestore"
 import { httpsCallable } from "firebase/functions"
-import { db, functions } from "firebaseconfig/index"
+import { db, functions } from "config/firebase"
 import { FieldValues } from "react-hook-form"
 import { Category } from "types/index"
 import { DBQuestion, DBQuiz } from "types/quiz"

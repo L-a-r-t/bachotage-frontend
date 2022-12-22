@@ -4,7 +4,7 @@ import { PropsWithChildren, useEffect } from "react"
 import { useLazyGetUserDataQuery } from "store/apis/auth.api"
 import { setAuth } from "store/reducers/auth.slice"
 import { setModal } from "store/reducers/modal.slice"
-import { auth } from "./firebaseconfig"
+import { auth } from "./config/firebase"
 
 export default function AuthLayer({ children }: PropsWithChildren) {
   const dispatch = useTDispatch()

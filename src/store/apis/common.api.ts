@@ -7,7 +7,7 @@ import {
   query,
   where,
 } from "firebase/firestore"
-import { db } from "firebaseconfig/index"
+import { db } from "config/firebase"
 import { Category, Tip } from "types/index"
 import { randomRange } from "utils/functions"
 

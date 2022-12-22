@@ -1,6 +1,6 @@
 import Spinner from "components/UI/Spinner"
 import { collection, limit, orderBy, query } from "firebase/firestore"
-import { db } from "firebaseconfig/index"
+import { db } from "config/firebase"
 import { useGetDocs } from "hooks/index"
 import { useTSelector } from "hooks/redux"
 import Link from "next/link"

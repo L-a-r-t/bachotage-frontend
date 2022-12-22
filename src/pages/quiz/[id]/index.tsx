@@ -1,4 +1,4 @@
-import { adminDB } from "firebaseconfig/admin"
+import { adminDB } from "config/firebase/admin"
 import { GetServerSideProps, NextPage } from "next"
 import { DBQuiz } from "types/quiz"
 import { Fragment, useEffect, useState, useRef } from "react"

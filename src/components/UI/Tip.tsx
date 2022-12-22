@@ -8,7 +8,7 @@ import { useToggle } from "hooks/index"
 import { useEffect, useState } from "react"
 import { useGetRandomTipQuery } from "store/apis/common.api"
 import { doc, increment, updateDoc } from "firebase/firestore"
-import { db } from "firebaseconfig/index"
+import { db } from "config/firebase"
 
 export default function TipOfTheDay() {
   const [show, toggle] = useToggle(false)
